@@ -1,31 +1,23 @@
-"use client";
-import { useState, useEffect } from 'react';
+// hooks/useDarkMode.ts
+'use client'
+import { useState, useEffect } from 'react'
 
 export function useDarkMode() {
-    const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(false) // Start with false during SSR
 
     useEffect(() => {
-        // Check localStorage for user preference
-        const savedMode = localStorage.getItem('darkMode') === 'true';
-        // Check system preference
-        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        // Only access localStorage after mount
+        const savedMode = localStorage.getItem('darkMode') === 'true'
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
         
-        setDarkMode(savedMode || systemPrefersDark);
-    }, []);
-
-    useEffect(() => {
-        if (darkMode) {
-        document.documentElement.classList.add('dark');
-        localStorage.setItem('darkMode', 'true');
-        } else {
-        document.documentElement.classList.remove('dark');
-        localStorage.setItem('darkMode', 'false');
-        }
-    }, [darkMode]);
+        setDarkMode(savedMode ?? systemPrefersDark)
+    }, [])
 
     const toggleDarkMode = () => {
-        setDarkMode(!darkMode);
-    };
+        const newMode = !darkMode
+        setDarkMode(newMode)
+        localStorage.setItem('darkMode', String(newMode))
+    }
 
-    return { darkMode, toggleDarkMode };
+    return { darkMode, toggleDarkMode }
 }

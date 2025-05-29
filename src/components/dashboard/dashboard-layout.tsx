@@ -2,21 +2,22 @@
 import { useState, useEffect } from 'react';
 import { useMobileDetection } from '../../../hooks/useMobileDetection';
 import { useDarkMode } from '../../../hooks/useDarkMode';
-import DashboardContent from './dashboard-content';
 import DashboardNavigation from './dashboard-navigation';
 import DashboardSidebar from './dashboard-sidebar';
 
 
-export default function DashboardLayout() {
+export default function DashboardLayout({
+    children,
+}: {
+    children: React.ReactNode
+}) {
     const [isCollapsed, setIsCollapsed] = useState(false);
-    const [activeItem, setActiveItem] = useState('dashboard');
-    
     const { darkMode, toggleDarkMode } = useDarkMode();
     const { isMobile } = useMobileDetection();
 
     useEffect(() => {
         if (isMobile) {
-            setIsCollapsed(true);
+        setIsCollapsed(true);
         }
     }, [isMobile]);
 
@@ -32,17 +33,17 @@ export default function DashboardLayout() {
                 toggleSidebar={toggleSidebar}
                 isCollapsed={isCollapsed}
             />
-            
+        
             <div className="flex flex-1 overflow-hidden relative">
                 <DashboardSidebar 
                     isCollapsed={isCollapsed}
                     isMobile={isMobile}
-                    activeItem={activeItem}
                     toggleSidebar={toggleSidebar}
-                    setActiveItem={setActiveItem}
                 />
                 
-                <DashboardContent activeItem={activeItem} />
+                <main className={`flex-1 overflow-auto p-6 bg-gray-50 dark:bg-gray-900`}>
+                    {children}
+                </main>
             </div>
         </div>
     );

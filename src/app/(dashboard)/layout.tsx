@@ -1,11 +1,13 @@
+import DashboardLayoutClient from '@/components/dashboard/DashboardLayoutClient'
 
-
-export default async function DashboardLayout({ children }: {
-    children: React.ReactNode;
+export default function AdminLayout({
+    children,
+}: {
+    children: React.ReactNode
 }) {
     return (
-        <main>
+        <DashboardLayoutClient>
             {children}
-        </main>
+        </DashboardLayoutClient>
     )
 }
