@@ -1,7 +1,7 @@
+import OrdersDashboard from "@/components/dashboard/user/Orders"
+
 export default function UserOrders() {
     return (
-        <div>
-            User orders
-        </div>
+        <OrdersDashboard />
     )
 }
