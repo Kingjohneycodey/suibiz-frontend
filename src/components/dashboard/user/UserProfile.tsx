@@ -29,7 +29,7 @@ const UserProfile = () => {
               type="text" 
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700"
+              className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded dark:text-amber-50 bg-white dark:bg-gray-700"
             />
           </div>
           <div>
@@ -37,7 +37,7 @@ const UserProfile = () => {
             <input 
               type="text" 
               value={did}
-              className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded bg-gray-100 dark:bg-gray-700"
+              className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded dark:text-amber-50 bg-gray-100 dark:bg-gray-700"
               disabled
             />
           </div>
