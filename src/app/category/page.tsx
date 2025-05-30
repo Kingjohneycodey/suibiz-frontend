@@ -9,7 +9,6 @@ type Category = {
 export default function CategoryPage() {
     const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
     
-    // Sample categories - replace with your actual data
     const categories: Category[] = [
         { id: 1, name: 'Technology' },
         { id: 2, name: 'Travel' },

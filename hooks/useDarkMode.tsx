@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react'
 
 export function useDarkMode() {
-  const [darkMode, setDarkMode] = useState(false) // Start with false during SSR
+  const [darkMode, setDarkMode] = useState(false)
 
     useEffect(() => {
         const storedValue = localStorage.getItem('darkMode')

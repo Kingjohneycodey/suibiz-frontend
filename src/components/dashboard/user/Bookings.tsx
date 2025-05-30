@@ -95,7 +95,6 @@ const BookingsDashboard = () => {
         time: '' 
     });
 
-    // Load sample data
     useEffect(() => {
         const sampleServices: Service[] = [
             {
@@ -173,16 +172,13 @@ const BookingsDashboard = () => {
         setFilteredBookings(sampleBookings);
     }, []);
 
-    // Apply filters, sorting and search
     useEffect(() => {
         let result = [...bookings];
         
-        // Apply status filter
         if (activeTab !== 'all') {
             result = result.filter(booking => booking.status === activeTab);
         }
         
-        // Apply search
         if (searchQuery) {
             const query = searchQuery.toLowerCase();
             result = result.filter(booking => 
@@ -193,9 +189,7 @@ const BookingsDashboard = () => {
             );
         }
         
-        // Apply sorting
         result.sort((a, b) => {
-            // Combine date and time for proper datetime comparison
             if (sortConfig.key === 'date') {
                 const dateTimeA = new Date(`${a.date}T${a.time}`).getTime();
                 const dateTimeB = new Date(`${b.date}T${b.time}`).getTime();
@@ -346,7 +340,6 @@ const BookingsDashboard = () => {
                 </div>
             )}
 
-            {/* Booking Details Modal */}
             {selectedBooking && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
@@ -463,7 +456,6 @@ const BookingsDashboard = () => {
             )}
 
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden">
-                {/* Header */}
                 <div className="p-6 border-b border-gray-100 dark:border-gray-700 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                     <div className="flex items-center gap-3">
                         <Calendar className="text-purple-600 dark:text-purple-400 size-6" />
@@ -487,7 +479,6 @@ const BookingsDashboard = () => {
                     </div>
                 </div>
 
-                {/* Tabs */}
                 <div className="border-b border-gray-100 dark:border-gray-700 overflow-x-auto">
                     <div className="flex">
                         {['all', 'confirmed', 'pending', 'completed', 'cancelled'].map((tab) => (
@@ -506,7 +497,6 @@ const BookingsDashboard = () => {
                     </div>
                 </div>
 
-                {/* Desktop Table */}
                 <div className="hidden md:block">
                     <div className="overflow-x-auto">
                         <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -626,7 +616,6 @@ const BookingsDashboard = () => {
                     </div>
                 </div>
 
-                {/* Mobile List */}
                 <div className="md:hidden">
                     {filteredBookings.length > 0 ? (
                         <div className="divide-y divide-gray-200 dark:divide-gray-700">

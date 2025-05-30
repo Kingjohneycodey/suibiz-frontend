@@ -3,8 +3,6 @@ import { useState } from 'react';
 import { User, Store, Eye, EyeOff, Mail, Phone, Lock, ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-// import { signIn } from 'next-auth/react';
-
 type UserType = 'user' | 'vendor' | null;
 
 interface FormData {
@@ -43,12 +41,10 @@ export default function RegistrationPage() {
         setIsSubmitting(true);
     
         try {
-            // Simulate API call
             await new Promise(resolve => setTimeout(resolve, 1000));
             console.log('Form submitted:', { userType, ...formData });
             alert(`Registration successful for ${userType}: ${formData.name}`);
             
-            // Reset form after submission
             setUserType(null);
             setFormData({
                 name: '',

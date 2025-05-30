@@ -1,13 +1,12 @@
-// hooks/useMobileDetection.ts
 'use client'
 import { useState, useEffect } from 'react'
 
 export function useMobileDetection() {
-  const [isMobile, setIsMobile] = useState(false) // Default to false during SSR
+  const [isMobile, setIsMobile] = useState(false)
   
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768) // Tailwind's md breakpoint
+      setIsMobile(window.innerWidth < 768)
     }
     
     checkMobile()
