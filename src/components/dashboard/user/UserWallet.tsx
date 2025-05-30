@@ -15,7 +15,6 @@ type Transaction = {
 };
 
 const UserWallet = () => {
-    // Internal state management
     const balance = 2450.75;
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [searchTerm, setSearchTerm] = useState<string>('');
@@ -26,7 +25,6 @@ const UserWallet = () => {
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
 
-  // Simulate data loading
     useEffect(() => {
         setIsLoading(true);
         setTimeout(() => {
@@ -86,39 +84,35 @@ const UserWallet = () => {
         }, 1000);
     }, []);
 
-  // Filter and sort transactions
     const filteredTransactions = useMemo(() => {
         let filtered = [...transactions];
         
-        // Apply search filter
         if (searchTerm) {
-        const term = searchTerm.toLowerCase();
-        filtered = filtered.filter(tx => 
-            tx.invoiceId.toLowerCase().includes(term) ||
-            tx.name.toLowerCase().includes(term) ||
-            tx.amount.toString().includes(term) ||
-            tx.date.includes(term) ||
-            tx.currency.toLowerCase().includes(term) ||
-            tx.status.toLowerCase().includes(term)
-        );
+            const term = searchTerm.toLowerCase();
+            filtered = filtered.filter(tx => 
+                tx.invoiceId.toLowerCase().includes(term) ||
+                tx.name.toLowerCase().includes(term) ||
+                tx.amount.toString().includes(term) ||
+                tx.date.includes(term) ||
+                tx.currency.toLowerCase().includes(term) ||
+                tx.status.toLowerCase().includes(term)
+            );
         }
         
-        // Apply status filter
         if (filterStatus !== 'all') {
-        filtered = filtered.filter(tx => tx.status === filterStatus);
+            filtered = filtered.filter(tx => tx.status === filterStatus);
         }
         
-        // Apply sorting
         if (sortConfig !== null) {
-        filtered.sort((a, b) => {
-            if (a[sortConfig.key] < b[sortConfig.key]) {
-            return sortConfig.direction === 'asc' ? -1 : 1;
-            }
-            if (a[sortConfig.key] > b[sortConfig.key]) {
-            return sortConfig.direction === 'asc' ? 1 : -1;
-            }
-            return 0;
-        });
+            filtered.sort((a, b) => {
+                if (a[sortConfig.key] < b[sortConfig.key]) {
+                    return sortConfig.direction === 'asc' ? -1 : 1;
+                }
+                if (a[sortConfig.key] > b[sortConfig.key]) {
+                    return sortConfig.direction === 'asc' ? 1 : -1;
+                }
+                return 0;
+            });
         }
         
         return filtered;

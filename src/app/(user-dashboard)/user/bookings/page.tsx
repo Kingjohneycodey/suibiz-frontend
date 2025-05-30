@@ -1,7 +1,7 @@
+import BookingsDashboard from "@/components/dashboard/user/Bookings";
+
 export default function UserBookingDashboard() {
     return (
-        <div>
-            user booking daahboard
-        </div>
+        <BookingsDashboard />
     )
 }

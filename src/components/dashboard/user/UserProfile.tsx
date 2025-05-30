@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { Upload, Link as LinkIcon } from 'lucide-react';
 
 const UserProfile = () => {
-  // Internal state management
   const [name, setName] = useState<string>('John Doe');
   const [did] = useState<string>('user123.did');
   const [workSamples, setWorkSamples] = useState<File[]>([]);
