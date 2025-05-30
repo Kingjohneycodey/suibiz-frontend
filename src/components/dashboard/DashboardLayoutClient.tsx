@@ -1,56 +1,73 @@
+// components/dashboard/DashboardLayoutClient.tsx
 'use client'
 import { useState, useEffect } from 'react'
-import { useMobileDetection } from '../../../hooks/useMobileDetection'
-import { useDarkMode } from '../../../hooks/useDarkMode'
-import DashboardNavigation from './dashboard-navigation'
 import DashboardSidebar from './dashboard-sidebar'
+import DashboardNavigation from './dashboard-navigation'
+import { SidebarConfig } from '../../../types/sidebar'
+
+
+interface DashboardLayoutClientProps {
+    children: React.ReactNode
+    sidebarConfig: SidebarConfig
+}
 
 export default function DashboardLayoutClient({
     children,
-}: {
-    children: React.ReactNode
-}) {
-    const [isCollapsed, setIsCollapsed] = useState(false)
-    const { darkMode, toggleDarkMode } = useDarkMode()
-    const { isMobile } = useMobileDetection()
+    sidebarConfig,
+}: DashboardLayoutClientProps) {
+  const [darkMode, setDarkMode] = useState(false)
+  const [sidebarState, setSidebarState] = useState({
+    isCollapsed: false,
+    isMobile: false,
+  })
 
-    useEffect(() => {
-        if (isMobile) {
-            setIsCollapsed(true)
-        }
-    }, [isMobile])
+  const toggleSidebar = () => {
+    setSidebarState(prev => ({
+      ...prev,
+      isCollapsed: !prev.isCollapsed
+    }))
+  }
 
-    const toggleSidebar = () => {
-        setIsCollapsed(!isCollapsed)
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode)
+    // You might want to persist this to localStorage
+  }
+
+  useEffect(() => {
+    const handleResize = () => {
+      setSidebarState(prev => ({
+        ...prev,
+        isMobile: window.innerWidth < 768
+      }))
     }
 
-    return (
-        <div className={`flex flex-col h-screen ${darkMode ? 'dark' : ''}`}>
-            <DashboardNavigation 
-                darkMode={darkMode} 
-                toggleDarkMode={toggleDarkMode} 
-                toggleSidebar={toggleSidebar} 
-                isCollapsed={isCollapsed} 
-            />
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
-            <div className="flex flex-1 overflow-hidden relative">
-                <DashboardSidebar 
-                    isCollapsed={isCollapsed} 
-                    isMobile={isMobile} 
-                    toggleSidebar={toggleSidebar} 
-                />
-
-                {isMobile && !isCollapsed && (
-                    <div 
-                        className="fixed inset-0 bg-opacity-50 z-40 lg:hidden"
-                        onClick={toggleSidebar}
-                    />
-                )}
-
-                <main className={`flex-1 overflow-auto p-6 bg-gray-50 dark:bg-gray-900 transition-all duration-300 ease-in-out`}>
-                    {children}
-                </main>
-            </div>
-        </div>
-    )
+  return (
+    <div className={`flex flex-col h-screen ${darkMode ? 'dark' : ''}`}>
+      {/* Add the DashboardNavigation component here */}
+      <DashboardNavigation 
+        darkMode={darkMode}
+        toggleDarkMode={toggleDarkMode}
+        toggleSidebar={toggleSidebar}
+        isCollapsed={sidebarState.isCollapsed}
+      />
+      
+      <div className="flex flex-1 overflow-hidden">
+        <DashboardSidebar 
+          config={sidebarConfig}
+          isCollapsed={sidebarState.isCollapsed}
+          isMobile={sidebarState.isMobile}
+          toggleSidebar={toggleSidebar}
+        />
+        
+        <main className="flex-1 overflow-auto">
+          {children}
+        </main>
+      </div>
+    </div>
+  )
 }

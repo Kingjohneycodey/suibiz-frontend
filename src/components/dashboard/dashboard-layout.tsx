@@ -4,6 +4,7 @@ import { useMobileDetection } from '../../../hooks/useMobileDetection';
 import { useDarkMode } from '../../../hooks/useDarkMode';
 import DashboardNavigation from './dashboard-navigation';
 import DashboardSidebar from './dashboard-sidebar';
+import { SidebarConfig } from '../../../types/sidebar';
 
 
 export default function DashboardLayout({
@@ -14,10 +15,11 @@ export default function DashboardLayout({
     const [isCollapsed, setIsCollapsed] = useState(false);
     const { darkMode, toggleDarkMode } = useDarkMode();
     const { isMobile } = useMobileDetection();
+    // const config = SidebarConfig()
 
     useEffect(() => {
         if (isMobile) {
-        setIsCollapsed(true);
+            setIsCollapsed(true);
         }
     }, [isMobile]);
 
