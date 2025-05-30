@@ -45,7 +45,6 @@ function RegisterEnokiWallets() {
 		const { unregister } = registerEnokiWallets({
 			apiKey: process.env.NEXT_PUBLIC_ENOKI_API_KEY || '',
 			providers: {
-				// Provide the client IDs for each of the auth providers you want to use:
 				google: {
 					clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '',
                     redirectUrl: 'http://localhost:3000/john/callback',
