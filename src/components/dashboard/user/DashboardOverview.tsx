@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from 'react';
-import { Bell, Clock, CheckCircle, AlertCircle, DollarSign, ShoppingCart, Calendar, ArrowUp, ArrowDown } from 'lucide-react';
+import { Clock, CheckCircle, AlertCircle, DollarSign, ShoppingCart, Calendar, ArrowUp, ArrowDown } from 'lucide-react';
 import Image from 'next/image';
 
 type Activity = {
@@ -12,15 +12,13 @@ type Activity = {
 
 const DashboardOverview = () => {
   // Internal state management
-  const [balance, setBalance] = useState<number>(2450.75);
-  const [pendingOrders, setPendingOrders] = useState<number>(3);
-  const [serviceBookings, setServiceBookings] = useState<number>(2);
+  const balance = 2450.75;
+  const pendingOrders = 3;
+  const serviceBookings = 2;
   const [activities, setActivities] = useState<Activity[]>([]);
-  const [balanceChange, setBalanceChange] = useState<number>(12.5); // percentage change
+  const balanceChange = 12.5; // percentage change
 
-  // Simulate data loading
   useEffect(() => {
-    // Mock API call
     setTimeout(() => {
       setActivities([
         { 
@@ -72,7 +70,7 @@ const DashboardOverview = () => {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">Dashboard Overview</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400">Welcome back! Here's what's happening today.</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">Welcome back! Here&apos;s what&apos;s happening today.</p>
         </div>
       </div>
 

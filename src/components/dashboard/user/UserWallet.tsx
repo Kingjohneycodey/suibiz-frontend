@@ -16,12 +16,15 @@ type Transaction = {
 
 const UserWallet = () => {
     // Internal state management
-    const [balance, setBalance] = useState<number>(2450.75);
+    const balance = 2450.75;
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [sortConfig, setSortConfig] = useState<{ key: keyof Transaction; direction: 'asc' | 'desc' } | null>(null);
-    const [filterStatus, setFilterStatus] = useState<'all' | 'completed' | 'pending'>('all');
+    type StatusFilter = 'all' | 'completed' | 'pending';
+
+    const [filterStatus, setFilterStatus] = useState<StatusFilter>('all');
     const [isLoading, setIsLoading] = useState<boolean>(true);
+
 
   // Simulate data loading
     useEffect(() => {
@@ -161,7 +164,7 @@ const UserWallet = () => {
                 </button>
                 <button 
                     onClick={handleWithdraw}
-                    className="flex items-center justify-center gap-2 px-4 py-2.5 w-full sm:w-auto border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200"
+                    className="flex items-center justify-center gap-2 px-4 py-2.5 w-full sm:w-auto border dark:text-white border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200"
                 >
                     <Minus className="w-5 h-5" />
                     <span>Withdraw</span>
@@ -203,34 +206,34 @@ const UserWallet = () => {
                 {/* Search and Filter Controls */}
                 <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
                     <div className="relative flex-1 sm:w-64">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <Search className="text-gray-400 w-5 h-5" />
-                    </div>
-                    <input
-                        type="text"
-                        placeholder="Search transactions..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    />
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <Search className="text-gray-400 w-5 h-5" />
+                        </div>
+                        <input
+                            type="text"
+                            placeholder="Search transactions..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:text-white/90 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        />
                     </div>
                     
                     <div className="relative w-full sm:w-48">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <Filter className="text-gray-400 w-5 h-5" />
-                    </div>
-                    <select
-                        value={filterStatus}
-                        onChange={(e) => setFilterStatus(e.target.value as any)}
-                        className="block w-full pl-10 pr-8 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none"
-                    >
-                        <option value="all">All Statuses</option>
-                        <option value="completed">Completed</option>
-                        <option value="pending">Pending</option>
-                    </select>
-                    <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                        <ChevronDown className="text-gray-400 w-5 h-5" />
-                    </div>
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <Filter className="text-gray-400 w-5 h-5" />
+                        </div>
+                        <select
+                            value={filterStatus}
+                            onChange={(e) => setFilterStatus(e.target.value as StatusFilter)}
+                            className="block w-full pl-10 pr-8 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none"
+                        >
+                            <option value="all" className='dark:text-white/90'>All Statuses</option>
+                            <option value="completed" className='dark:text-white/90'>Completed</option>
+                            <option value="pending" className='dark:text-white/90'>Pending</option>
+                        </select>
+                        <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                            <ChevronDown className="text-gray-400 w-5 h-5" />
+                        </div>
                     </div>
                 </div>
                 </div>

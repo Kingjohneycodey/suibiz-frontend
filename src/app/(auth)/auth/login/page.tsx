@@ -1,8 +1,6 @@
 "use client";
 import { useState } from 'react';
-// import { signIn } from 'next-auth/react';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 export default function LoginPage() {
@@ -11,7 +9,6 @@ export default function LoginPage() {
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
-    const router = useRouter();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -25,19 +22,6 @@ export default function LoginPage() {
                     password,
                 }
             )
-            // const result = await signIn('credentials', {
-            //     redirect: false,
-            //     email,
-            //     password,
-            // });
-
-            // if (result?.error) {
-            //     setError(result.error);
-            //     console.error('Login failed:', result.error);
-            // } else {
-            //     console.log('Login successful for:', email);
-            //     router.push('/dashboard'); // Redirect to dashboard after login
-            // }
         } catch (err) {
             console.error('Login error:', err);
             setError('An unexpected error occurred');
@@ -47,13 +31,7 @@ export default function LoginPage() {
     };
 
     const handleGoogleSignIn = async () => {
-        try {
-            // await signIn('google', { callbackUrl: '/dashboard' });
-            // console.log('Google authentication initiated');
-        } catch (err) {
-            console.error('Google sign-in error:', err);
-            setError('Failed to sign in with Google');
-        }
+        console.log("for signing in with google")
     };
 
     return (
@@ -196,7 +174,7 @@ export default function LoginPage() {
                     </div>
 
                     <div className="mt-6 text-center text-sm text-gray-600">
-                        Don't have an account?{' '}
+                        Don&apos;t have an account?{' '}
                         <Link href="/auth/register" className="font-medium text-indigo-600 hover:text-indigo-500">
                             Sign up
                         </Link>
