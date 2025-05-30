@@ -5,12 +5,7 @@ import { ConnectButton, useCurrentAccount, useSignAndExecuteTransaction } from '
 import { TransactionBlock } from '@mysten/sui.js/transactions';
 import { useState, useEffect } from 'react';
 
-interface WalletInfoProps {
-    nftId?: string; // Object ID of the NFT
-    price?: string; // Price in SUI (as a string for simplicity)
-}
-
-export default function WalletInfo({ nftId, price }: WalletInfoProps) {
+export default function WalletInfo() {
     const currentAccount = useCurrentAccount();
     const { mutate: signAndExecuteTransaction, isPending, error } = useSignAndExecuteTransaction();
     const [transactionStatus, setTransactionStatus] = useState<string | null>(null);

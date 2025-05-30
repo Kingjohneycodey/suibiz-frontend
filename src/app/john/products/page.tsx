@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import { SuiClient, getFullnodeUrl } from '@mysten/sui/client';
-import { SuiEvent } from '@mysten/sui/client';
 
 type ProductListedEvent = {
   productId: string;
