@@ -1,6 +1,7 @@
 import { LayoutDashboard, User, CreditCard } from 'lucide-react'
 import DashboardLayoutClient from '@/components/dashboard/DashboardLayoutClient'
 import { SidebarConfig } from '../../../types/sidebar'
+import { ShoppingBag, NotebookPen } from 'lucide-react'
 
 
 export default function UserDashboardLayout({ children }: { children: React.ReactNode }) {
@@ -22,6 +23,16 @@ export default function UserDashboardLayout({ children }: { children: React.Reac
         icon: <CreditCard className="w-5 h-5" />,
         label: 'Wallet',
       },
+      {
+        href: '/user/orders',
+        icon: <ShoppingBag className="w-5 h-5" />,
+        label: 'Orders',
+      },
+      {
+        href: '/user/bookings',
+        icon: <NotebookPen className="w-5 h-5" />,
+        label: 'Bookings',
+      }
     ]
   }
   

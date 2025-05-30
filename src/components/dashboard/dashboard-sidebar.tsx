@@ -18,15 +18,9 @@ export default function DashboardSidebar({
     toggleSidebar,
 }: DashboardSidebarProps) {
     const pathname = usePathname()
-    const { navItems, logo } = config
+    const { navItems } = config
     const isActive = (href: string) => {
-        // Exact match for dashboard root
-        // if (href === '/dashboard' && pathname === '/dashboard') return true
-        // return pathname === href || 
-        // (pathname.startsWith(`${href}/`) && href !== '/dashboard')
-
         return pathname === href;
-        
     }
 
     return (
