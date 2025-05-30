@@ -1,4 +1,3 @@
-// components/dashboard/DashboardLayoutClient.tsx
 'use client'
 import { useState, useEffect } from 'react'
 import DashboardSidebar from './dashboard-sidebar'
@@ -30,7 +29,6 @@ export default function DashboardLayoutClient({
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode)
-    // You might want to persist this to localStorage
   }
 
   useEffect(() => {
