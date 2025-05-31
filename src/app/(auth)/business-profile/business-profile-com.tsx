@@ -24,11 +24,11 @@ export default function BusinessProfilePage() {
     const [uploading, setUploading] = useState(false);
     const setUser = useUserStore(state => state.setUser);
     const [formData, setFormData] = useState<BusinessFormData>({
-      name: '',
-      username: '',
-      bio: '',
-      avatar_url: '',
-      address: '',
+        name: '',
+        username: '',
+        bio: '',
+        avatar_url: '',
+        address: '',
     });
     const [token, setToken] = useState<string | undefined>(undefined);
     const [loading, setLoading] = useState(false);
@@ -36,37 +36,37 @@ export default function BusinessProfilePage() {
     const [avatarPreview, setAvatarPreview] = useState<string>('');
     const [avatarFile, setAvatarFile] = useState<File | null>(null);
     const [storageData, setStorageData] = useState<any>(null);
-  
+
     // Log current wallet connection status
     useEffect(() => {
-      console.log('Current wallet connection status:', {
-        isConnected: !!currentAccount,
-        address: currentAccount?.address,
-        chains: currentAccount?.chains
-      });
+        console.log('Current wallet connection status:', {
+            isConnected: !!currentAccount,
+            address: currentAccount?.address,
+            chains: currentAccount?.chains
+        });
     }, [currentAccount]);
-  
+
     // Initialize data on component mount
     useEffect(() => {
-      const authToken = Cookies.get('auth_token');
-      setToken(authToken);
-  
-      try {
-        const storedData = sessionStorage.getItem('@enoki/flow/state/enoki_public_9a3de95df9a16f168ba9ebf1cc36cc1d/devnet');
-        if (storedData) {
-          const parsedData = JSON.parse(storedData);
-          setStorageData(parsedData);
-          console.log('Session storage data:', parsedData);
-          
-          setFormData(prev => ({
-            ...prev,
-            address: parsedData?.address || currentAccount?.address || ''
-          }));
+        const authToken = Cookies.get('auth_token');
+        setToken(authToken);
+
+        try {
+            const storedData = sessionStorage.getItem('@enoki/flow/state/enoki_public_9a3de95df9a16f168ba9ebf1cc36cc1d/devnet');
+            if (storedData) {
+                const parsedData = JSON.parse(storedData);
+                setStorageData(parsedData);
+                console.log('Session storage data:', parsedData);
+                
+                setFormData(prev => ({
+                    ...prev,
+                    address: parsedData?.address || currentAccount?.address || ''
+                }));
+            }
+        } catch (error) {
+            console.error('Error parsing session storage data:', error);
+            toast.error('Failed to load wallet data');
         }
-      } catch (error) {
-        console.error('Error parsing session storage data:', error);
-        toast.error('Failed to load wallet data');
-      }
     }, [currentAccount]);
   
     const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -225,8 +225,8 @@ export default function BusinessProfilePage() {
         console.log('API response:', result);
   
         setUser({
-          id: result.id,
-          name: result.name || formData.name,
+            id: result.id,
+            name: result.name || formData.name,
         });
         
         toast.success('Profile created successfully!');
