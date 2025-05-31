@@ -5,7 +5,7 @@ import { FiUpload, FiX, FiImage, FiDollarSign, FiTag, FiAlignLeft } from 'react-
 import { toast } from 'react-toastify';
 import Image from 'next/image';
 
-import { ConnectButton, useCurrentAccount, useSignAndExecuteTransaction } from '@mysten/dapp-kit';
+import { useCurrentAccount, useSignAndExecuteTransaction } from '@mysten/dapp-kit';
 import { TransactionBlock } from '@mysten/sui.js/transactions';
 import { useState, useEffect } from 'react';
 import 'react-toastify/dist/ReactToastify.css';
@@ -133,46 +133,62 @@ export default function ProductUploadPage() {
         setImageFile(null);
     };
 
-    const handleListItem = async (image, ) => {
-            if (!currentAccount) {
-                setTransactionStatus('Please connect your wallet.');
-                return;
-            }
-    
-            try {
-                const tx = new TransactionBlock();
-                tx.moveCall({
-                    target: `${process.env.NEXT_PUBLIC_PACKAGE_ID}::marketplace::list_product`,
-                    arguments: [
-                        tx.object(`${process.env.NEXT_PUBLIC_REGISTRY_ID}`), // the product object
-                        tx.pure('prod-123'),   
-                        tx.pure(2000),         
-                        tx.pure('collectibles')
-                    ],
-                });
-    
-    
-                signAndExecuteTransaction(
-                    {
-                        transaction: tx.serialize(),
-                        chain: 'sui:devnet', // Adjust to 'sui:testnet' or other network as needed
+    interface HandleListItemParams {
+        image: string;
+        name: string;
+        description: string;
+        price: string;
+        category: string;
+    }
+
+    const handleListItem = async ({ image, name, description, price, category }: HandleListItemParams): Promise<void> => {
+        console.log({ currentAccount})
+        console.log("here")
+        if (!currentAccount) {
+            console.log("no wallet")
+            setTransactionStatus('Please connect your wallet.');
+            return;
+        }
+
+        try {
+            console.log("hyello ")
+            const tx = new TransactionBlock();
+            tx.moveCall({
+                target: `${process.env.NEXT_PUBLIC_PACKAGE_ID}::marketplace::list_product`,
+                arguments: [
+                    tx.object(`${process.env.NEXT_PUBLIC_REGISTRY_ID}`), // the product object
+                    tx.pure('prod-123'),
+                    tx.pure(Number(price)),
+                    tx.pure(category),
+                    tx.pure(name),
+                    tx.pure(description),
+                    tx.pure(image),
+                    tx.pure(100)
+                ],
+            });
+
+            signAndExecuteTransaction(
+                {
+                    transaction: tx.serialize(),
+                    chain: 'sui:devnet', // Adjust to 'sui:testnet' or other network as needed
+                },
+                {
+                    onSuccess: (result: { digest: string }) => {
+                        setTransactionStatus(`Transaction successful: ${result.digest}`);
+                        console.log('Transaction Digest:', result.digest);
                     },
-                    {
-                        onSuccess: (result) => {
-                            setTransactionStatus(`Transaction successful: ${result.digest}`);
-                            console.log('Transaction Digest:', result.digest);
-                        },
-                        onError: (err) => {
-                            setTransactionStatus(`Transaction failed: ${err.message}`);
-                            console.error('Transaction Error:', err);
-                        },
-                    }
-                );
-            } catch (err) {
-                setTransactionStatus('Error preparing transaction.');
-                console.error('Error preparing transaction:', err);
-            }
-        };
+                    onError: (err: { message: string }) => {
+                        setTransactionStatus(`Transaction failed: ${err.message}`);
+                        console.error('Transaction Error:', err);
+                    },
+                }
+            );
+            console.log("executedf");
+        } catch (err) {
+            setTransactionStatus('Error preparing transaction.');
+            console.error('Error preparing transaction:', err);
+        }
+    };
 
     const validateForm = () => {
         let isValid = true;
@@ -219,6 +235,33 @@ export default function ProductUploadPage() {
         return isValid;
     };
 
+    const uploadToCloudinary = async (file: File): Promise<string> => {
+        const uploadData = new FormData();
+        uploadData.append('file', file);
+        uploadData.append('upload_preset', 'productimage'); // Replace with your actual upload preset
+        uploadData.append('cloud_name', process.env.NEXT_PUBLIC_CLOUDE_NAME || '');
+
+        try {
+            const res = await fetch(
+                `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDE_NAME}/image/upload`,
+                {
+                    method: 'POST',
+                    body: uploadData,
+                }
+            );
+
+            if (!res.ok) {
+                throw new Error('Upload failed');
+            }
+
+            const data = await res.json();
+            return data.secure_url;
+        } catch (err) {
+            console.error('Upload error:', err);
+            throw err;
+        }
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         
@@ -236,12 +279,13 @@ export default function ProductUploadPage() {
         if (imageFile) {
             formPayload.append('image', imageFile);
         }
-        
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1500));
+
+        const image = await uploadToCloudinary(imageFile!);
+        console.log({ image, name: formData.name, description: formData.description, price: formData.price, category: formData.category })
+        await handleListItem({ image, name: formData.name, description: formData.description, price: formData.price, category: formData.category });
         
         toast.success(isEditMode ? 'Product updated successfully!' : 'Product uploaded successfully!');
-        router.push('/admin/products');
+        // router.push('/business/products');
         } catch (error) {
         toast.error(isEditMode ? 'Failed to update product' : 'Failed to upload product');
         console.error('Error:', error);
@@ -424,8 +468,9 @@ export default function ProductUploadPage() {
                 <option value="other">Other</option>
                 </select>
                 {errors.category && (
-                <p className="mt-1 text-sm text-red-600">{errors.category}</p>
+                    <p className="mt-1 text-sm text-red-600">{errors.category}</p>
                 )}
+
             </div>
             </div>
 

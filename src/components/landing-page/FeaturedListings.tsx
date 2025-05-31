@@ -5,7 +5,6 @@ import { Badge } from "@/components/ui/badge";
 import { Star, User } from "lucide-react";
 import Image from "next/image";
 
-
 export const FeaturedListings = () => {
   interface Listing {
     id: string;
@@ -21,65 +20,42 @@ export const FeaturedListings = () => {
   const [listings, setListings] = useState<Listing[]>([]);
 
   useEffect(() => {
-    console.log("...")
     const fetchListings = async () => {
-      const response = await fetch('https://suibiz-backend.onrender.com/api/products', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      try {
+        const response = await fetch('https://suibiz-backend.onrender.com/api/products', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
 
-      if (!response.ok) {
-        console.error('Failed to fetch listings');
-        return;
+        if (!response.ok) {
+          console.error('Failed to fetch listings');
+          return;
+        }
+
+        const data = await response.json();
+        const products = data.products;
+
+        const formattedListings = products.map((item: any) => ({
+          id: item._id,
+          title: item.title || item.name || 'Untitled', // Fallback for title
+          image: item.image || '/placeholder-image.jpg', // Fallback for image
+          category: item.category || item.collection || 'Uncategorized', // Fallback for category
+          rating: item.rating || 0,
+          reviews: item.reviews || 0,
+          seller: item.seller?.name || 'Unknown seller',
+          price: `$${item.price?.toFixed(2) || '0.00'}`,
+        }));
+
+        setListings(formattedListings);
+      } catch (error) {
+        console.error('Error fetching listings:', error);
       }
-
-      const data = await response.json();
-      interface Listing {
-        id: string;
-        title: string;
-        image: string;
-        category: string;
-        rating: number;
-        reviews: number;
-        seller: string;
-        price: string;
-      }
-
-      interface ApiResponse {
-        data: {
-          _id: string;
-          title: string;
-          image: string;
-          category: string;
-          rating: number;
-          reviews: number;
-          seller: {
-            name: string;
-          };
-          price: number;
-        }[];
-      }
-
-      const listings = (data as ApiResponse).data.map((item): Listing => ({
-        id: item._id,
-        title: item.title,
-        image: item.image,
-        category: item.category,
-        rating: item.rating,
-        reviews: item.reviews,
-        seller: item.seller.name,
-        price: `$${item.price.toFixed(2)}`,
-      }));
-
-      console.log({ listings })
-      setListings(listings);
     };
 
     fetchListings();
-  }
-  , []);
+  }, []);
 
   return (
     <section className="py-20 px-4">
@@ -100,9 +76,12 @@ export const FeaturedListings = () => {
                 <Image
                   width={300}
                   height={200}
-                  src={listing.image} 
+                  src={listing.image}
                   alt={listing.title}
                   className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = '/placeholder-image.jpg';
+                  }}
                 />
               </div>
               <CardHeader className="pb-2">

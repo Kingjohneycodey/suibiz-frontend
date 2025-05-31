@@ -47,7 +47,7 @@ function RegisterEnokiWallets() {
 			providers: {
 				google: {
 					clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '',
-                    redirectUrl: 'http://localhost:3000/api/auth/callback/google',
+                    redirectUrl: `${process.env.NEXTAUTH_URL}/api/auth/callback/google`,
 				},
 			},
 			client,
