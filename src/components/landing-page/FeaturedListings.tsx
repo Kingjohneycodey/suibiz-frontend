@@ -38,14 +38,14 @@ export const FeaturedListings = () => {
         const products = data.products;
 
         const formattedListings = products.map((item: any) => ({
-          id: item._id,
-          title: item.title || item.name || 'Untitled', // Fallback for title
-          image: item.image || '/placeholder-image.jpg', // Fallback for image
-          category: item.category || item.collection || 'Uncategorized', // Fallback for category
-          rating: item.rating || 0,
-          reviews: item.reviews || 0,
-          seller: item.seller?.name || 'Unknown seller',
-          price: `$${item.price?.toFixed(2) || '0.00'}`,
+          id: item.id || 'unknown-id',
+          title: item.name || 'Untitled',
+          image: item.image_url || '/placeholder-image.jpg',
+          category: item.collection || 'Uncategorized',
+          rating: 4.5, // Default rating since API doesn't provide this
+          reviews: 12, // Default reviews count since API doesn't provide this
+          seller: `Seller ${item.owner.slice(0, 6)}`, // Using first 6 chars of owner address as seller name
+          price: `$${item.price || '0.00'}`,
         }));
 
         setListings(formattedListings);
