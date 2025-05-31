@@ -20,6 +20,9 @@ export const Header = () => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const handleSignout = () => {
+    router.push('/api/auth/logout');
+  }
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -136,7 +139,11 @@ export const Header = () => {
                   //   <Wallet className="w-4 h-4 mr-2" />
                   //   Connect Wallet
                   // </Button>
-                  <ConnectButton />
+                  <div>
+
+                    <ConnectButton />
+                    <Button onClick={handleSignout}></Button>
+                  </div>
                 ) : (
                   <Button 
                     onClick={handleSignIn} 
