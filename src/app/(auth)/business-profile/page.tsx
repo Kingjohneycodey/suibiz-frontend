@@ -1,7 +1,6 @@
 "use client";
-import ViewProfile from '@/components/ViewProfile';
 import dynamic from 'next/dynamic';
-
+import BusinessProfilePage from './business-profile-com';
 
 const EnokiWrapper = dynamic(() => import('@/components/EnokiWrapper'), {
     ssr: false,
@@ -9,9 +8,9 @@ const EnokiWrapper = dynamic(() => import('@/components/EnokiWrapper'), {
 
 
 export default function BusinessProfile() {
-    return (
-        <EnokiWrapper>
-            <ViewProfile />
-        </EnokiWrapper>
-    );
+  return (
+    <EnokiWrapper>
+      <BusinessProfilePage />
+    </EnokiWrapper>
+  );
 }

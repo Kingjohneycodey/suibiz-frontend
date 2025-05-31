@@ -3,6 +3,6 @@
 export default function CallbackPage() {
 
 	return(
-		 <div>Processing login...</div>
+		<div>Processing login...</div>
 	)
 }
