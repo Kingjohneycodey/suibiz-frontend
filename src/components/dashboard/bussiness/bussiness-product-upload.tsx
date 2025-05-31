@@ -39,7 +39,8 @@ export default function ProductUploadPage() {
     const { mutate: signAndExecuteTransaction } = useSignAndExecuteTransaction();
     const [transactionStatus, setTransactionStatus] = useState<string | null>(null);
 
-    
+    const [storageData, setStorageData] = useState<any>(null);
+
     const [isLoading, setIsLoading] = useState(false);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [imageFile, setImageFile] = useState<File | null>(null);
@@ -83,6 +84,25 @@ export default function ProductUploadPage() {
             setIsLoading(false);
         }
     }, [isEditMode, productId, router]);
+
+    useEffect(() => {
+        try {
+            const storedData = sessionStorage.getItem('@enoki/flow/state/enoki_public_9a3de95df9a16f168ba9ebf1cc36cc1d/devnet');
+            if (storedData) {
+                const parsedData = JSON.parse(storedData);
+                setStorageData(parsedData);
+                console.log('Session storage data:', parsedData);
+                
+                setFormData(prev => ({
+                    ...prev,
+                    address: parsedData?.address || currentAccount?.address || ''
+                }));
+            }
+        } catch (error) {
+            console.error('Error parsing session storage data:', error);
+            toast.error('Failed to load wallet data');
+        }
+    }, [currentAccount]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -142,13 +162,7 @@ export default function ProductUploadPage() {
     }
 
     const handleListItem = async ({ image, name, description, price, category }: HandleListItemParams): Promise<void> => {
-        console.log({ currentAccount})
-        console.log("here")
-        if (!currentAccount) {
-            console.log("no wallet")
-            setTransactionStatus('Please connect your wallet.');
-            return;
-        }
+        
 
         try {
             console.log("hyello ")
