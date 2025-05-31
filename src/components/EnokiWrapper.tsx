@@ -47,7 +47,7 @@ function RegisterEnokiWallets() {
 			providers: {
 				google: {
 					clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '',
-                    redirectUrl: `https://suibiz.vercel.app/api/auth/callback/google`,
+                    redirectUrl: `${process.env.NEXT_PUBLIC_NEXT_AUTH_URL}/api/auth/callback/google`,
 				},
 			},
 			client,
