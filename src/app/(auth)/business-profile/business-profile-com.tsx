@@ -6,6 +6,8 @@ import Image from 'next/image';
 import { useCurrentAccount } from '@mysten/dapp-kit';
 import { toast } from 'react-hot-toast';
 import Cookies from 'js-cookie';
+import { useUserStore } from '../../../../stores/userStore';
+
 
 type BusinessFormData = {
     name: string;
@@ -18,6 +20,7 @@ type BusinessFormData = {
 export default function BusinessProfilePage() {
     const router = useRouter();
     const [uploading, setUploading] = useState(false);
+    const setUser = useUserStore(state => state.setUser);
     const [formData, setFormData] = useState<BusinessFormData>({
         name: '',
         username: '',
@@ -92,10 +95,7 @@ export default function BusinessProfilePage() {
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        // if (!currentAccount) {
-        //     toast.error('Please connect your wallet');
-        //     return;
-        // }
+        console.log("connect wallet", currentAccount)
 
         // Basic form validation
         if (!formData.name.trim() || !formData.username.trim() || !formData.address.trim()) {
@@ -114,6 +114,7 @@ export default function BusinessProfilePage() {
                     setFormData(prev => ({ ...prev, avatar_url: avatarUrl }));
                 } catch (error) {
                     toast.error('Failed to upload avatar');
+                    console.log(error)
                     return;
                 } finally {
                     setUploading(false);
@@ -123,7 +124,7 @@ export default function BusinessProfilePage() {
             const payload = {
                 authToken: token,
                 walletAddress: currentAccount?.address || '',
-                userType: "business",
+                userType: "user",
                 bio: formData.bio,
                 username: formData.username,
             }
@@ -150,9 +151,12 @@ export default function BusinessProfilePage() {
             const result = await response.json();
 
             console.log('Submission result:', result);
+            setUser({
+                id: result.id,
+                name: result.name
+            });
             toast.success('Profile created successfully!');
-            // router.push('/business');
-            
+            router.push('/business');
         } catch (err) {
             console.error('Submission error:', err);
             toast.error('Error creating profile');

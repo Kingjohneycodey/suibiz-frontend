@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { Wallet, Search, Menu } from "lucide-react";
+import { Search, Menu } from "lucide-react";
 import { useState, useEffect } from "react";
 import { ConnectButton } from "@mysten/dapp-kit";
 
@@ -52,10 +52,7 @@ export const Header = () => {
   }, []);
 
   const handleSignIn = () => router.push('/api/auth/google');
-  const handleConnectWallet = () => {
-    // Add your wallet connection logic here
-    console.log("Connecting wallet...");
-  };
+  
 
   if (loading) {
     return <div className="flex items-center justify-center h-16">Loading...</div>;
@@ -66,7 +63,6 @@ export const Header = () => {
     <header className="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-          {/* Logo */}
           <div className="flex items-center space-x-2">
             <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-sm">S</span>
@@ -76,7 +72,6 @@ export const Header = () => {
             </span>
           </div>
 
-          {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
             <a href="#" className="text-slate-600 hover:text-purple-600 transition-colors">Explore</a>
             <a href="#" className="text-slate-600 hover:text-purple-600 transition-colors">Services</a>

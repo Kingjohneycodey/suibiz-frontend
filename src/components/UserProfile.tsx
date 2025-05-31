@@ -1,5 +1,6 @@
 "use client";
 import { useSession } from '../../hooks/useSession';
+import Image from 'next/image';
 
 export function UserProfile() {
     const { user, loading } = useSession();
@@ -15,10 +16,12 @@ export function UserProfile() {
     return (
         <div className="flex items-center gap-4">
         {user.picture && (
-            <img 
-            src={user.picture} 
-            alt="User avatar" 
-            className="w-10 h-10 rounded-full" 
+            <Image
+                width={40}
+                height={40}
+                src={user.picture} 
+                alt="User avatar" 
+                className="w-10 h-10 rounded-full" 
             />
         )}
         <div>
