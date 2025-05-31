@@ -227,7 +227,6 @@ export default function BusinessProfilePage() {
         setUser({
           id: result.id,
           name: result.name || formData.name,
-          avatar: result.avatarUrl || avatarUrl
         });
         
         toast.success('Profile created successfully!');
