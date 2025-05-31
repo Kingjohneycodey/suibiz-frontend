@@ -34,6 +34,11 @@ export default function BusinessProfilePage() {
     const [avatarPreview, setAvatarPreview] = useState<string>('');
     const [avatarFile, setAvatarFile] = useState<File | null>(null);
 
+    const storageData = JSON.parse(sessionStorage.getItem('@enoki/flow/state/enoki_public_9a3de95df9a16f168ba9ebf1cc36cc1d/devnet'));
+
+
+    console.log(storageData.address)
+
     const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({
@@ -123,7 +128,7 @@ export default function BusinessProfilePage() {
 
             const payload = {
                 authToken: token,
-                walletAddress: currentAccount?.address || '',
+                walletAddress: storageData.address,
                 userType: "user",
                 bio: formData.bio,
                 username: formData.username,
