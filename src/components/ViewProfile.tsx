@@ -10,7 +10,7 @@ export default function ViewProfile() {
     const currentAccount = useCurrentAccount();
     const { mutate: signAndExecuteTransaction, error } = useSignAndExecuteTransaction();
     const [transactionStatus, setTransactionStatus] = useState<string | null>(null);
-
+    
     useEffect(() => {
         const handleListItem = async () => {
             if (!currentAccount) {

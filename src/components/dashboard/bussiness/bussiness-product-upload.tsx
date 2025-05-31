@@ -1,10 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { FiUpload, FiX, FiImage, FiDollarSign, FiTag, FiAlignLeft } from 'react-icons/fi';
 import { toast } from 'react-toastify';
 import Image from 'next/image';
+
+import { ConnectButton, useCurrentAccount, useSignAndExecuteTransaction } from '@mysten/dapp-kit';
+import { TransactionBlock } from '@mysten/sui.js/transactions';
+import { useState, useEffect } from 'react';
 import 'react-toastify/dist/ReactToastify.css';
 
 
@@ -32,6 +35,10 @@ export default function ProductUploadPage() {
     const searchParams = useSearchParams();
     const productId = searchParams.get('id');
     const isEditMode = Boolean(productId);
+    const currentAccount = useCurrentAccount();
+    const { mutate: signAndExecuteTransaction } = useSignAndExecuteTransaction();
+    const [transactionStatus, setTransactionStatus] = useState<string | null>(null);
+
     
     const [isLoading, setIsLoading] = useState(false);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -125,6 +132,47 @@ export default function ProductUploadPage() {
         setImagePreview(null);
         setImageFile(null);
     };
+
+    const handleListItem = async (image, ) => {
+            if (!currentAccount) {
+                setTransactionStatus('Please connect your wallet.');
+                return;
+            }
+    
+            try {
+                const tx = new TransactionBlock();
+                tx.moveCall({
+                    target: `${process.env.NEXT_PUBLIC_PACKAGE_ID}::marketplace::list_product`,
+                    arguments: [
+                        tx.object(`${process.env.NEXT_PUBLIC_REGISTRY_ID}`), // the product object
+                        tx.pure('prod-123'),   
+                        tx.pure(2000),         
+                        tx.pure('collectibles')
+                    ],
+                });
+    
+    
+                signAndExecuteTransaction(
+                    {
+                        transaction: tx.serialize(),
+                        chain: 'sui:devnet', // Adjust to 'sui:testnet' or other network as needed
+                    },
+                    {
+                        onSuccess: (result) => {
+                            setTransactionStatus(`Transaction successful: ${result.digest}`);
+                            console.log('Transaction Digest:', result.digest);
+                        },
+                        onError: (err) => {
+                            setTransactionStatus(`Transaction failed: ${err.message}`);
+                            console.error('Transaction Error:', err);
+                        },
+                    }
+                );
+            } catch (err) {
+                setTransactionStatus('Error preparing transaction.');
+                console.error('Error preparing transaction:', err);
+            }
+        };
 
     const validateForm = () => {
         let isValid = true;
