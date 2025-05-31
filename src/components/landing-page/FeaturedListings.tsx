@@ -1,52 +1,61 @@
-
+"use client"
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Star, User } from "lucide-react";
 import Image from "next/image";
 
 export const FeaturedListings = () => {
-  const listings = [
-    {
-      id: 1,
-      title: "Custom DeFi Dashboard Design",
-      seller: "CryptoDesigner",
-      price: "50 SUI",
-      rating: 4.9,
-      reviews: 127,
-      image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=300&h=200&fit=crop",
-      category: "Design"
-    },
-    {
-      id: 2,
-      title: "Smart Contract Audit",
-      seller: "BlockchainExpert",
-      price: "200 SUI",
-      rating: 5.0,
-      reviews: 89,
-      image: "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=300&h=200&fit=crop",
-      category: "Development"
-    },
-    {
-      id: 3,
-      title: "NFT Collection Launch Strategy",
-      seller: "NFTGuru",
-      price: "75 SUI",
-      rating: 4.8,
-      reviews: 234,
-      image: "https://images.unsplash.com/photo-1620321023374-d1a68fbc720d?w=300&h=200&fit=crop",
-      category: "Marketing"
-    },
-    {
-      id: 4,
-      title: "Web3 Consulting Session",
-      seller: "DecentLabs",
-      price: "30 SUI",
-      rating: 4.9,
-      reviews: 156,
-      image: "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=300&h=200&fit=crop",
-      category: "Consulting"
-    }
-  ];
+  interface Listing {
+    id: string;
+    title: string;
+    image: string;
+    category: string;
+    rating: number;
+    reviews: number;
+    seller: string;
+    price: string;
+  }
+
+  const [listings, setListings] = useState<Listing[]>([]);
+
+  useEffect(() => {
+    const fetchListings = async () => {
+      try {
+        const response = await fetch('https://suibiz-backend.onrender.com/api/products', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          console.error('Failed to fetch listings');
+          return;
+        }
+
+        const data = await response.json();
+        const products = data.products;
+
+        const formattedListings = products.map((item: any) => ({
+          id: item._id,
+          title: item.title || item.name || 'Untitled', // Fallback for title
+          image: item.image || '/placeholder-image.jpg', // Fallback for image
+          category: item.category || item.collection || 'Uncategorized', // Fallback for category
+          rating: item.rating || 0,
+          reviews: item.reviews || 0,
+          seller: item.seller?.name || 'Unknown seller',
+          price: `$${item.price?.toFixed(2) || '0.00'}`,
+        }));
+
+        setListings(formattedListings);
+      } catch (error) {
+        console.error('Error fetching listings:', error);
+      }
+    };
+
+    fetchListings();
+  }, []);
 
   return (
     <section className="py-20 px-4">
@@ -67,9 +76,12 @@ export const FeaturedListings = () => {
                 <Image
                   width={300}
                   height={200}
-                  src={listing.image} 
+                  src={listing.image}
                   alt={listing.title}
                   className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = '/placeholder-image.jpg';
+                  }}
                 />
               </div>
               <CardHeader className="pb-2">
