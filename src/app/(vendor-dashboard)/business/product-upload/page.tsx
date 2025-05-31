@@ -5,7 +5,6 @@ export default function UploadProductDashboard() {
     return (
         <Suspense fallback={<div>Loading...</div>}>
             <ProductUploadPage />
-
         </Suspense>
     )
 }

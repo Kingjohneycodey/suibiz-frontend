@@ -10,7 +10,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const dummyProducts = [
     {
-        id: 'prod1',
+        id: 1,
         name: 'Premium Leather Wallet',
         description: 'Genuine leather wallet with multiple card slots and cash compartment. Handcrafted with premium materials.',
         price: '49.99',
@@ -18,14 +18,14 @@ const dummyProducts = [
         imageUrl: '/sample-wallet.jpg'
     },
     {
-        id: 'prod2',
+        id: 2,
         name: 'Wireless Headphones',
         description: 'Noise-cancelling wireless headphones with 30-hour battery life and premium sound quality.',
         price: '199.99',
         category: 'electronics',
         imageUrl: '/sample-headphones.jpg'
     }
-    ];
+];
 
 export default function ProductUploadPage() {
     const router = useRouter();
@@ -55,41 +55,38 @@ export default function ProductUploadPage() {
     // Load product data when in edit mode
     useEffect(() => {
         if (isEditMode) {
-        // Simulate loading from API
-        setIsLoading(true);
+            setIsLoading(true);
         
-        // Find the product in our dummy data
-        const product = dummyProducts.find(p => p.id === productId);
+            const product = dummyProducts.find(p => p.id === Number(productId));
         
-        if (product) {
-            setFormData({
-            name: product.name,
-            description: product.description,
-            price: product.price,
-            category: product.category,
-            });
-            
-            // Set image preview from URL (in a real app, you might fetch the actual image)
-            setImagePreview(product.imageUrl);
-        } else {
-            toast.error('Product not found');
-            router.push('/admin/products');
-        }
+            if (product) {
+                setFormData({
+                    name: product.name,
+                    description: product.description,
+                    price: product.price,
+                    category: product.category,
+                });
+                
+                setImagePreview(product.imageUrl);
+            } else {
+                toast.error('Product not found');
+                router.push('/business/product-upload');
+            }
         
-        setIsLoading(false);
+            setIsLoading(false);
         }
     }, [isEditMode, productId, router]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({
-        ...prev,
-        [name]: value,
+            ...prev,
+            [name]: value,
         }));
         
         // Clear error when user types
         if (errors[name as keyof typeof errors]) {
-        setErrors(prev => ({ ...prev, [name]: '' }));
+            setErrors(prev => ({ ...prev, [name]: '' }));
         }
     };
 
@@ -100,13 +97,13 @@ export default function ProductUploadPage() {
         
         // Validate image
         if (!file.type.match('image.*')) {
-        setErrors(prev => ({ ...prev, image: 'Please select an image file' }));
-        return;
+            setErrors(prev => ({ ...prev, image: 'Please select an image file' }));
+            return;
         }
         
         if (file.size > 5 * 1024 * 1024) { // 5MB
-        setErrors(prev => ({ ...prev, image: 'Image size should be less than 5MB' }));
-        return;
+            setErrors(prev => ({ ...prev, image: 'Image size should be less than 5MB' }));
+            return;
         }
         
         setImageFile(file);
@@ -114,13 +111,13 @@ export default function ProductUploadPage() {
         // Create preview
         const reader = new FileReader();
         reader.onload = () => {
-        setImagePreview(reader.result as string);
+            setImagePreview(reader.result as string);
         };
         reader.readAsDataURL(file);
         
         // Clear error
         if (errors.image) {
-        setErrors(prev => ({ ...prev, image: '' }));
+            setErrors(prev => ({ ...prev, image: '' }));
         }
     };
 
@@ -145,29 +142,29 @@ export default function ProductUploadPage() {
         }
 
         if (!formData.description.trim()) {
-        newErrors.description = 'Description is required';
-        isValid = false;
+            newErrors.description = 'Description is required';
+            isValid = false;
         } else if (formData.description.length < 20) {
-        newErrors.description = 'Description should be at least 20 characters';
-        isValid = false;
+            newErrors.description = 'Description should be at least 20 characters';
+            isValid = false;
         }
 
         if (!formData.price) {
-        newErrors.price = 'Price is required';
-        isValid = false;
+            newErrors.price = 'Price is required';
+            isValid = false;
         } else if (isNaN(Number(formData.price))) {
-        newErrors.price = 'Price must be a number';
-        isValid = false;
+            newErrors.price = 'Price must be a number';
+            isValid = false;
         }
 
         if (!formData.category) {
-        newErrors.category = 'Category is required';
-        isValid = false;
+            newErrors.category = 'Category is required';
+            isValid = false;
         }
 
         if (!imagePreview && !imageFile) {
-        newErrors.image = 'Product image is required';
-        isValid = false;
+            newErrors.image = 'Product image is required';
+            isValid = false;
         }
 
         setErrors(newErrors);
