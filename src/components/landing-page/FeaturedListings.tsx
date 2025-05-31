@@ -106,7 +106,7 @@ export const FeaturedListings = () => {
                     <span className="text-sm text-slate-600">{listing.seller}</span>
                   </div>
                   <div className="text-lg font-semibold text-slate-800">
-                    {listing.price}
+                    {listing.price} sui
                   </div>
                 </div>
               </CardContent>
