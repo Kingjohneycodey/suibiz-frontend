@@ -34,10 +34,6 @@ export default function BusinessProfilePage() {
     const [avatarPreview, setAvatarPreview] = useState<string>('');
     const [avatarFile, setAvatarFile] = useState<File | null>(null);
 
-    const storageData = sessionStorage.getItem('@enoki/flow/state/enoki_public_9a3de95df9a16f168ba9ebf1cc1d/devnet');
-    const parsedStorageData = storageData ? JSON.parse(storageData) : null;
-
-
     const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({
@@ -118,7 +114,6 @@ export default function BusinessProfilePage() {
                     setFormData(prev => ({ ...prev, avatar_url: avatarUrl }));
                 } catch (error) {
                     toast.error('Failed to upload avatar');
-                    console.log(error)
                     return;
                 } finally {
                     setUploading(false);
@@ -127,7 +122,7 @@ export default function BusinessProfilePage() {
 
             const payload = {
                 authToken: token,
-                walletAddress: parsedStorageData?.address || '',
+                walletAddress: currentAccount?.address || '',
                 userType: "user",
                 bio: formData.bio,
                 username: formData.username,
