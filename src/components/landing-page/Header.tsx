@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Search, Menu } from "lucide-react";
 import { useState, useEffect } from "react";
 import { ConnectButton } from "@mysten/dapp-kit";
+import Link from "next/link";
 
 
 interface User {
@@ -70,9 +71,9 @@ export const Header = () => {
             <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-sm">S</span>
             </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+    <Link href="/">        <span className="text-xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
               SuiBiz
-            </span>
+            </span></Link>
           </div>
 
           <nav className="hidden md:flex items-center space-x-8">

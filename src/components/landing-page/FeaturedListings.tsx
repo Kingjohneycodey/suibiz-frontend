@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Star, User } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 export const FeaturedListings = () => {
   interface Listing {
@@ -45,7 +46,7 @@ export const FeaturedListings = () => {
           rating: 4.5, // Default rating since API doesn't provide this
           reviews: 12, // Default reviews count since API doesn't provide this
           seller: `Seller ${item.owner.slice(0, 6)}`, // Using first 6 chars of owner address as seller name
-          price: `$${item.price || '0.00'}`,
+          price: `${item.price || '0.00'}`,
         }));
 
         setListings(formattedListings);
@@ -71,7 +72,8 @@ export const FeaturedListings = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {listings.map((listing) => (
-            <Card key={listing.id} className="hover:shadow-lg transition-shadow duration-300 cursor-pointer">
+           <Link href={`/marketplace/${listing.id}`} key={listing.id}>
+            <Card className="hover:shadow-lg transition-shadow duration-300 cursor-pointer">
               <div className="aspect-video overflow-hidden rounded-t-lg">
                 <Image
                   width={300}
@@ -111,6 +113,7 @@ export const FeaturedListings = () => {
                 </div>
               </CardContent>
             </Card>
+           </Link>
           ))}
         </div>
       </div>
