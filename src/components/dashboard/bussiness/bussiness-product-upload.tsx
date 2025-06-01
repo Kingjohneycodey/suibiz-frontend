@@ -189,6 +189,10 @@ export default function ProductUploadPage() {
                 {
                     onSuccess: (result: { digest: string }) => {
                         setTransactionStatus(`Transaction successful: ${result.digest}`);
+
+                        alert("Product listed successfully!");
+                  
+                        router.push('/marketplace');
                         console.log('Transaction Digest:', result.digest);
                     },
                     onError: (err: { message: string }) => {
