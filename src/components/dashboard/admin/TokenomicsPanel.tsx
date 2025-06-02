@@ -23,7 +23,6 @@ export const TokenomicsPanel = () => {
             <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-6">Tokenomics Insights</h2>
         
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Token Distribution */}
                 <div className="bg-gray-50 dark:bg-gray-800 p-5 rounded-lg">
                     <div className="flex items-center justify-between mb-4">
                         <h3 className="font-medium text-gray-700 dark:text-gray-300">Token Distribution</h3>
@@ -40,7 +39,6 @@ export const TokenomicsPanel = () => {
                     </div>
                 </div>
 
-                {/* Transaction Volume */}
                 <div className="bg-gray-50 dark:bg-gray-800 p-5 rounded-lg">
                     <div className="flex items-center justify-between mb-4">
                         <h3 className="font-medium text-gray-700 dark:text-gray-300">Monthly Volume (USD)</h3>

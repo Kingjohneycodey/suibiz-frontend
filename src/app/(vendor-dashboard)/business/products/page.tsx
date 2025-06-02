@@ -85,7 +85,6 @@ export default function ProductDisplay() {
     return (
         <div className="container mx-auto px-4 py-8">
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
-                {/* Header */}
                 <div className="bg-gray-200 text-white px-6 py-4 flex justify-between items-center">
                     <h2 className="text-xl font-semibold text-black/85">Product Management</h2>
                     <div className="flex space-x-4">
@@ -109,8 +108,6 @@ export default function ProductDisplay() {
                         </Link>
                     </div>
                 </div>
-
-                {/* Edit Modal */}
                 {editingProduct && (
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
                         <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl">
@@ -205,7 +202,6 @@ export default function ProductDisplay() {
                     </div>
                 )}
 
-                {/* Product Table */}
                 <div className="overflow-x-auto">
                     <table className="min-w-full divide-y divide-gray-200">
                         <thead className="bg-gray-50">

@@ -94,7 +94,6 @@ export default function ServiceSessionUpload() {
         const fetchServiceSession = async () => {
             try {
             setIsLoading(true);
-            // Simulate API call
             await new Promise(resolve => setTimeout(resolve, 500));
             
             const session = dummyServiceSessions.find(s => s.id === params.id);
@@ -134,7 +133,6 @@ export default function ServiceSessionUpload() {
         [name]: value
         }));
         
-        // Clear error when user types
         if (errors[name as keyof Errors]) {
         setErrors(prev => ({ ...prev, [name]: '' }));
         }
@@ -144,7 +142,7 @@ export default function ServiceSessionUpload() {
         if (e.target.files && e.target.files[0]) {
         const file = e.target.files[0];
         
-        // Validate image type and size
+
         if (!file.type.match('image.*')) {
             setErrors(prev => ({ ...prev, image: 'Please select an image file' }));
             return;
@@ -161,7 +159,6 @@ export default function ServiceSessionUpload() {
             imagePreview: URL.createObjectURL(file)
         }));
         
-        // Clear image error
         if (errors.image) {
             setErrors(prev => ({ ...prev, image: '' }));
         }
@@ -250,7 +247,6 @@ export default function ServiceSessionUpload() {
             </h1>
             
             <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Session Title */}
                 <div>
                 <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
                     Session Title *
@@ -269,7 +265,6 @@ export default function ServiceSessionUpload() {
                 {errors.title && <p className="mt-1 text-sm text-red-600">{errors.title}</p>}
                 </div>
                 
-                {/* Session Description */}
                 <div>
                 <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
                     Description *
@@ -291,7 +286,6 @@ export default function ServiceSessionUpload() {
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Duration */}
                 <div>
                     <label htmlFor="duration" className="block text-sm font-medium text-gray-700 mb-1">
                     Duration (minutes) *
@@ -310,7 +304,6 @@ export default function ServiceSessionUpload() {
                     {errors.duration && <p className="mt-1 text-sm text-red-600">{errors.duration}</p>}
                 </div>
                 
-                {/* Price */}
                 <div>
                     <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">
                     Price *
@@ -335,7 +328,6 @@ export default function ServiceSessionUpload() {
                 </div>
                 </div>
                 
-                {/* Service Selection */}
                 <div>
                 <label htmlFor="serviceId" className="block text-sm font-medium text-gray-700 mb-1">
                     Associated Service *
@@ -360,7 +352,6 @@ export default function ServiceSessionUpload() {
                 {errors.serviceId && <p className="mt-1 text-sm text-red-600">{errors.serviceId}</p>}
                 </div>
                 
-                {/* Session Image */}
                 <div>
                 <label htmlFor="image" className="block text-sm font-medium text-gray-700 mb-1">
                     Session Image {!isEditing && '*'}

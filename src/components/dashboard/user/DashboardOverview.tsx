@@ -66,7 +66,6 @@ const DashboardOverview = () => {
 
   return (
     <div className="space-y-6 p-4 sm:p-6 max-w-7xl mx-auto dark:bg-gray-900">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">Dashboard Overview</h1>
@@ -74,9 +73,7 @@ const DashboardOverview = () => {
         </div>
       </div>
 
-      {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-        {/* Balance Card */}
         <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-shadow">
           <div className="flex justify-between items-start">
             <div>
@@ -107,7 +104,6 @@ const DashboardOverview = () => {
           </div>
         </div>
 
-        {/* Pending Orders Card */}
         <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-shadow">
           <div className="flex justify-between items-start">
             <div>
@@ -125,7 +121,6 @@ const DashboardOverview = () => {
           </div>
         </div>
 
-        {/* Service Bookings Card */}
         <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-shadow">
           <div className="flex justify-between items-start">
             <div>
@@ -144,7 +139,6 @@ const DashboardOverview = () => {
         </div>
       </div>
 
-      {/* Activity Feed */}
       <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
         <div className="flex items-center justify-between mb-6">
           <div>
@@ -181,7 +175,6 @@ const DashboardOverview = () => {
         </div>
       </div>
 
-      {/* Recent Transactions (Mini) */}
       <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
         <div className="flex items-center justify-between mb-6">
           <div>
