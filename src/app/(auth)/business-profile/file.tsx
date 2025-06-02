@@ -37,7 +37,6 @@ export default function BusinessProfilePage() {
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [storageData, setStorageData] = useState<any>(null);
 
-  // Initialize data on component mount
   useEffect(() => {
     const authToken = Cookies.get('auth_token');
     setToken(authToken);
@@ -166,7 +165,6 @@ export default function BusinessProfilePage() {
     try {
       setLoading(true);
 
-      // Upload avatar if selected
       let avatarUrl = formData.avatar_url;
       if (avatarFile) {
         try {
@@ -301,7 +299,6 @@ export default function BusinessProfilePage() {
               )}
             </div>
 
-            {/* Business Name */}
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-700">
                 Business Name *
@@ -335,7 +332,6 @@ export default function BusinessProfilePage() {
               </div>
             </div>
 
-            {/* Username */}
             <div>
               <label htmlFor="username" className="block text-sm font-medium text-gray-700">
                 Username *
@@ -369,7 +365,6 @@ export default function BusinessProfilePage() {
               </div>
             </div>
 
-            {/* Bio */}
             <div>
               <label htmlFor="bio" className="block text-sm font-medium text-gray-700">
                 Bio
@@ -402,7 +397,6 @@ export default function BusinessProfilePage() {
               </div>
             </div>
 
-            {/* Address */}
             <div>
               <label htmlFor="address" className="block text-sm font-medium text-gray-700">
                 Wallet Address *
@@ -437,7 +431,6 @@ export default function BusinessProfilePage() {
               <p className="mt-1 text-xs text-gray-500">Connected wallet address</p>
             </div>
 
-            {/* Submit Button */}
             <div>
               <button
                 type="submit"

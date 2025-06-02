@@ -86,13 +86,13 @@ const OrdersManagement = () => {
     const openOrderDetails = (order: Order) => {
         setSelectedOrder(order);
         setIsModalOpen(true);
-        document.body.style.overflow = 'hidden'; // Prevent scrolling when modal is open
+        document.body.style.overflow = 'hidden';
     };
 
     const closeModal = () => {
         setIsModalOpen(false);
         setSelectedOrder(null);
-        document.body.style.overflow = 'auto'; // Re-enable scrolling
+        document.body.style.overflow = 'auto';
     };
 
     const filteredOrders = orders.filter(order => {
@@ -262,7 +262,6 @@ const OrdersManagement = () => {
                     )}
                 </div>
 
-                {/* Order Details Modal */}
                 {isModalOpen && selectedOrder && (
                     <>
                         <div 

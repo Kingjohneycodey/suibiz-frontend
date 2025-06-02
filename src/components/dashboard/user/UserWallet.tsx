@@ -166,7 +166,6 @@ const UserWallet = () => {
                 </div>
             </div>
         
-            {/* Balance Card */}
             <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-6 rounded-xl shadow-lg text-white">
                 <div className="flex justify-between items-start">
                 <div>
@@ -186,7 +185,6 @@ const UserWallet = () => {
                 </div>
             </div>
 
-            {/* Transaction History Section */}
             <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
                 <div>
@@ -197,7 +195,6 @@ const UserWallet = () => {
                     </p>
                 </div>
                 
-                {/* Search and Filter Controls */}
                 <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
                     <div className="relative flex-1 sm:w-64">
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -232,161 +229,160 @@ const UserWallet = () => {
                 </div>
                 </div>
 
-                {/* Transactions Table */}
                 <div className="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
-                {isLoading ? (
-                    <div className="flex justify-center items-center p-12">
-                    <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
-                    </div>
-                ) : filteredTransactions.length === 0 ? (
-                    <div className="text-center p-12">
-                    <p className="text-gray-500 dark:text-gray-400">
-                        {searchTerm ? 'No transactions match your search' : 'No transactions found'}
-                    </p>
-                    </div>
-                ) : (
-                    <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                    <thead className="bg-gray-50 dark:bg-gray-700">
-                        <tr>
-                        <th 
-                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
-                            onClick={() => requestSort('invoiceId')}
-                        >
-                            <div className="flex items-center">
-                            Invoice ID
-                            {sortConfig?.key === 'invoiceId' && (
-                                <span className="ml-1">
-                                {sortConfig.direction === 'asc' ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />}
-                                </span>
-                            )}
-                            </div>
-                        </th>
-                        <th 
-                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
-                            onClick={() => requestSort('name')}
-                        >
-                            <div className="flex items-center">
-                            Description
-                            {sortConfig?.key === 'name' && (
-                                <span className="ml-1">
-                                {sortConfig.direction === 'asc' ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />}
-                                </span>
-                            )}
-                            </div>
-                        </th>
-                        <th 
-                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
-                            onClick={() => requestSort('date')}
-                        >
-                            <div className="flex items-center">
-                            Date
-                            {sortConfig?.key === 'date' && (
-                                <span className="ml-1">
-                                {sortConfig.direction === 'asc' ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />}
-                                </span>
-                            )}
-                            </div>
-                        </th>
-                        <th 
-                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
-                            onClick={() => requestSort('amount')}
-                        >
-                            <div className="flex items-center">
-                            Amount
-                            {sortConfig?.key === 'amount' && (
-                                <span className="ml-1">
-                                {sortConfig.direction === 'asc' ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />}
-                                </span>
-                            )}
-                            </div>
-                        </th>
-                        <th 
-                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
-                            onClick={() => requestSort('status')}
-                        >
-                            <div className="flex items-center">
-                            Status
-                            {sortConfig?.key === 'status' && (
-                                <span className="ml-1">
-                                {sortConfig.direction === 'asc' ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />}
-                                </span>
-                            )}
-                            </div>
-                        </th>
-                        </tr>
-                    </thead>
-                    <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                        {filteredTransactions.map((tx) => (
-                        <tr key={tx.id} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
-                            {tx.invoiceId}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="flex items-center">
-                                <div className={`p-2 rounded-lg mr-3 ${
-                                tx.type === 'deposit' ? 'bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-200' :
-                                tx.type === 'withdrawal' ? 'bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-200' :
-                                'bg-purple-100 dark:bg-purple-900/50 text-purple-800 dark:text-purple-200'
-                                }`}>
-                                {tx.type === 'deposit' ? <Plus className="w-4 h-4" /> : 
-                                tx.type === 'withdrawal' ? <Minus className="w-4 h-4" /> : 
-                                <Clock className="w-4 h-4" />}
-                                </div>
-                                <div>
-                                <div className="text-sm font-medium text-gray-900 dark:text-white">{tx.name}</div>
-                                <div className="text-xs text-gray-500 dark:text-gray-400 capitalize">{tx.type}</div>
-                                </div>
-                            </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                            {formatDate(tx.date)}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                            <div className={`flex items-center text-sm ${
-                                tx.type === 'deposit' ? 'text-green-600 dark:text-green-400' :
-                                tx.type === 'withdrawal' ? 'text-red-600 dark:text-red-400' :
-                                'text-purple-600 dark:text-purple-400'
-                            }`}>
-                                {tx.type === 'deposit' ? '+' : tx.type === 'withdrawal' ? '-' : ''}
-                                {tx.amount.toLocaleString()}
-                                <span className="ml-1 flex items-center">
-                                {tx.currency === 'SUI' ? (
-                                    <Image 
-                                    src="/sui-logo.png" 
-                                    alt="SUI" 
-                                    width={16} 
-                                    height={16} 
-                                    className="inline-block"
-                                    />
-                                ) : (
-                                    <span className="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded ml-1">
-                                    USDC
+                    {isLoading ? (
+                        <div className="flex justify-center items-center p-12">
+                        <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
+                        </div>
+                    ) : filteredTransactions.length === 0 ? (
+                        <div className="text-center p-12">
+                        <p className="text-gray-500 dark:text-gray-400">
+                            {searchTerm ? 'No transactions match your search' : 'No transactions found'}
+                        </p>
+                        </div>
+                    ) : (
+                        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                        <thead className="bg-gray-50 dark:bg-gray-700">
+                            <tr>
+                            <th 
+                                className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
+                                onClick={() => requestSort('invoiceId')}
+                            >
+                                <div className="flex items-center">
+                                Invoice ID
+                                {sortConfig?.key === 'invoiceId' && (
+                                    <span className="ml-1">
+                                    {sortConfig.direction === 'asc' ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />}
                                     </span>
                                 )}
-                                </span>
-                            </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="flex items-center">
-                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                                tx.status === 'completed' 
-                                    ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200'
-                                    : 'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200'
-                                }`}>
-                                {tx.status === 'completed' ? (
-                                    <CheckCircle className="w-3 h-3 mr-1" />
-                                ) : (
-                                    <Clock className="w-3 h-3 mr-1" />
+                                </div>
+                            </th>
+                            <th 
+                                className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
+                                onClick={() => requestSort('name')}
+                            >
+                                <div className="flex items-center">
+                                Description
+                                {sortConfig?.key === 'name' && (
+                                    <span className="ml-1">
+                                    {sortConfig.direction === 'asc' ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />}
+                                    </span>
                                 )}
-                                {tx.status}
-                                </span>
-                            </div>
-                            </td>
-                        </tr>
-                        ))}
-                    </tbody>
-                    </table>
-                )}
+                                </div>
+                            </th>
+                            <th 
+                                className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
+                                onClick={() => requestSort('date')}
+                            >
+                                <div className="flex items-center">
+                                Date
+                                {sortConfig?.key === 'date' && (
+                                    <span className="ml-1">
+                                    {sortConfig.direction === 'asc' ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />}
+                                    </span>
+                                )}
+                                </div>
+                            </th>
+                            <th 
+                                className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
+                                onClick={() => requestSort('amount')}
+                            >
+                                <div className="flex items-center">
+                                Amount
+                                {sortConfig?.key === 'amount' && (
+                                    <span className="ml-1">
+                                    {sortConfig.direction === 'asc' ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />}
+                                    </span>
+                                )}
+                                </div>
+                            </th>
+                            <th 
+                                className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
+                                onClick={() => requestSort('status')}
+                            >
+                                <div className="flex items-center">
+                                Status
+                                {sortConfig?.key === 'status' && (
+                                    <span className="ml-1">
+                                    {sortConfig.direction === 'asc' ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />}
+                                    </span>
+                                )}
+                                </div>
+                            </th>
+                            </tr>
+                        </thead>
+                        <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                            {filteredTransactions.map((tx) => (
+                            <tr key={tx.id} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                                {tx.invoiceId}
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                <div className="flex items-center">
+                                    <div className={`p-2 rounded-lg mr-3 ${
+                                    tx.type === 'deposit' ? 'bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-200' :
+                                    tx.type === 'withdrawal' ? 'bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-200' :
+                                    'bg-purple-100 dark:bg-purple-900/50 text-purple-800 dark:text-purple-200'
+                                    }`}>
+                                    {tx.type === 'deposit' ? <Plus className="w-4 h-4" /> : 
+                                    tx.type === 'withdrawal' ? <Minus className="w-4 h-4" /> : 
+                                    <Clock className="w-4 h-4" />}
+                                    </div>
+                                    <div>
+                                    <div className="text-sm font-medium text-gray-900 dark:text-white">{tx.name}</div>
+                                    <div className="text-xs text-gray-500 dark:text-gray-400 capitalize">{tx.type}</div>
+                                    </div>
+                                </div>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                {formatDate(tx.date)}
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                <div className={`flex items-center text-sm ${
+                                    tx.type === 'deposit' ? 'text-green-600 dark:text-green-400' :
+                                    tx.type === 'withdrawal' ? 'text-red-600 dark:text-red-400' :
+                                    'text-purple-600 dark:text-purple-400'
+                                }`}>
+                                    {tx.type === 'deposit' ? '+' : tx.type === 'withdrawal' ? '-' : ''}
+                                    {tx.amount.toLocaleString()}
+                                    <span className="ml-1 flex items-center">
+                                    {tx.currency === 'SUI' ? (
+                                        <Image 
+                                        src="/sui-logo.png" 
+                                        alt="SUI" 
+                                        width={16} 
+                                        height={16} 
+                                        className="inline-block"
+                                        />
+                                    ) : (
+                                        <span className="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded ml-1">
+                                        USDC
+                                        </span>
+                                    )}
+                                    </span>
+                                </div>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                <div className="flex items-center">
+                                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                    tx.status === 'completed' 
+                                        ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200'
+                                        : 'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200'
+                                    }`}>
+                                    {tx.status === 'completed' ? (
+                                        <CheckCircle className="w-3 h-3 mr-1" />
+                                    ) : (
+                                        <Clock className="w-3 h-3 mr-1" />
+                                    )}
+                                    {tx.status}
+                                    </span>
+                                </div>
+                                </td>
+                            </tr>
+                            ))}
+                        </tbody>
+                        </table>
+                    )}
                 </div>
             </div>
         </div>

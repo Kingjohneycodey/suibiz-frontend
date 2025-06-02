@@ -46,7 +46,6 @@ export default function BusinessProfilePage() {
         });
     }, [currentAccount]);
 
-    // Initialize data on component mount
     useEffect(() => {
         const authToken = Cookies.get('auth_token');
         setToken(authToken);
@@ -173,13 +172,11 @@ export default function BusinessProfilePage() {
       try {
         setLoading(true);
   
-        // Use current account address if available
         const walletAddress = currentAccount?.address || storageData?.address || formData.address;
         if (!walletAddress) {
           throw new Error('No wallet address available');
         }
   
-        // Upload avatar if selected
         let avatarUrl = formData.avatar_url;
         if (avatarFile) {
           try {
@@ -255,231 +252,221 @@ export default function BusinessProfilePage() {
             )}
           </div>
           <form onSubmit={handleSubmit} className="space-y-6">
-                      <div className="flex flex-col items-center">
-                        <div className="relative">
-                          {avatarPreview ? (
-                            <Image
-                              width={128}
-                              height={128}
-                              src={avatarPreview}
-                              alt="Avatar preview"
-                              className="w-32 h-32 rounded-full object-cover border-4 border-white shadow"
-                              priority
-                            />
-                          ) : (
-                            <div className="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center">
-                              <svg
-                                className="w-16 h-16 text-gray-400"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth="2"
-                                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                                />
-                              </svg>
-                            </div>
-                          )}
-                          <label
-                            htmlFor="avatar-upload"
-                            className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white rounded-full p-2 cursor-pointer hover:bg-blue-600 transition"
-                          >
-                            <svg
-                              className="w-4 h-4"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                              />
-                            </svg>
-                            <input
-                              id="avatar-upload"
-                              type="file"
-                              accept="image/*"
-                              className="hidden"
-                              onChange={handleAvatarChange}
-                              disabled={uploading}
-                            />
-                          </label>
-                        </div>
-                        {uploading && (
-                          <p className="mt-2 text-sm text-gray-500 flex items-center">
-                            <svg className="animate-spin mr-2 h-4 w-4 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                            Uploading image...
-                          </p>
-                        )}
-                      </div>
-          
-                      {/* Business Name */}
-                      <div>
-                        <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                          Business Name *
-                        </label>
-                        <div className="mt-1 relative rounded-md shadow-sm">
-                          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <svg
-                              className="h-5 w-5 text-gray-400"
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                            >
-                              <path
-                                fillRule="evenodd"
-                                d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 0v12h8V4H6z"
-                                clipRule="evenodd"
-                              />
-                            </svg>
-                          </div>
-                          <input
-                            type="text"
-                            name="name"
-                            id="name"
-                            value={formData.name}
-                            onChange={handleChange}
-                            required
-                            className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2 border"
-                            placeholder="Your business name"
-                            disabled={loading}
-                          />
-                        </div>
-                      </div>
-          
-                      {/* Username */}
-                      <div>
-                        <label htmlFor="username" className="block text-sm font-medium text-gray-700">
-                          Username *
-                        </label>
-                        <div className="mt-1 relative rounded-md shadow-sm">
-                          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <svg
-                              className="h-5 w-5 text-gray-400"
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                            >
-                              <path
-                                fillRule="evenodd"
-                                d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                                clipRule="evenodd"
-                              />
-                            </svg>
-                          </div>
-                          <input
-                            type="text"
-                            name="username"
-                            id="username"
-                            value={formData.username}
-                            onChange={handleChange}
-                            required
-                            className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2 border"
-                            placeholder="yourusername"
-                            disabled={loading}
-                          />
-                        </div>
-                      </div>
-          
-                      {/* Bio */}
-                      <div>
-                        <label htmlFor="bio" className="block text-sm font-medium text-gray-700">
-                          Bio
-                        </label>
-                        <div className="mt-1 relative rounded-md shadow-sm">
-                          <div className="absolute inset-y-0 left-0 pl-3 pt-3 flex items-start pointer-events-none">
-                            <svg
-                              className="h-5 w-5 text-gray-400"
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                            >
-                              <path
-                                fillRule="evenodd"
-                                d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z"
-                                clipRule="evenodd"
-                              />
-                            </svg>
-                          </div>
-                          <textarea
-                            name="bio"
-                            id="bio"
-                            rows={3}
-                            value={formData.bio}
-                            onChange={handleChange}
-                            className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2 border"
-                            placeholder="Tell us about your business"
-                            disabled={loading}
-                          />
-                        </div>
-                      </div>
-          
-                      {/* Address */}
-                      <div>
-                        <label htmlFor="address" className="block text-sm font-medium text-gray-700">
-                          Wallet Address *
-                        </label>
-                        <div className="mt-1 relative rounded-md shadow-sm">
-                          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <svg
-                              className="h-5 w-5 text-gray-400"
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                            >
-                              <path
-                                fillRule="evenodd"
-                                d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-                                clipRule="evenodd"
-                              />
-                            </svg>
-                          </div>
-                          <input
-                            type="text"
-                            name="address"
-                            id="address"
-                            value={formData.address}
-                            onChange={handleChange}
-                            required
-                            className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2 border bg-gray-100"
-                            placeholder="Wallet address"
-                            disabled
-                          />
-                        </div>
-                        <p className="mt-1 text-xs text-gray-500">Connected wallet address</p>
-                      </div>
-          
-                      {/* Submit Button */}
-                      <div>
-                        <button
-                          type="submit"
-                          disabled={loading || uploading}
-                          className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                          {loading ? (
-                            <span className="flex items-center">
-                              <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                              </svg>
-                              Processing...
-                            </span>
-                          ) : (
-                            'Create Profile'
-                          )}
-                        </button>
-                      </div>
-                    </form>
+            <div className="flex flex-col items-center">
+              <div className="relative">
+                {avatarPreview ? (
+                  <Image
+                    width={128}
+                    height={128}
+                    src={avatarPreview}
+                    alt="Avatar preview"
+                    className="w-32 h-32 rounded-full object-cover border-4 border-white shadow"
+                    priority
+                  />
+                ) : (
+                  <div className="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center">
+                    <svg
+                      className="w-16 h-16 text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                      />
+                    </svg>
+                  </div>
+                )}
+                <label
+                  htmlFor="avatar-upload"
+                  className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white rounded-full p-2 cursor-pointer hover:bg-blue-600 transition"
+                >
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                    />
+                  </svg>
+                  <input
+                    id="avatar-upload"
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleAvatarChange}
+                    disabled={uploading}
+                  />
+                </label>
+              </div>
+              {uploading && (
+                <p className="mt-2 text-sm text-gray-500 flex items-center">
+                  <svg className="animate-spin mr-2 h-4 w-4 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Uploading image...
+                </p>
+              )}
+            </div>
+            <div>
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                Business Name *
+              </label>
+              <div className="mt-1 relative rounded-md shadow-sm">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <svg
+                    className="h-5 w-5 text-gray-400"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 0v12h8V4H6z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </div>
+                <input
+                  type="text"
+                  name="name"
+                  id="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                  className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2 border"
+                  placeholder="Your business name"
+                  disabled={loading}
+                />
+              </div>
+            </div>
+            <div>
+              <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+                Username *
+              </label>
+              <div className="mt-1 relative rounded-md shadow-sm">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <svg
+                    className="h-5 w-5 text-gray-400"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </div>
+                <input
+                  type="text"
+                  name="username"
+                  id="username"
+                  value={formData.username}
+                  onChange={handleChange}
+                  required
+                  className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2 border"
+                  placeholder="yourusername"
+                  disabled={loading}
+                />
+              </div>
+            </div>
+            <div>
+              <label htmlFor="bio" className="block text-sm font-medium text-gray-700">
+                Bio
+              </label>
+              <div className="mt-1 relative rounded-md shadow-sm">
+                <div className="absolute inset-y-0 left-0 pl-3 pt-3 flex items-start pointer-events-none">
+                  <svg
+                    className="h-5 w-5 text-gray-400"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </div>
+                <textarea
+                  name="bio"
+                  id="bio"
+                  rows={3}
+                  value={formData.bio}
+                  onChange={handleChange}
+                  className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2 border"
+                  placeholder="Tell us about your business"
+                  disabled={loading}
+                />
+              </div>
+            </div>
+            <div>
+              <label htmlFor="address" className="block text-sm font-medium text-gray-700">
+                Wallet Address *
+              </label>
+              <div className="mt-1 relative rounded-md shadow-sm">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <svg
+                    className="h-5 w-5 text-gray-400"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </div>
+                <input
+                  type="text"
+                  name="address"
+                  id="address"
+                  value={formData.address}
+                  onChange={handleChange}
+                  required
+                  className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2 border bg-gray-100"
+                  placeholder="Wallet address"
+                  disabled
+                />
+              </div>
+              <p className="mt-1 text-xs text-gray-500">Connected wallet address</p>
+            </div>
+            <div>
+              <button
+                type="submit"
+                disabled={loading || uploading}
+                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loading ? (
+                  <span className="flex items-center">
+                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Processing...
+                  </span>
+                ) : (
+                  'Create Profile'
+                )}
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
