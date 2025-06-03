@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Footer } from "@/components/landing-page/Footer";
 import { Header } from "@/components/landing-page/Header";
 import { ServiceCard } from "@/components/services/Service-display";
+import Link from 'next/link';
 
 interface IServices {
     id: number;
@@ -230,7 +231,9 @@ export default function ServicesPage() {
                     <>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                             {currentServices.map((service) => (
-                                <ServiceCard key={service.id} service={{ ...service, id: service.id.toString() }} />
+                                <Link href={`/services/${service.id}`} key={service.id} className="block">
+                                    <ServiceCard service={{ ...service, id: service.id.toString() }} />
+                                </Link>
                             ))}
                         </div>
 

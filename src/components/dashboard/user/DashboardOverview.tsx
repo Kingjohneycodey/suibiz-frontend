@@ -80,7 +80,7 @@ const DashboardOverview = () => {
               <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center gap-1">
                 <DollarSign className="w-4 h-4" /> Total Balance
               </h3>
-              <p className="text-2xl font-bold mt-1 text-gray-900 dark:text-white">
+              <p className="text-2xl font-bold mt-1 dark:text-gray-300 text-gray-900 dark:text-white">
                 ${balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </p>
               <div className={`flex items-center mt-2 text-sm ${balanceChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
@@ -110,7 +110,7 @@ const DashboardOverview = () => {
               <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center gap-1">
                 <ShoppingCart className="w-4 h-4" /> Pending Orders
               </h3>
-              <p className="text-2xl font-bold mt-1 text-gray-900 dark:text-white">{pendingOrders}</p>
+              <p className="text-2xl font-bold mt-1 dark:text-gray-300 text-gray-900 dark:text-white">{pendingOrders}</p>
               <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">
                 <span className="text-green-600">+2</span> from yesterday
               </div>
@@ -127,7 +127,7 @@ const DashboardOverview = () => {
               <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center gap-1">
                 <Calendar className="w-4 h-4" /> Service Bookings
               </h3>
-              <p className="text-2xl font-bold mt-1 text-gray-900 dark:text-white">{serviceBookings}</p>
+              <p className="text-2xl font-bold mt-1 dark:text-gray-300 text-gray-900 dark:text-white">{serviceBookings}</p>
               <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">
                 <span className="text-blue-600">1 new</span> this week
               </div>
@@ -186,19 +186,19 @@ const DashboardOverview = () => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
             <p className="text-sm text-blue-600 dark:text-blue-400">Avg. Response Time</p>
-            <p className="text-xl font-bold mt-1">2.4h</p>
+            <p className="text-xl font-bold mt-1 dark:text-gray-300">2.4h</p>
           </div>
           <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
             <p className="text-sm text-green-600 dark:text-green-400">Completion Rate</p>
-            <p className="text-xl font-bold mt-1">98%</p>
+            <p className="text-xl font-bold mt-1 dark:text-gray-300">98%</p>
           </div>
           <div className="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg">
             <p className="text-sm text-purple-600 dark:text-purple-400">Repeat Clients</p>
-            <p className="text-xl font-bold mt-1">72%</p>
+            <p className="text-xl font-bold mt-1 dark:text-gray-300">72%</p>
           </div>
           <div className="bg-orange-50 dark:bg-orange-900/20 p-4 rounded-lg">
             <p className="text-sm text-orange-600 dark:text-orange-400">Satisfaction</p>
-            <p className="text-xl font-bold mt-1">4.9★</p>
+            <p className="text-xl font-bold mt-1 dark:text-gray-300">4.9★</p>
           </div>
         </div>
       </div>
