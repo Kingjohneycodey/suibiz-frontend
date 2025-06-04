@@ -12,9 +12,9 @@ type ProductListedEvent = {
   objectId?: string;
 };
 
-const client = new SuiClient({ url: getFullnodeUrl('devnet') });
+const client = new SuiClient({ url: getFullnodeUrl('testnet') });
 
-const MOVE_EVENT_TYPE = '0x7eebe9828691e73dfba53b5e7f1f3135db31ede4883492bdc1184d238235176c::marketplace::ProductListed';
+const MOVE_EVENT_TYPE = '0x0f109a3e96d6890a9ffdd7f2c99953232374139f4f8cfcdd539d4a0d29752ac8::marketplace::ProductListed';
 
 export default function ProductListPage() {
   const [products, setProducts] = useState<ProductListedEvent[]>([]);

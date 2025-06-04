@@ -36,7 +36,7 @@ export default function WalletInfo() {
             signAndExecuteTransaction(
                 {
                     transaction: tx.serialize(),
-                    chain: 'sui:devnet', // Adjust to 'sui:testnet' or other network as needed
+                    chain: 'sui:testnet', // Adjust to 'sui:testnet' or other network as needed
                 },
                 {
                     onSuccess: (result) => {

@@ -86,7 +86,7 @@ export default function ProductUploadPage() {
 
     useEffect(() => {
         try {
-            const storedData = sessionStorage.getItem('@enoki/flow/state/enoki_public_9a3de95df9a16f168ba9ebf1cc36cc1d/devnet');
+            const storedData = sessionStorage.getItem('@enoki/flow/state/enoki_public_9a3de95df9a16f168ba9ebf1cc36cc1d/testnet');
             if (storedData) {
                 const parsedData = JSON.parse(storedData);
                 setStorageData(parsedData);
@@ -180,7 +180,7 @@ export default function ProductUploadPage() {
             signAndExecuteTransaction(
                 {
                     transaction: tx.serialize(),
-                    chain: 'sui:devnet',
+                    chain: 'sui:testnet', // Adjust to 'sui:testnet' or other network as needed
                 },
                 {
                     onSuccess: (result: { digest: string }) => {

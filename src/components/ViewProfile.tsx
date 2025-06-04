@@ -32,7 +32,7 @@ export default function ViewProfile() {
                 signAndExecuteTransaction(
                     {
                         transaction: tx.serialize(),
-                        chain: 'sui:devnet',
+                        chain: 'sui:testnet',
                     },
                     {
                         onSuccess: (result) => {
