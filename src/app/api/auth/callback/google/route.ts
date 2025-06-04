@@ -60,7 +60,7 @@ export async function GET(request: Request) {
         const token = jwt.sign(
             sessionUser,
             process.env.NEXT_PUBLIC_JWT_SECRET,
-            { expiresIn: '1h' }
+            { expiresIn: '30d' }
         );
 
         const response = NextResponse.redirect(new URL('/', request.url));
