@@ -4,7 +4,7 @@ import { NextRequest } from 'next/server';
 
 export function verifyToken(token: string): SessionUser | null {
     try {
-        return jwt.verify(token, process.env.JWT_SECRET) as SessionUser;
+        return jwt.verify(token, process.env.NEXT_PUBLIC_JWT_SECRET) as SessionUser;
     } catch (error) {
         return null;
     }

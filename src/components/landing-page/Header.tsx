@@ -21,9 +21,24 @@ export const Header = () => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const handleSignout = () => {
-    router.push('/api/auth/logout');
-  }
+  const handleSignout = async () => {
+    try {
+      const res = await fetch('/api/auth/logout', {
+        method: 'GET',
+        credentials: 'include',
+      });
+  
+      if (res.redirected) {
+        window.location.href = res.url;
+      } else {
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error('Logout failed', error);
+    }
+  };
+  
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -101,8 +116,14 @@ export const Header = () => {
               // </Button>
               <div>
 
-                <ConnectButton />
-                <Button onClick={handleSignout}>Sign out</Button>
+                {/* <ConnectButton /> */}
+                <Button
+                  onClick={handleSignout}
+                  className="bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-xl shadow-md transition-all duration-200 ease-in-out"
+                >
+                  Sign out
+                </Button>
+
               </div>
             ) : (
               <Button 
@@ -148,8 +169,14 @@ export const Header = () => {
                   // </Button>
                   <div>
 
-                    <ConnectButton />
-                    <Button onClick={handleSignout}></Button>
+                    {/* <ConnectButton /> */}
+                    <Button
+                      onClick={handleSignout}
+                      className="bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-xl shadow-md transition-all duration-200 ease-in-out"
+                    >
+                      Sign out
+                    </Button>
+
                   </div>
                 ) : (
                   <Button 

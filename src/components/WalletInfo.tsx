@@ -58,7 +58,7 @@ export default function WalletInfo() {
     return (
         <div>
             <h2>Wallet Info</h2>
-            <ConnectButton /> {/* Button to connect wallet */}
+            {/* <ConnectButton /> Button to connect wallet */}
             {currentAccount ? (
                 <div>
                     <p>Connected Address: {currentAccount.address}</p>

@@ -3,14 +3,14 @@ import {
 	createNetworkConfig,
 	SuiClientProvider,
 	useSuiClientContext,
-	WalletProvider,
+	// WalletProvider,
 } from '@mysten/dapp-kit';
 import { isEnokiNetwork, registerEnokiWallets } from '@mysten/enoki';
 import { getFullnodeUrl } from '@mysten/sui/client';
 import { useEffect } from 'react';
- import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
- import '@mysten/dapp-kit/dist/index.css';
- 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import '@mysten/dapp-kit/dist/index.css';
+
 const { networkConfig } = createNetworkConfig({
     devnet: { url: getFullnodeUrl('devnet') },
 	testnet: { url: getFullnodeUrl('testnet') },
@@ -28,20 +28,20 @@ export default function EnokiWrapper({ children }: EnokiWrapperProps) {
         <QueryClientProvider client={queryClient}>
         <SuiClientProvider networks={networkConfig} defaultNetwork="devnet">
             <RegisterEnokiWallets />
-            <WalletProvider autoConnect>
+            {/* <WalletProvider autoConnect> */}
                 {children}
-            </WalletProvider>
+            {/* </WalletProvider> */}
         </SuiClientProvider>
         </QueryClientProvider>
     );
 }
- 
+
 function RegisterEnokiWallets() {
 	const { client, network } = useSuiClientContext();
- 
+
 	useEffect(() => {
 		if (!isEnokiNetwork(network)) return;
- 
+
 		const { unregister } = registerEnokiWallets({
 			apiKey: process.env.NEXT_PUBLIC_ENOKI_API_KEY || '',
 			providers: {
@@ -53,9 +53,9 @@ function RegisterEnokiWallets() {
 			client,
 			network,
 		});
- 
+
 		return unregister;
 	}, [client, network]);
- 
+
 	return null;
 }

@@ -2,9 +2,9 @@ declare global {
     namespace NodeJS {
         interface ProcessEnv {
             NEXT_PUBLIC_GOOGLE_CLIENT_ID: string;
-            GOOGLE_CLIENT_SECRET: string;
-            NEXTAUTH_URL: string;
-            JWT_SECRET: string;
+            NEXT_PUBLIC_GOOGLE_CLIENT_SECRET: string;
+            NEXT_PUBLIC_NEXTAUTH_URL: string;
+            NEXT_PUBLIC_JWT_SECRET: string;
         }
     }
 }
@@ -15,7 +15,7 @@ export interface GoogleTokenResponse {
     refresh_token?: string;
     scope: string;
     token_type: string;
-id_token: string;
+    id_token: string;
 }
 
 export interface GoogleUser {

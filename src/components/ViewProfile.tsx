@@ -57,7 +57,7 @@ export default function ViewProfile() {
     return (
         <div>
             <h2>Wallet Info</h2>
-            <ConnectButton />
+            {/* <ConnectButton /> */}
             {currentAccount ? (
                 <div>
                     <p>Connected Address: {currentAccount.address}</p>
