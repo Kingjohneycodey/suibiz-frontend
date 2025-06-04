@@ -71,16 +71,18 @@ export const Header = () => {
             <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-sm">S</span>
             </div>
-    <Link href="/">        <span className="text-xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-              SuiBiz
-            </span></Link>
+            <Link href="/">
+              <span className="text-xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                SuiBiz
+              </span>
+            </Link>
           </div>
 
           <nav className="hidden md:flex items-center space-x-8">
-            <a href="#" className="text-slate-600 hover:text-purple-600 transition-colors">Explore</a>
-            <a href="#" className="text-slate-600 hover:text-purple-600 transition-colors">Services</a>
-            <a href="#" className="text-slate-600 hover:text-purple-600 transition-colors">How it Works</a>
-            <a href="#" className="text-slate-600 hover:text-purple-600 transition-colors">About</a>
+            <Link href="/marketplace" className="text-slate-600 hover:text-purple-600 transition-colors">Explore</Link>
+            <Link href="/services" className="text-slate-600 hover:text-purple-600 transition-colors">Services</Link>
+            <Link href="#" className="text-slate-600 hover:text-purple-600 transition-colors">How it Works</Link>
+            <Link href="/about" className="text-slate-600 hover:text-purple-600 transition-colors">About</Link>
           </nav>
 
           {/* Desktop Actions */}
@@ -100,7 +102,7 @@ export const Header = () => {
               <div>
 
                 <ConnectButton />
-                <Button onClick={handleSignout}></Button>
+                <Button onClick={handleSignout}>Sign out</Button>
               </div>
             ) : (
               <Button 
@@ -127,10 +129,10 @@ export const Header = () => {
         {isMenuOpen && (
           <div className="md:hidden mt-4 pb-4 border-t border-slate-200 pt-4">
             <nav className="flex flex-col space-y-3">
-              <a href="#" className="text-slate-600 hover:text-purple-600 transition-colors">Explore</a>
-              <a href="#" className="text-slate-600 hover:text-purple-600 transition-colors">Services</a>
-              <a href="#" className="text-slate-600 hover:text-purple-600 transition-colors">How it Works</a>
-              <a href="#" className="text-slate-600 hover:text-purple-600 transition-colors">About</a>
+              <Link href="/marketplace" className="text-slate-600 hover:text-purple-600 transition-colors">Explore</Link>
+              <Link href="/services" className="text-slate-600 hover:text-purple-600 transition-colors">Services</Link>
+              <Link href="#" className="text-slate-600 hover:text-purple-600 transition-colors">How it Works</Link>
+              <Link href="/about" className="text-slate-600 hover:text-purple-600 transition-colors">About</Link>
               <div className="flex flex-col space-y-2 pt-2">
                 <Button variant="outline" size="sm">
                   <Search className="w-4 h-4 mr-2" />
