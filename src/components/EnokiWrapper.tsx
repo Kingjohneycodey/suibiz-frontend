@@ -26,7 +26,7 @@ const queryClient = new QueryClient();
 export default function EnokiWrapper({ children }: EnokiWrapperProps) {
     return (
         <QueryClientProvider client={queryClient}>
-        <SuiClientProvider networks={networkConfig} defaultNetwork="devnet">
+        <SuiClientProvider networks={networkConfig} defaultNetwork="testnet">
             <RegisterEnokiWallets />
             <WalletProvider autoConnect>
                 {children}
