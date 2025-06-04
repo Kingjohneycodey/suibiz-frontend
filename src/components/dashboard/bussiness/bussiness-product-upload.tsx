@@ -158,6 +158,8 @@ export default function ProductUploadPage() {
     }
 
     const handleListItem = async ({ image, name, description, price, category }: HandleListItemParams): Promise<void> => {
+
+        console.log(process.env.NEXT_PUBLIC_REGISTRY_ID)
         
 
         try {
