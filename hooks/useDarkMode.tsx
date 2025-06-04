@@ -2,16 +2,16 @@
 import { useState, useEffect } from 'react'
 
 export function useDarkMode() {
-  const [darkMode, setDarkMode] = useState(false)
+    const [darkMode, setDarkMode] = useState(false)
 
     useEffect(() => {
         const storedValue = localStorage.getItem('darkMode')
-            if (storedValue !== null) {
-                setDarkMode(storedValue === 'true')
-            } else {
-                const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-                setDarkMode(systemPrefersDark)
-            }
+        if (storedValue !== null) {
+            setDarkMode(storedValue === 'true')
+        } else {
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+            setDarkMode(systemPrefersDark)
+        }
     }, [])
 
 

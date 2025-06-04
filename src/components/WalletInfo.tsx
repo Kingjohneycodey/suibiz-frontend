@@ -10,12 +10,10 @@ export default function WalletInfo() {
     const { mutate: signAndExecuteTransaction, isPending, error } = useSignAndExecuteTransaction();
     const [transactionStatus, setTransactionStatus] = useState<string | null>(null);
 
-    // Log current account for debugging
     useEffect(() => {
         console.log('Current Account:', currentAccount);
     }, [currentAccount]);
 
-    // Function to execute the moveCall
     const handleListItem = async () => {
         if (!currentAccount) {
             setTransactionStatus('Please connect your wallet.');

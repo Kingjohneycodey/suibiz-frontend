@@ -19,10 +19,13 @@ export const FeaturedListings = () => {
   }
 
   const [listings, setListings] = useState<Listing[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
+    console.log("here")
     const fetchListings = async () => {
       try {
+        setLoading(true);
         const response = await fetch('https://suibiz-backend.onrender.com/api/products', {
           method: 'GET',
           headers: {
@@ -30,33 +33,49 @@ export const FeaturedListings = () => {
           },
         });
 
+        console.log("loading...")
+
         if (!response.ok) {
           console.error('Failed to fetch listings');
           return;
         }
+        
 
         const data = await response.json();
         const products = data.products;
+
+
+        console.log("products", products)
 
         const formattedListings = products.map((item: any) => ({
           id: item.id || 'unknown-id',
           title: item.name || 'Untitled',
           image: item.image_url || '/placeholder-image.jpg',
           category: item.collection || 'Uncategorized',
-          rating: 4.5, // Default rating since API doesn't provide this
-          reviews: 12, // Default reviews count since API doesn't provide this
-          seller: `Seller ${item.owner.slice(0, 6)}`, // Using first 6 chars of owner address as seller name
+          rating: 4.5,
+          reviews: 12,
+          seller: `Seller ${item.owner.slice(0, 6)}`,
           price: `${item.price || '0.00'}`,
         }));
 
         setListings(formattedListings);
       } catch (error) {
         console.error('Error fetching listings:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchListings();
   }, []);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="loader">Loading...</div>
+      </div>
+    );
+  }
 
   return (
     <section className="py-20 px-4">
@@ -70,50 +89,50 @@ export const FeaturedListings = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {listings.map((listing) => (
-           <Link href={`/marketplace/${listing.id}`} key={listing.id}>
-            <Card className="hover:shadow-lg transition-shadow duration-300 cursor-pointer">
-              <div className="aspect-video overflow-hidden rounded-t-lg">
-                <Image
-                  width={300}
-                  height={200}
-                  src={listing.image}
-                  alt={listing.title}
-                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src = '/placeholder-image.jpg';
-                  }}
-                />
-              </div>
-              <CardHeader className="pb-2">
-                <div className="flex items-center justify-between mb-2">
-                  <Badge variant="secondary" className="text-xs">
-                    {listing.category}
-                  </Badge>
-                  <div className="flex items-center space-x-1">
-                    <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                    <span className="text-sm font-medium">{listing.rating}</span>
-                    <span className="text-xs text-slate-500">({listing.reviews})</span>
-                  </div>
+            <Link href={`/marketplace/${listing.id}`} key={listing.id}>
+              <Card className="hover:shadow-lg transition-shadow duration-300 cursor-pointer">
+                <div className="aspect-video overflow-hidden rounded-t-lg">
+                  <Image
+                    width={300}
+                    height={200}
+                    src={listing.image}
+                    alt={listing.title}
+                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = '/placeholder-image.jpg';
+                    }}
+                  />
                 </div>
-                <CardTitle className="text-lg leading-tight">{listing.title}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-6 h-6 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center">
-                      <User className="w-3 h-3 text-white" />
+                <CardHeader className="pb-2">
+                  <div className="flex items-center justify-between mb-2">
+                    <Badge variant="secondary" className="text-xs">
+                      {listing.category}
+                    </Badge>
+                    <div className="flex items-center space-x-1">
+                      <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                      <span className="text-sm font-medium">{listing.rating}</span>
+                      <span className="text-xs text-slate-500">({listing.reviews})</span>
                     </div>
-                    <span className="text-sm text-slate-600">{listing.seller}</span>
                   </div>
-                  <div className="text-lg font-semibold text-slate-800">
-                    {listing.price} sui
+                  <CardTitle className="text-lg leading-tight">{listing.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-6 h-6 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center">
+                        <User className="w-3 h-3 text-white" />
+                      </div>
+                      <span className="text-sm text-slate-600">{listing.seller}</span>
+                    </div>
+                    <div className="text-lg font-semibold text-slate-800">
+                      {listing.price} sui
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-           </Link>
+                </CardContent>
+              </Card>
+            </Link>
           ))}
         </div>
       </div>
