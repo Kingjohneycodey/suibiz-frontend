@@ -172,13 +172,6 @@ export default function BusinessProfilePage() {
 
       await handleListItem({ metadata_uri: data, role: payload.role })
 
-
-
-      // setUser({
-      //   id: result.id,
-      //   name: formData.name,
-      // });
-      // router.push('/business');
     } catch (err) {
       console.warn('Submission error:', err);
       toast.error(err instanceof Error ? err.message : 'Error creating profile');
@@ -210,20 +203,16 @@ export default function BusinessProfilePage() {
       signAndExecuteTransaction(
         {
           transaction: tx.serialize(),
-          chain: 'sui:testnet', // Adjust to 'sui:testnet' or other network as needed
+          chain: 'sui:testnet',
         },
         {
           onSuccess: (result: { digest: string }) => {
-            // setTransactionStatus(`Transaction successful: ${result.digest}`);
-
             toast.success('Profile created successfully!');
 
             router.push('/business');
             console.log('Transaction Digest:', result.digest);
           },
           onError: (err: { message: string }) => {
-            // setTransactionStatus(`Transaction failed: ${err.message}`);
-
             if (err.message == "No valid gas coins found for the transaction.") {
               toast.error(err.message + "Fund your sui wallet account and try agains")
             } else {
@@ -237,7 +226,6 @@ export default function BusinessProfilePage() {
       );
       console.log("executedf");
     } catch (err) {
-      // setTransactionStatus('Error preparing transaction.');
       console.error('Error preparing transaction:', err);
     }
   };

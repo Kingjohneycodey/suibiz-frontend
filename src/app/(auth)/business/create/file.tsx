@@ -204,10 +204,6 @@ export default function BusinessProfilePage() {
 
       const result = await response.json();
 
-      setUser({
-        id: result.id,
-        name: result.name || formData.name
-      });
       
       toast.success('Profile created successfully!');
       router.push('/business');
