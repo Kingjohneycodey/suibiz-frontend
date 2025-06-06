@@ -155,7 +155,7 @@ export default function BusinessProfilePage() {
       }
 
       const payload = {
-        address: "0x0",
+        address: formData.address,
         role: "business",
         bio: formData.bio,
         username: formData.username,

@@ -5,6 +5,11 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 type User = {
     id: string;
     name: string;
+    username: string;
+    role: string;
+    photo: string;
+    address: string;
+    bio: string;
 };
 
 interface UserStore {

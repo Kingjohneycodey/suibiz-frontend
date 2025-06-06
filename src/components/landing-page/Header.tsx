@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import { ConnectButton } from "@mysten/dapp-kit";
 import Link from "next/link";
 import Image from "next/image";
+import { useUserStore } from "../../../stores/userStore";
 
 interface User {
   id: string;
@@ -19,25 +20,15 @@ export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { user } = useUserStore();
+  const [loading, setLoading] = useState(false);
 
   const handleSignout = async () => {
-    try {
-      const res = await fetch('/api/auth/logout', {
-        method: 'GET',
-        credentials: 'include',
-      });
-  
-      if (res.redirected) {
-        window.location.href = res.url;
-      } else {
-        window.location.reload();
-      }
-    } catch (error) {
-      console.error('Logout failed', error);
-    }
   };
+
+  console.log(user)
+
+
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,36 +38,6 @@ export const Header = () => {
   };
 
   const clearSearch = () => setSearchQuery("");
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch('/api/auth/session', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          cache: 'no-store',
-        });
-        
-        if (!response.ok) throw new Error('Failed to fetch session');
-
-        const data = await response.json();
-        if (data.data.user) {
-          setUser(data.data.user);
-        } 
-      } catch (error) {
-        console.error('Error fetching user session:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    fetchUser();
-  }, []);
-
-  const handleSignIn = () => router.push('/api/auth/google');
 
   if (loading) {
     return (
@@ -105,26 +66,26 @@ export const Header = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-6 ml-8">
-            <Link 
-              href="/marketplace" 
+            <Link
+              href="/marketplace"
               className="text-[#010725] hover:text-purple-600 transition-colors font-medium text-sm"
             >
               Explore
             </Link>
-            <Link 
-              href="/services" 
+            <Link
+              href="/services"
               className="text-[#010725] hover:text-purple-600 transition-colors font-medium text-sm"
             >
               Services
             </Link>
-            <Link 
+            <Link
               href="#how-it-works"
               className="text-[#010725] hover:text-purple-600 transition-colors font-medium text-sm"
             >
               How it Works
             </Link>
-            <Link 
-              href="/about" 
+            <Link
+              href="/about"
               className="text-[#010725] hover:text-purple-600 transition-colors font-medium text-sm"
             >
               About
@@ -143,7 +104,7 @@ export const Header = () => {
                 className="pl-9 pr-8 py-2 text-sm rounded-lg border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent w-full shadow-sm"
               />
               {searchQuery && (
-                <button 
+                <button
                   type="button"
                   onClick={clearSearch}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
@@ -175,15 +136,32 @@ export const Header = () => {
               </Button>
             )} */}
 
-             <ConnectButton 
-                  className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium rounded-lg shadow-sm"
-                />
+            <div>
+              {user?.role ? (
+                <div>
+                  {/* <p>{user.username}</p> */}
+
+                  {user?.role === "business" && (
+                    <Link href="/business">
+                      <Button
+                        size="lg"
+                        className="text-white bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-lg px-8 py-3"
+                      >
+                        Dashboard
+                      </Button>
+                    </Link>
+                  )}
+                </div>
+              ) : (
+                <ConnectButton className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium rounded-lg shadow-sm" />
+              )}
+            </div>
           </div>
 
           {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center space-x-2 ml-auto">
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               size="icon"
               className="text-[#010725] hover:bg-slate-100"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -211,7 +189,7 @@ export const Header = () => {
                   className="pl-9 pr-8 py-2 text-sm rounded-lg border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent w-full shadow-sm"
                 />
                 {searchQuery && (
-                  <button 
+                  <button
                     type="button"
                     onClick={clearSearch}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
@@ -222,29 +200,29 @@ export const Header = () => {
               </form>
 
               <nav className="flex flex-col space-y-2 pt-1">
-                <Link 
-                  href="/marketplace" 
+                <Link
+                  href="/marketplace"
                   className="px-3 py-2 rounded-md text-sm font-medium text-[#010725] hover:bg-slate-100"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Explore
                 </Link>
-                <Link 
-                  href="/services" 
+                <Link
+                  href="/services"
                   className="px-3 py-2 rounded-md text-sm font-medium text-[#010725] hover:bg-slate-100"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Services
                 </Link>
-                <Link 
-                  href="#how-it-works" 
+                <Link
+                  href="#how-it-works"
                   className="px-3 py-2 rounded-md text-sm font-medium text-[#010725] hover:bg-slate-100"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   How it Works
                 </Link>
-                <Link 
-                  href="/about" 
+                <Link
+                  href="/about"
                   className="px-3 py-2 rounded-md text-sm font-medium text-[#010725] hover:bg-slate-100"
                   onClick={() => setIsMenuOpen(false)}
                 >
@@ -275,10 +253,15 @@ export const Header = () => {
                   </Button>
                 )} */}
 
+                <div>
+                  {user && (
+                    <div>
+                      <p>{user.username}</p>
+                    </div>
+                  )}
+                </div>
 
-                 <ConnectButton 
-                      className="w-full justify-center bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium rounded-lg shadow-sm"
-                    />
+                <ConnectButton className="w-full justify-center bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium rounded-lg shadow-sm" />
               </div>
             </div>
           </div>
