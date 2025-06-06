@@ -153,7 +153,7 @@ export const Header = () => {
                   )}
                 </div>
               ) : (
-                <ConnectButton className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium rounded-lg shadow-sm" />
+                <ConnectButton className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 !text-white font-medium rounded-lg shadow-sm" />
               )}
             </div>
           </div>
