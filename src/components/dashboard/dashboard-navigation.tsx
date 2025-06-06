@@ -34,11 +34,9 @@ export default function DashboardNavigation({
                         <Menu className="text-gray-600 dark:text-gray-300 w-6 h-6" />
                     </button>
                     
-                    {/* Show dashboard title only when not collapsed or on mobile */}
                     <div className="text-xl font-bold text-gray-800 dark:text-white">
                         Dashboard
                     </div>                    
-                    {/* Show search bar only when not collapsed on desktop */}
                     <div className="relative hidden md:block">
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                         <input
@@ -79,7 +77,6 @@ export default function DashboardNavigation({
                             <div className="w-9 h-9 rounded-full bg-blue-500 flex items-center justify-center text-white">
                                 <User className="w-5 h-5" />
                             </div>
-                            {/* Hide username when sidebar is collapsed */}
                             {!isCollapsed && (
                                 <span className="text-sm font-medium text-gray-700 dark:text-gray-300 hidden md:inline">
                                     John Doe
