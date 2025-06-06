@@ -107,7 +107,7 @@ const UserWallet = ({ transactions, balance }: UserWalletProps) => {
                 <div className="flex justify-between items-start">
                 <div>
                     <h2 className="text-sm font-medium opacity-80">Total Balance</h2>
-                    <p className="text-3xl font-bold mt-1">{(balance / 1.25).toFixed(2)} SUI</p>
+                    <p className="text-3xl font-bold mt-1">{(balance).toFixed(2)} SUI</p>
                     <p className="text-sm opacity-80 mt-2">Equivalent to {(balance / 1.25).toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</p>
                 </div>
                 <div className="bg-white/10 p-3 rounded-lg backdrop-blur-sm">

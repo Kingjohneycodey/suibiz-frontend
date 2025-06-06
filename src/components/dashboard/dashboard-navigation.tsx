@@ -4,6 +4,8 @@ import { Menu, Search, Sun, Moon, Bell, User, LogOut } from 'lucide-react';
 import { useUserStore } from '../../../stores/userStore';
 import { useRouter } from 'next/navigation';
 import { User as UserType } from '../../../types/types';
+import { EnokiClient } from '@mysten/enoki';
+import { useDisconnectWallet } from '@mysten/dapp-kit';
 
 interface DashboardNavigationProps {
     darkMode: boolean;
@@ -19,10 +21,8 @@ export default function DashboardNavigation({
     isCollapsed
 }: DashboardNavigationProps) {
     const [showProfileDropdown, setShowProfileDropdown] = useState(false);
-
+    const { mutate: disconnect } = useDisconnectWallet();
     const { user, setUser, clearUser } = useUserStore()
-
-    const router = useRouter()
 
     const handleSignOut = () => {
         console.log('Signing out...');
@@ -31,6 +31,7 @@ export default function DashboardNavigation({
         clearUser();
         location.href = '/';
         setShowProfileDropdown(false);
+        disconnect()
     };
 
     return (

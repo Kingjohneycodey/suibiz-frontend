@@ -10,33 +10,50 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import { usePathname } from "next/navigation";
 
 export default function SessionProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
   const { setUser } = useUserStore();
   const [isMounted, setIsMounted] = useState(false);
   const { currentWallet } = useCurrentWallet();
   const [showConnectDialog, setShowConnectDialog] = useState(true);
+  const [shouldCheck, setShouldCheck] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(true);
 
-  const [loggedIn, setLoggedIn] = useState(false);
+  const exemptedRoutes = ["/", "/about", "/terms"];
 
   useEffect(() => {
     setIsMounted(true);
+
+
+
     if (typeof window !== "undefined") {
       const exist = sessionStorage.getItem(
         "@enoki/flow/session/enoki_public_e5a1d53741cdbe61403b4c6de297ca10/testnet"
       );
       console.log("Session existence check →", { exist });
 
-      const loggedIn = localStorage.getItem("loggedIn") === "true";
-      setLoggedIn(loggedIn);
+      const timeout = setTimeout(() => {
+        const isLoggedIn = localStorage.getItem("loggedIn") === "true";
+        setLoggedIn(isLoggedIn);
+        
+        if (!exemptedRoutes.includes(pathname)) {
+          setShouldCheck(true);
+        }
+      }, 3000); // 3 seconds delay
+
+      return () => clearTimeout(timeout);
     }
   }, []);
 
   console.log(currentWallet);
+
+  console.log(shouldCheck)
 
   const currentWalletAddress = currentWallet?.accounts[0]?.address;
 
@@ -47,6 +64,8 @@ export default function SessionProvider({
         console.log(data);
         setUser(data);
         setShowConnectDialog(false);
+
+
       }
       getUserProfile();
     }
@@ -56,11 +75,13 @@ export default function SessionProvider({
     return null;
   }
 
+
+
   return (
     <div>
       {children}
 
-      {!currentWallet && loggedIn && (
+      {shouldCheck && loggedIn && !currentWallet && (
         <Dialog open={showConnectDialog} onOpenChange={setShowConnectDialog}>
           <DialogContent className="sm:max-w-[425px] bg-white">
             <DialogHeader>
@@ -78,7 +99,7 @@ export default function SessionProvider({
               />
             </div>
           </DialogContent>
-        </Dialog> 
+        </Dialog>
       )}
     </div>
   );
