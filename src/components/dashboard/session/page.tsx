@@ -78,7 +78,7 @@ export default function SessionProvider({
               />
             </div>
           </DialogContent>
-        </Dialog>
+        </Dialog> 
       )}
     </div>
   );
