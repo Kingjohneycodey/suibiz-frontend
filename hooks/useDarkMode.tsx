@@ -19,6 +19,7 @@ export function useDarkMode() {
     const toggleDarkMode = () => {
         const newMode = !darkMode
         setDarkMode(newMode)
+        console.log("here")
         localStorage.setItem('darkMode', String(newMode))
     }
 

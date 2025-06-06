@@ -19,11 +19,11 @@ export const Hero = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
             <Link href="/marketplace">
 
-            <Button size="lg" className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-lg px-8 py-3">
-              Explore Marketplace
-            </Button>
+              <Button size="lg" className="text-white bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-lg px-8 py-3">
+                Explore Marketplace
+              </Button>
 
-          </Link>
+            </Link>
 
             <Link href="/business-profile">
               <Button size="lg" variant="outline" className="text-lg px-8 py-3 border-2">
