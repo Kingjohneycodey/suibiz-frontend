@@ -107,25 +107,25 @@ export const Header = () => {
           <nav className="hidden md:flex items-center space-x-6 ml-8">
             <Link 
               href="/marketplace" 
-              className="text-slate-700 hover:text-purple-600 transition-colors font-medium text-sm"
+              className="text-[#010725] hover:text-purple-600 transition-colors font-medium text-sm"
             >
               Explore
             </Link>
             <Link 
               href="/services" 
-              className="text-slate-700 hover:text-purple-600 transition-colors font-medium text-sm"
+              className="text-[#010725] hover:text-purple-600 transition-colors font-medium text-sm"
             >
               Services
             </Link>
             <Link 
-              href="#" 
-              className="text-slate-700 hover:text-purple-600 transition-colors font-medium text-sm"
+              href="#how-it-works"
+              className="text-[#010725] hover:text-purple-600 transition-colors font-medium text-sm"
             >
               How it Works
             </Link>
             <Link 
               href="/about" 
-              className="text-slate-700 hover:text-purple-600 transition-colors font-medium text-sm"
+              className="text-[#010725] hover:text-purple-600 transition-colors font-medium text-sm"
             >
               About
             </Link>
@@ -161,7 +161,7 @@ export const Header = () => {
                 <Button
                   onClick={handleSignout}
                   variant="ghost"
-                  className="text-slate-700 hover:bg-slate-100 font-medium rounded-lg"
+                  className="text-[#010725] hover:bg-slate-100 font-medium rounded-lg"
                 >
                   Sign out
                 </Button>
@@ -185,7 +185,7 @@ export const Header = () => {
             <Button 
               variant="ghost" 
               size="icon"
-              className="text-slate-700 hover:bg-slate-100"
+              className="text-[#010725] hover:bg-slate-100"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               {isMenuOpen ? (
@@ -224,28 +224,28 @@ export const Header = () => {
               <nav className="flex flex-col space-y-2 pt-1">
                 <Link 
                   href="/marketplace" 
-                  className="px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-100"
+                  className="px-3 py-2 rounded-md text-sm font-medium text-[#010725] hover:bg-slate-100"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Explore
                 </Link>
                 <Link 
                   href="/services" 
-                  className="px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-100"
+                  className="px-3 py-2 rounded-md text-sm font-medium text-[#010725] hover:bg-slate-100"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Services
                 </Link>
                 <Link 
-                  href="#" 
-                  className="px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-100"
+                  href="#how-it-works" 
+                  className="px-3 py-2 rounded-md text-sm font-medium text-[#010725] hover:bg-slate-100"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   How it Works
                 </Link>
                 <Link 
                   href="/about" 
-                  className="px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-100"
+                  className="px-3 py-2 rounded-md text-sm font-medium text-[#010725] hover:bg-slate-100"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   About
@@ -261,7 +261,7 @@ export const Header = () => {
                     <Button
                       onClick={handleSignout}
                       variant="outline"
-                      className="w-full text-slate-700 hover:bg-slate-100 font-medium rounded-lg"
+                      className="w-full text-[#010725] hover:bg-slate-100 font-medium rounded-lg"
                     >
                       Sign out
                     </Button>
