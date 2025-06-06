@@ -272,7 +272,6 @@ export default function AdminMarketplaceDashboard() {
     const totalEarnings = users.reduce((sum, user) => sum + user.totalEarned, 0);
 
     const exportToExcel = () => {
-        // Prepare data for export
         const exportData = filteredUsers.map(user => ({
             Username: user.username,
             Email: user.email,

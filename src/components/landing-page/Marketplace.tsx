@@ -63,10 +63,8 @@ export const MarketPlace = () => {
         fetchListings();
     }, []);
 
-    // Get unique categories
     const categories = ["All", ...Array.from(new Set(listings.map(item => item.category)))];
 
-    // Filter and sort listings
     const filteredListings = listings
         .filter(listing => 
             listing.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
@@ -76,20 +74,18 @@ export const MarketPlace = () => {
             if (sortOption === "price-low") return parseFloat(a.price) - parseFloat(b.price);
             if (sortOption === "price-high") return parseFloat(b.price) - parseFloat(a.price);
             if (sortOption === "rating") return b.rating - a.rating;
-            return 0; // Default/filtered stays as-is
+            return 0;
         });
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white flex flex-col">
             <Header />
             
-            {/* Hero Section */}
             <div className="bg-gradient-to-r from-purple-600 to-blue-600 py-16 text-white">
                 <div className="container mx-auto px-4 text-center">
                     <h1 className="text-4xl md:text-5xl font-bold mb-4">Shop Amazing Products</h1>
                     <p className="text-xl md:text-2xl mb-8">Shop the best products secured by the Sui Blockchain</p>
                     
-                    {/* Search Bar */}
                     <div className="max-w-2xl mx-auto relative">
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <Search className="h-5 w-5 text-gray-400" />
@@ -105,10 +101,8 @@ export const MarketPlace = () => {
                 </div>
             </div>
 
-            {/* Main Content */}
             <main className="flex-1 py-12 px-4">
                 <div className="container mx-auto">
-                    {/* Filters and Sorting */}
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
                         <div className="flex flex-wrap gap-2">
                             {categories.map(category => (
@@ -143,7 +137,6 @@ export const MarketPlace = () => {
                         </div>
                     </div>
 
-                    {/* Product Grid */}
                     {filteredListings.length === 0 ? (
                         <div className="col-span-full flex flex-col items-center justify-center py-20 text-center">
                             <Search className="h-12 w-12 text-gray-400 mb-4" />

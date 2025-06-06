@@ -1,5 +1,5 @@
 "use client";
-import { Settings, Users, Lock, Mail, Shield, AlertCircle, Database, Server, Bell, CreditCard, Globe } from 'lucide-react';
+import { Settings, Users, Lock, Mail, AlertCircle, Database, Server, Bell, CreditCard } from 'lucide-react';
 import { useState } from 'react';
 
 export default function AdminSettingsPage() {
@@ -28,7 +28,6 @@ export default function AdminSettingsPage() {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        // Add save logic here
         alert('Settings saved successfully!');
     };
 
@@ -45,13 +44,11 @@ export default function AdminSettingsPage() {
     return (
         <div className="min-h-screen bg-gray-50 p-4">
             <div className="max-w-7xl mx-auto">
-                {/* Header */}
                 <div className="mb-6">
                     <h1 className="text-2xl font-bold">Admin Settings</h1>
                     <p className="text-gray-500">Configure platform-wide settings and preferences</p>
                 </div>
 
-                {/* Tab Navigation - Matching existing dashboard style */}
                 <div className="border-b border-gray-200 mb-6">
                     <nav className="-mb-px flex space-x-8 overflow-x-auto">
                         {tabs.map(tab => (
@@ -67,10 +64,8 @@ export default function AdminSettingsPage() {
                     </nav>
                 </div>
 
-                {/* Settings Form */}
                 <div className="bg-white shadow rounded-lg overflow-hidden">
                     <form onSubmit={handleSubmit} className="divide-y divide-gray-200">
-                        {/* General Settings */}
                         {activeTab === 'general' && (
                             <div className="p-6 space-y-6">
                                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
@@ -133,7 +128,6 @@ export default function AdminSettingsPage() {
                             </div>
                         )}
 
-                        {/* User Management Settings */}
                         {activeTab === 'users' && (
                             <div className="p-6 space-y-6">
                                 <div className="grid grid-cols-1 gap-6">
@@ -201,7 +195,6 @@ export default function AdminSettingsPage() {
                             </div>
                         )}
 
-                        {/* Security Settings */}
                         {activeTab === 'security' && (
                             <div className="p-6 space-y-6">
                                 <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4">
@@ -268,7 +261,6 @@ export default function AdminSettingsPage() {
                             </div>
                         )}
 
-                        {/* Form Footer */}
                         <div className="px-6 py-3 bg-gray-50 text-right">
                             <button
                                 type="button"
