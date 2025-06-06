@@ -2,11 +2,11 @@
 
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { Search, Menu } from "lucide-react";
+import { Search, Menu, X, Wallet } from "lucide-react";
 import { useState, useEffect } from "react";
 import { ConnectButton } from "@mysten/dapp-kit";
 import Link from "next/link";
-
+import Image from "next/image";
 
 interface User {
   id: string;
@@ -17,6 +17,7 @@ interface User {
 
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -37,7 +38,15 @@ export const Header = () => {
       console.error('Logout failed', error);
     }
   };
-  
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
+    }
+  };
+
+  const clearSearch = () => setSearchQuery("");
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -54,10 +63,7 @@ export const Header = () => {
         if (!response.ok) throw new Error('Failed to fetch session');
 
         const data = await response.json();
-        console.log('Session data:', data);
-
         if (data.data.user) {
-          console.log('User session:', data.user);
           setUser(data.data.user);
         } 
       } catch (error) {
@@ -71,64 +77,99 @@ export const Header = () => {
   }, []);
 
   const handleSignIn = () => router.push('/api/auth/google');
-  
 
   if (loading) {
-    return <div className="flex items-center justify-center h-16">Loading...</div>;
+    return (
+      <div className="flex items-center justify-center h-16 bg-white/80 backdrop-blur-md border-b border-slate-200/50">
+        <div className="animate-pulse h-8 w-32 rounded-md bg-slate-200" />
+      </div>
+    );
   }
 
-
   return (
-    <header className="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50">
-      <div className="container mx-auto px-4 py-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">S</span>
-            </div>
-            <Link href="/">
-              <span className="text-xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-                SuiBiz
-              </span>
+    <header className="bg-white/80 backdrop-blur-md border-b border-slate-200/50 sticky top-0 z-50">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
+          <div className="flex items-center space-x-2 flex-shrink-0">
+            <Link href="/" className="flex items-center">
+              <Image
+                src="/main-logo.svg"
+                alt="SuiBiz Logo"
+                width={120}
+                height={32}
+                className="h-8 w-auto"
+              />
             </Link>
           </div>
 
-          <nav className="hidden md:flex items-center space-x-8">
-            <Link href="/marketplace" className="text-slate-600 hover:text-purple-600 transition-colors">Explore</Link>
-            <Link href="/services" className="text-slate-600 hover:text-purple-600 transition-colors">Services</Link>
-            <Link href="#" className="text-slate-600 hover:text-purple-600 transition-colors">How it Works</Link>
-            <Link href="/about" className="text-slate-600 hover:text-purple-600 transition-colors">About</Link>
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center space-x-6 ml-8">
+            <Link 
+              href="/marketplace" 
+              className="text-slate-700 hover:text-purple-600 transition-colors font-medium text-sm"
+            >
+              Explore
+            </Link>
+            <Link 
+              href="/services" 
+              className="text-slate-700 hover:text-purple-600 transition-colors font-medium text-sm"
+            >
+              Services
+            </Link>
+            <Link 
+              href="#" 
+              className="text-slate-700 hover:text-purple-600 transition-colors font-medium text-sm"
+            >
+              How it Works
+            </Link>
+            <Link 
+              href="/about" 
+              className="text-slate-700 hover:text-purple-600 transition-colors font-medium text-sm"
+            >
+              About
+            </Link>
           </nav>
 
-          {/* Desktop Actions */}
-          <div className="hidden md:flex items-center space-x-4">
-            <Button variant="outline" size="sm">
-              <Search className="w-4 h-4 mr-2" />
-              Search
-            </Button>
-            {user ? (
-              // <Button 
-              //   onClick={handleConnectWallet}
-              //   className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
-              // >
-              //   <Wallet className="w-4 h-4 mr-2" />
-              //   Connect Wallet
-              // </Button>
-              <div>
+          {/* Desktop Search and Actions */}
+          <div className="hidden md:flex items-center space-x-4 ml-auto">
+            <form onSubmit={handleSearch} className="relative w-64">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+              <input
+                type="text"
+                placeholder="Search..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-9 pr-8 py-2 text-sm rounded-lg border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent w-full shadow-sm"
+              />
+              {searchQuery && (
+                <button 
+                  type="button"
+                  onClick={clearSearch}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              )}
+            </form>
 
-                {/* <ConnectButton /> */}
+            {user ? (
+              <div className="flex items-center space-x-3">
+                <ConnectButton 
+                  className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium rounded-lg shadow-sm"
+                />
                 <Button
                   onClick={handleSignout}
-                  className="bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-xl shadow-md transition-all duration-200 ease-in-out"
+                  variant="ghost"
+                  className="text-slate-700 hover:bg-slate-100 font-medium rounded-lg"
                 >
                   Sign out
                 </Button>
-
               </div>
             ) : (
               <Button 
                 onClick={handleSignIn} 
-                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium rounded-lg shadow-sm px-4"
               >
                 Sign in
               </Button>
@@ -136,58 +177,101 @@ export const Header = () => {
           </div>
 
           {/* Mobile Menu Button */}
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="md:hidden"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            <Menu className="w-4 h-4" />
-          </Button>
+          <div className="md:hidden flex items-center space-x-2 ml-auto">
+            <Button 
+              variant="ghost" 
+              size="icon"
+              className="text-slate-700 hover:bg-slate-100"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              {isMenuOpen ? (
+                <X className="h-5 w-5" />
+              ) : (
+                <Menu className="h-5 w-5" />
+              )}
+            </Button>
+          </div>
         </div>
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden mt-4 pb-4 border-t border-slate-200 pt-4">
-            <nav className="flex flex-col space-y-3">
-              <Link href="/marketplace" className="text-slate-600 hover:text-purple-600 transition-colors">Explore</Link>
-              <Link href="/services" className="text-slate-600 hover:text-purple-600 transition-colors">Services</Link>
-              <Link href="#" className="text-slate-600 hover:text-purple-600 transition-colors">How it Works</Link>
-              <Link href="/about" className="text-slate-600 hover:text-purple-600 transition-colors">About</Link>
-              <div className="flex flex-col space-y-2 pt-2">
-                <Button variant="outline" size="sm">
-                  <Search className="w-4 h-4 mr-2" />
-                  Search
-                </Button>
-                {user ? (
-                  // <Button 
-                  //   onClick={handleConnectWallet}
-                  //   className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
-                  // >
-                  //   <Wallet className="w-4 h-4 mr-2" />
-                  //   Connect Wallet
-                  // </Button>
-                  <div>
+          <div className="md:hidden pb-4 border-t border-slate-200/50">
+            <div className="px-2 pt-3 space-y-3">
+              <form onSubmit={handleSearch} className="relative w-full">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-9 pr-8 py-2 text-sm rounded-lg border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent w-full shadow-sm"
+                />
+                {searchQuery && (
+                  <button 
+                    type="button"
+                    onClick={clearSearch}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                )}
+              </form>
 
-                    {/* <ConnectButton /> */}
+              <nav className="flex flex-col space-y-2 pt-1">
+                <Link 
+                  href="/marketplace" 
+                  className="px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-100"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Explore
+                </Link>
+                <Link 
+                  href="/services" 
+                  className="px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-100"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Services
+                </Link>
+                <Link 
+                  href="#" 
+                  className="px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-100"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  How it Works
+                </Link>
+                <Link 
+                  href="/about" 
+                  className="px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:bg-slate-100"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  About
+                </Link>
+              </nav>
+
+              <div className="pt-2 space-y-2">
+                {user ? (
+                  <>
+                    <ConnectButton 
+                      className="w-full justify-center bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium rounded-lg shadow-sm"
+                    />
                     <Button
                       onClick={handleSignout}
-                      className="bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-xl shadow-md transition-all duration-200 ease-in-out"
+                      variant="outline"
+                      className="w-full text-slate-700 hover:bg-slate-100 font-medium rounded-lg"
                     >
                       Sign out
                     </Button>
-
-                  </div>
+                  </>
                 ) : (
                   <Button 
                     onClick={handleSignIn} 
-                    className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+                    className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium rounded-lg shadow-sm"
                   >
                     Sign in
                   </Button>
                 )}
               </div>
-            </nav>
+            </div>
           </div>
         )}
       </div>

@@ -1,4 +1,3 @@
-// app/api/auth/google/route.ts
 import { randomBytes } from 'crypto';
 import { NextResponse } from 'next/server';
 

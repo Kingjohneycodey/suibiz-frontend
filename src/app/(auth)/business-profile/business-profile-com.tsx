@@ -32,41 +32,40 @@ export default function BusinessProfilePage() {
     });
     const [token, setToken] = useState<string | undefined>(undefined);
     const [loading, setLoading] = useState(false);
-    const currentAccount = useCurrentAccount();
+    // const currentAccount = useCurrentAccount();
     const [avatarPreview, setAvatarPreview] = useState<string>('');
     const [avatarFile, setAvatarFile] = useState<File | null>(null);
     const [storageData, setStorageData] = useState<any>(null);
 
-    // Log current wallet connection status
-    useEffect(() => {
-        console.log('Current wallet connection status:', {
-            isConnected: !!currentAccount,
-            address: currentAccount?.address,
-            chains: currentAccount?.chains
-        });
-    }, [currentAccount]);
+    // useEffect(() => {
+    //     console.log('Current wallet connection status:', {
+    //         isConnected: !!currentAccount,
+    //         address: currentAccount?.address,
+    //         chains: currentAccount?.chains
+    //     });
+    // }, [currentAccount]);
 
     useEffect(() => {
         const authToken = Cookies.get('auth_token');
         setToken(authToken);
 
         try {
-            const storedData = sessionStorage.getItem('@enoki/flow/state/enoki_public_9a3de95df9a16f168ba9ebf1cc36cc1d/testnet');
-            if (storedData) {
-                const parsedData = JSON.parse(storedData);
-                setStorageData(parsedData);
-                console.log('Session storage data:', parsedData);
+            // const storedData = sessionStorage.getItem('@enoki/flow/state/enoki_public_9a3de95df9a16f168ba9ebf1cc36cc1d/testnet');
+            // if (storedData) {
+            //     const parsedData = JSON.parse(storedData);
+            //     setStorageData(parsedData);
+            //     console.log('Session storage data:', parsedData);
                 
-                setFormData(prev => ({
-                    ...prev,
-                    address: parsedData?.address || currentAccount?.address || ''
-                }));
-            }
+            //     setFormData(prev => ({
+            //         ...prev,
+            //         address: parsedData?.address || currentAccount?.address || ''
+            //     }));
+            // }
         } catch (error) {
             console.error('Error parsing session storage data:', error);
             toast.error('Failed to load wallet data');
         }
-    }, [currentAccount]);
+    }, []); //the dependency should be currentWallet.
   
     const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       const { name, value } = e.target;
@@ -172,10 +171,10 @@ export default function BusinessProfilePage() {
       try {
         setLoading(true);
   
-        const walletAddress = currentAccount?.address || storageData?.address || formData.address;
-        if (!walletAddress) {
-          throw new Error('No wallet address available');
-        }
+        // const walletAddress = currentAccount?.address || storageData?.address || formData.address;
+        // if (!walletAddress) {
+        //   throw new Error('No wallet address available');
+        // }
   
         let avatarUrl = formData.avatar_url;
         if (avatarFile) {
@@ -191,7 +190,7 @@ export default function BusinessProfilePage() {
   
         const payload = {
           authToken: token,
-          walletAddress: walletAddress,
+          walletAddress: "0x0",
           userType: "user",
           bio: formData.bio,
           username: formData.username,
@@ -245,11 +244,11 @@ export default function BusinessProfilePage() {
             <p className="mt-2 text-sm text-gray-600">
               Complete your business profile to get started
             </p>
-            {currentAccount && (
+            {/* {currentAccount && (
               <p className="mt-2 text-xs text-green-600">
                 Wallet connected: {currentAccount.address.slice(0, 6)}...{currentAccount.address.slice(-4)}
               </p>
-            )}
+            )} */}
           </div>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="flex flex-col items-center">

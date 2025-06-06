@@ -265,7 +265,7 @@ const OrdersManagement = () => {
                 {isModalOpen && selectedOrder && (
                     <>
                         <div 
-                            className="fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity duration-300 ease-in-out"
+                            className="fixed inset-0 bg-black/60 bg-opacity-50 z-40 transition-opacity duration-300 ease-in-out"
                             onClick={closeModal}
                         ></div>
                         

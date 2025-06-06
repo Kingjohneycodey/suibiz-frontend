@@ -1,6 +1,6 @@
 import { LayoutDashboard, Package,
     Upload, HandPlatter, CloudUpload,
-    BookUp, CalendarArrowUp
+    BookUp, CalendarArrowUp, CreditCard
 } from 'lucide-react'
 import DashboardLayoutClient from '@/components/dashboard/DashboardLayoutClient';
 import { SidebarConfig } from '../../../types/sidebar';
@@ -14,6 +14,11 @@ export default function VendorDashboardLayout({ children }: { children: React.Re
                 href: '/business',
                 icon: <LayoutDashboard className="w-5 h-5" />,
                 label: 'Dashboard',
+            },
+            {
+                href: '/business/wallet',
+                icon: <CreditCard className="w-5 h-5" />,
+                label: 'Wallet',
             },
             {
                 href: '/business/products',

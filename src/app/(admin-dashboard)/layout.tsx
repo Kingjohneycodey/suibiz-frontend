@@ -17,16 +17,11 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
                 icon: <Users className="w-5 h-5" />,
                 label: 'Users',
             },
-            {
-                href: '/admin/products',
-                icon: <Package className="w-5 h-5" />,
-                label: 'Products',
-            },
-            {
-                href: '/admin/settings',
-                icon: <Settings className="w-5 h-5" />,
-                label: 'Settings',
-            },
+            // {
+            //     href: '/admin/settings',
+            //     icon: <Settings className="w-5 h-5" />,
+            //     label: 'Settings',
+            // },
         ]
     }
     

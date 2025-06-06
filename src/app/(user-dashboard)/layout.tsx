@@ -14,14 +14,14 @@ export default function UserDashboardLayout({ children }: { children: React.Reac
         label: 'Overview',
       },
       {
-        href: '/user/profile',
-        icon: <User className="w-5 h-5" />,
-        label: 'Profile',
-      },
-      {
         href: '/user/wallet',
         icon: <CreditCard className="w-5 h-5" />,
         label: 'Wallet',
+      },
+      {
+        href: '/user/profile',
+        icon: <User className="w-5 h-5" />,
+        label: 'Profile',
       },
       {
         href: '/user/orders',

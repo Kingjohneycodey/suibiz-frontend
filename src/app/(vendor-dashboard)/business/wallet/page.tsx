@@ -2,7 +2,7 @@ import UserWallet from "@/components/dashboard/user/UserWallet";
 import { Transaction } from "../../../../../types/wallet";
 
 
-export default function UserDashboardWallet() {
+export default function VendorWalletPage() {
     const vendorData: Transaction[] = [
         { 
             id: 1, 
@@ -56,7 +56,7 @@ export default function UserDashboardWallet() {
         },
     ];
 
-    const balance = 1450.75;
+    const balance = 4450.75;
 
     return (
         <div className="space-y-6">
