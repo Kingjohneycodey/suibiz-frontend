@@ -94,7 +94,7 @@ export const Header = () => {
           <div className="flex items-center space-x-2 flex-shrink-0">
             <Link href="/" className="flex items-center">
               <Image
-                src="/main-logo.svg"
+                src="/dark-logo.svg"
                 alt="SuiBiz Logo"
                 width={120}
                 height={32}
