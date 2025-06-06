@@ -296,7 +296,7 @@ const AboutSection = () => {
                             Be part of the future where commerce is open, transparent, and user-owned.
                         </p>
                         <div className="flex flex-col sm:flex-row justify-center gap-4">
-                            <Link href={'/business'}>
+                            <Link href={'/business/create'}>
                                 <button className="px-8 py-4 bg-transparent border-2 border-white/80 text-white rounded-xl font-medium text-lg hover:bg-white/10 transition-all shadow-sm hover:shadow-md">
                                     Start Selling
                                 </button>
