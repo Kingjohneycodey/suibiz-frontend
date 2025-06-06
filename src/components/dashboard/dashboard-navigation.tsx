@@ -20,7 +20,7 @@ export default function DashboardNavigation({
 }: DashboardNavigationProps) {
     const [showProfileDropdown, setShowProfileDropdown] = useState(false);
 
-    const { user, setUser } = useUserStore()
+    const { user, setUser, clearUser } = useUserStore()
 
     const router = useRouter()
 
@@ -28,7 +28,7 @@ export default function DashboardNavigation({
         console.log('Signing out...');
         sessionStorage.removeItem('@enoki/flow/session/enoki_public_e5a1d53741cdbe61403b4c6de297ca10/testnet');
         sessionStorage.removeItem('@enoki/flow/state/enoki_public_e5a1d53741cdbe61403b4c6de297ca10/testnet');
-        setUser({} as UserType)
+        clearUser();
         location.href = '/';
         setShowProfileDropdown(false);
     };

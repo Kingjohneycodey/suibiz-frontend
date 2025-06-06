@@ -19,11 +19,11 @@ export interface ProductsResponse {
 } 
 
 export type User = {
-    id: string;
-    name: string;
-    username: string;
-    role: string;
-    photo: string;
-    address: string;
-    bio: string;
+    id?: string;
+    name?: string;
+    username?: string;
+    role?: string;
+    photo?: string;
+    address?: string;
+    bio?: string;
 };
