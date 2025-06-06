@@ -23,14 +23,15 @@ export default function SessionProvider({
   const { currentWallet } = useCurrentWallet();
   const [showConnectDialog, setShowConnectDialog] = useState(true);
   const [shouldCheck, setShouldCheck] = useState(false);
+  const [shouldCheck2, setShouldCheck2] = useState(false);
   const [loggedIn, setLoggedIn] = useState(true);
 
   const exemptedRoutes = ["/", "/about", "/terms"];
 
+  const compulsoryRoutes = ["/business/create"];
+
   useEffect(() => {
     setIsMounted(true);
-
-
 
     if (typeof window !== "undefined") {
       const exist = sessionStorage.getItem(
@@ -41,10 +42,16 @@ export default function SessionProvider({
       const timeout = setTimeout(() => {
         const isLoggedIn = localStorage.getItem("loggedIn") === "true";
         setLoggedIn(isLoggedIn);
-        
+
         if (!exemptedRoutes.includes(pathname)) {
           setShouldCheck(true);
         }
+
+        if (compulsoryRoutes.includes(pathname)) {
+          setShouldCheck2(true);
+        }
+
+
       }, 3000); // 3 seconds delay
 
       return () => clearTimeout(timeout);
@@ -53,7 +60,7 @@ export default function SessionProvider({
 
   console.log(currentWallet);
 
-  console.log(shouldCheck)
+  console.log(shouldCheck);
 
   const currentWalletAddress = currentWallet?.accounts[0]?.address;
 
@@ -64,8 +71,6 @@ export default function SessionProvider({
         console.log(data);
         setUser(data);
         setShowConnectDialog(false);
-
-
       }
       getUserProfile();
     }
@@ -75,13 +80,32 @@ export default function SessionProvider({
     return null;
   }
 
-
-
   return (
     <div>
       {children}
 
       {shouldCheck && loggedIn && !currentWallet && (
+        <Dialog open={showConnectDialog} onOpenChange={setShowConnectDialog}>
+          <DialogContent className="sm:max-w-[425px] bg-white">
+            <DialogHeader>
+              <DialogTitle>Connect Wallet</DialogTitle>
+              <DialogDescription>
+                Please connect your wallet to continue using the application.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex justify-center py-4">
+              <ConnectButton
+                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 !text-white font-medium rounded-lg shadow-sm"
+                onClick={() => {
+                  localStorage.setItem("loggedIn", "true");
+                }}
+              />
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
+
+      {shouldCheck2 && !currentWallet && (
         <Dialog open={showConnectDialog} onOpenChange={setShowConnectDialog}>
           <DialogContent className="sm:max-w-[425px] bg-white">
             <DialogHeader>

@@ -42,6 +42,10 @@ export default function BusinessProfilePage() {
     console.log('Current wallet connection status:', {
       currentAccount
     });
+
+    if(!currentAccount){
+      router.refresh()
+    }
   }, [currentAccount]);
 
   useEffect(() => {
@@ -49,18 +53,22 @@ export default function BusinessProfilePage() {
       const storedData = sessionStorage.getItem('@enoki/flow/state/enoki_public_e5a1d53741cdbe61403b4c6de297ca10/testnet');
       if (storedData) {
         const parsedData = JSON.parse(storedData);
-        console.log('Session storage data:', parsedData);
 
         setFormData(prev => ({
           ...prev,
-          address: parsedData?.address || currentAccount?.address || ''
+          address: parsedData?.address || currentAccount?.address
+        }));
+      } else if (currentAccount?.address){
+        setFormData(prev => ({
+          ...prev,
+          address: currentAccount?.address || ""
         }));
       }
     } catch (error) {
       console.error('Error parsing session storage data:', error);
       toast.error('Failed to load wallet data');
     }
-  }, []);
+  }, [currentAccount]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -127,11 +135,7 @@ export default function BusinessProfilePage() {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    console.log("ew")
-
     if (!validateForm()) return;
-
-    console.log("ew1")
 
     try {
       setLoading(true);
@@ -163,12 +167,7 @@ export default function BusinessProfilePage() {
         photo: avatarUrl
       };
 
-      console.log('Submitting form with payload:', payload);
-
       const data = await storeDataToWalrus(payload, formData.address);
-
-
-      console.log("success", data)
 
       await handleListItem({ metadata_uri: data, role: payload.role })
 
@@ -189,7 +188,6 @@ export default function BusinessProfilePage() {
 
 
     try {
-      console.log("hyello ")
       const tx = new TransactionBlock();
       tx.moveCall({
         target: `${process.env.NEXT_PUBLIC_PACKAGE_ID}::user::create_profile`,
@@ -209,8 +207,7 @@ export default function BusinessProfilePage() {
           onSuccess: (result: { digest: string }) => {
             toast.success('Profile created successfully!');
 
-            router.push('/business');
-            console.log('Transaction Digest:', result.digest);
+            location.href = '/business'
           },
           onError: (err: { message: string }) => {
             if (err.message == "No valid gas coins found for the transaction.") {
@@ -224,7 +221,6 @@ export default function BusinessProfilePage() {
           },
         }
       );
-      console.log("executedf");
     } catch (err) {
       console.error('Error preparing transaction:', err);
     }

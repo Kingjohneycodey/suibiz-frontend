@@ -41,7 +41,7 @@ export const Hero = () => {
                 </Button>
               </Link>
             ) : (
-              <Link href="/business/create">
+              <a href="/business/create">
                 <Button
                   size="lg"
                   variant="outline"
@@ -49,7 +49,7 @@ export const Hero = () => {
                 >
                   Start Selling
                 </Button>
-              </Link>
+              </a>
             )}
           </div>
 
