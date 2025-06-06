@@ -3,236 +3,244 @@
 import { useState, ChangeEvent, FormEvent, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { useCurrentAccount } from '@mysten/dapp-kit';
+import { useCurrentAccount, useSignAndExecuteTransaction } from '@mysten/dapp-kit';
 import { toast } from 'react-hot-toast';
-import Cookies from 'js-cookie';
-import { useUserStore } from '../../../../stores/userStore';
+import { useUserStore } from '../../../../../stores/userStore';
+import { storeDataToWalrus, storeFileToWalrus } from '@/utils/walrus';
+import { TransactionBlock } from '@mysten/sui.js/transactions';
 
 type BusinessFormData = {
-    name: string;
-    username: string;
-    bio: string;
-    avatar_url: string;
-    address: string;
+  name: string;
+  username: string;
+  bio: string;
+  avatar_url: string;
+  address: string;
 };
 
 const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
 const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
 export default function BusinessProfilePage() {
-    const router = useRouter();
-    const [uploading, setUploading] = useState(false);
-    const setUser = useUserStore(state => state.setUser);
-    const [formData, setFormData] = useState<BusinessFormData>({
-        name: '',
-        username: '',
-        bio: '',
-        avatar_url: '',
-        address: '',
+  const router = useRouter();
+  const [uploading, setUploading] = useState(false);
+  const setUser = useUserStore(state => state.setUser);
+  const [formData, setFormData] = useState<BusinessFormData>({
+    name: '',
+    username: '',
+    bio: '',
+    avatar_url: '',
+    address: '',
+  });
+  const [loading, setLoading] = useState(false);
+  const currentAccount = useCurrentAccount();
+  const [avatarPreview, setAvatarPreview] = useState<string>('');
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+
+  const { mutate: signAndExecuteTransaction } = useSignAndExecuteTransaction();
+
+  useEffect(() => {
+    console.log('Current wallet connection status:', {
+      currentAccount
     });
-    const [token, setToken] = useState<string | undefined>(undefined);
-    const [loading, setLoading] = useState(false);
-    const currentAccount = useCurrentAccount();
-    const [avatarPreview, setAvatarPreview] = useState<string>('');
-    const [avatarFile, setAvatarFile] = useState<File | null>(null);
-    const [storageData, setStorageData] = useState<any>(null);
+  }, [currentAccount]);
 
-    useEffect(() => {
-        console.log('Current wallet connection status:', {
-            currentAccount
-        });
-    }, [currentAccount]);
+  useEffect(() => {
+    try {
+      const storedData = sessionStorage.getItem('@enoki/flow/state/enoki_public_e5a1d53741cdbe61403b4c6de297ca10/testnet');
+      if (storedData) {
+        const parsedData = JSON.parse(storedData);
+        console.log('Session storage data:', parsedData);
 
-    useEffect(() => {
-      router.push("/business/orders")
-        const authToken = Cookies.get('auth_token');
-        setToken(authToken);
+        setFormData(prev => ({
+          ...prev,
+          address: parsedData?.address || currentAccount?.address || ''
+        }));
+      }
+    } catch (error) {
+      console.error('Error parsing session storage data:', error);
+      toast.error('Failed to load wallet data');
+    }
+  }, []);
 
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const validateFile = (file: File): boolean => {
+    if (!ALLOWED_FILE_TYPES.includes(file.type)) {
+      toast.error('Only JPEG, PNG, and WebP images are allowed');
+      console.log("error")
+      return false;
+    }
+    if (file.size > MAX_FILE_SIZE) {
+      toast.error('Image size should be less than 2MB');
+      console.log("error")
+      return false;
+    }
+    return true;
+  };
+
+  const handleAvatarChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!validateFile(file)) return;
+
+    setAvatarFile(file);
+
+    const reader = new FileReader();
+    reader.onloadstart = () => {
+      setUploading(true);
+    };
+    reader.onloadend = () => {
+      const result = reader.result as string;
+      setAvatarPreview(result);
+      setUploading(false);
+    };
+    reader.onerror = () => {
+      toast.error('Error reading file');
+      setUploading(false);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const validateForm = (): boolean => {
+    if (!formData.name.trim()) {
+      toast.error('Business name is required');
+      return false;
+    }
+    if (!formData.username.trim()) {
+      toast.error('Username is required');
+      return false;
+    }
+    if (!formData.address.trim()) {
+      toast.error('Wallet address is required');
+      return false;
+    }
+    return true;
+  };
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    console.log("ew")
+
+    if (!validateForm()) return;
+
+    console.log("ew1")
+
+    try {
+      setLoading(true);
+
+      const walletAddress = formData.address;
+      if (!walletAddress) {
+        throw new Error('No wallet address available');
+      }
+
+      let avatarUrl = formData.avatar_url;
+      if (avatarFile) {
         try {
-            // const storedData = sessionStorage.getItem('@enoki/flow/state/enoki_public_e5a1d53741cdbe61403b4c6de297ca10/testnet');
-            // if (storedData) {
-            //     const parsedData = JSON.parse(storedData);
-            //     setStorageData(parsedData);
-            //     console.log('Session storage data:', parsedData);
-                
-            //     setFormData(prev => ({
-            //         ...prev,
-            //         address: parsedData?.address || currentAccount?.address || ''
-            //     }));
-            // }
+          avatarUrl = await storeFileToWalrus(avatarFile, formData.address);
+          console.log(avatarUrl)
+          setFormData(prev => ({ ...prev, avatar_url: avatarUrl }));
         } catch (error) {
-            console.error('Error parsing session storage data:', error);
-            toast.error('Failed to load wallet data');
+          toast.error('Failed to upload avatar');
+          console.error(error);
+          return;
         }
-    }, []);
-  
-    const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      const { name, value } = e.target;
-      setFormData(prev => ({
-        ...prev,
-        [name]: value
-      }));
-    };
-  
-    const validateFile = (file: File): boolean => {
-      if (!ALLOWED_FILE_TYPES.includes(file.type)) {
-        toast.error('Only JPEG, PNG, and WebP images are allowed');
-        return false;
       }
-      if (file.size > MAX_FILE_SIZE) {
-        toast.error('Image size should be less than 2MB');
-        return false;
-      }
-      return true;
-    };
-  
-    const uploadToCloudinary = async (file: File): Promise<string> => {
-      if (!process.env.NEXT_PUBLIC_CLOUDE_NAME) {
-        throw new Error('Cloudinary configuration missing');
-      }
-  
-      const uploadData = new FormData();
-      uploadData.append('file', file);
-      uploadData.append('upload_preset', 'productimage');
-      uploadData.append('cloud_name', process.env.NEXT_PUBLIC_CLOUDE_NAME);
-  
-      try {
-        const res = await fetch(
-          `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDE_NAME}/image/upload`,
-          {
-            method: 'POST',
-            body: uploadData,
-          }
-        );
-  
-        if (!res.ok) {
-          const errorData = await res.json();
-          throw new Error(errorData.message || 'Upload failed');
-        }
-  
-        const data = await res.json();
-        return data.secure_url;
-      } catch (err) {
-        console.error('Upload error:', err);
-        throw new Error('Failed to upload image');
-      }
-    };
-  
-    const handleAvatarChange = (e: ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0];
-      if (!file) return;
-  
-      if (!validateFile(file)) return;
-  
-      setAvatarFile(file);
-  
-      const reader = new FileReader();
-      reader.onloadstart = () => {
-        setUploading(true);
+
+      const payload = {
+        address: "0x0",
+        role: "business",
+        bio: formData.bio,
+        username: formData.username,
+        name: formData.name,
+        photo: avatarUrl
       };
-      reader.onloadend = () => {
-        const result = reader.result as string;
-        setAvatarPreview(result);
-        setUploading(false);
-      };
-      reader.onerror = () => {
-        toast.error('Error reading file');
-        setUploading(false);
-      };
-      reader.readAsDataURL(file);
-    };
-  
-    const validateForm = (): boolean => {
-      if (!formData.name.trim()) {
-        toast.error('Business name is required');
-        return false;
-      }
-      if (!formData.username.trim()) {
-        toast.error('Username is required');
-        return false;
-      }
-      if (!formData.address.trim()) {
-        toast.error('Wallet address is required');
-        return false;
-      }
-      if (!token) {
-        toast.error('Authentication token missing');
-        return false;
-      }
-      return true;
-    };
-  
-    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-  
-      if (!validateForm()) return;
-  
-      try {
-        setLoading(true);
-  
-        // const walletAddress = currentAccount?.address || storageData?.address || formData.address;
-        // if (!walletAddress) {
-        //   throw new Error('No wallet address available');
-        // }
-  
-        let avatarUrl = formData.avatar_url;
-        if (avatarFile) {
-          try {
-            avatarUrl = await uploadToCloudinary(avatarFile);
-            setFormData(prev => ({ ...prev, avatar_url: avatarUrl }));
-          } catch (error) {
-            toast.error('Failed to upload avatar');
-            console.error(error);
-            return;
-          }
-        }
-  
-        const payload = {
-          authToken: token,
-          walletAddress: "0x0",
-          userType: "user",
-          bio: formData.bio,
-          username: formData.username,
-          name: formData.name,
-          avatarUrl: avatarUrl
-        };
-  
-        console.log('Submitting form with payload:', payload);
-  
-        if (!process.env.NEXT_PUBLIC_BACKEND_URL) {
-          throw new Error('Backend URL not configured');
-        }
-  
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/signup`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
+
+      console.log('Submitting form with payload:', payload);
+
+      const data = await storeDataToWalrus(payload, formData.address);
+
+
+      console.log("success", data)
+
+      await handleListItem({ metadata_uri: data, role: payload.role })
+
+
+
+      // setUser({
+      //   id: result.id,
+      //   name: formData.name,
+      // });
+      // router.push('/business');
+    } catch (err) {
+      console.warn('Submission error:', err);
+      toast.error(err instanceof Error ? err.message : 'Error creating profile');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  interface HandleListItemParams {
+    metadata_uri: string;
+    role: string;
+  }
+
+  const handleListItem = async ({ metadata_uri, role }: HandleListItemParams): Promise<void> => {
+
+
+    try {
+      console.log("hyello ")
+      const tx = new TransactionBlock();
+      tx.moveCall({
+        target: `${process.env.NEXT_PUBLIC_PACKAGE_ID}::user::create_profile`,
+        arguments: [
+          tx.object(`${process.env.NEXT_PUBLIC_REGISTRY_ID}`),
+          tx.pure(metadata_uri),
+          tx.pure(role)
+        ],
+      });
+
+      signAndExecuteTransaction(
+        {
+          transaction: tx.serialize(),
+          chain: 'sui:testnet', // Adjust to 'sui:testnet' or other network as needed
+        },
+        {
+          onSuccess: (result: { digest: string }) => {
+            // setTransactionStatus(`Transaction successful: ${result.digest}`);
+
+            toast.success('Profile created successfully!');
+
+            router.push('/business');
+            console.log('Transaction Digest:', result.digest);
           },
-          body: JSON.stringify(payload),
-        });
-  
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
-          throw new Error(errorData.message || 'Submission failed');
+          onError: (err: { message: string }) => {
+            // setTransactionStatus(`Transaction failed: ${err.message}`);
+
+            if (err.message == "No valid gas coins found for the transaction.") {
+              toast.error(err.message + "Fund your sui wallet account and try agains")
+            } else {
+              toast.error(err.message)
+            }
+
+
+            console.error('Transaction Error:', err.message);
+          },
         }
-  
-        const result = await response.json();
-        console.log('API response:', result);
-  
-        setUser({
-            id: result.id,
-            name: result.name || formData.name,
-        });
-        
-        toast.success('Profile created successfully!');
-        router.push('/business');
-      } catch (err) {
-        console.error('Submission error:', err);
-        toast.error(err instanceof Error ? err.message : 'Error creating profile');
-      } finally {
-        setLoading(false);
-      }
-    };
+      );
+      console.log("executedf");
+    } catch (err) {
+      // setTransactionStatus('Error preparing transaction.');
+      console.error('Error preparing transaction:', err);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -449,7 +457,7 @@ export default function BusinessProfilePage() {
 
             <div>
 
-  
+
             </div>
             <div>
               <button

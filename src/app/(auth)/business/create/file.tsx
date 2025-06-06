@@ -6,7 +6,7 @@ import Image from 'next/image';
 // import { useCurrentAccount } from '@mysten/dapp-kit';
 import { toast } from 'react-hot-toast';
 import Cookies from 'js-cookie';
-import { useUserStore } from '../../../../stores/userStore';
+import { useUserStore } from '../../../../../stores/userStore';
 
 type BusinessFormData = {
   name: string;
