@@ -1,5 +1,7 @@
+
+
 "use client";
-import LandingPage from "@/components/landing-page";
+
 import dynamic from 'next/dynamic';
 
 const EnokiWrapper = dynamic(() => import('@/components/EnokiWrapper'), {
@@ -8,8 +10,10 @@ const EnokiWrapper = dynamic(() => import('@/components/EnokiWrapper'), {
 
 
 
-export default function Home() {
+export function AuthProviders({ children }: { children: React.ReactNode }) {
   return (
-      <LandingPage />
+    <EnokiWrapper>
+{children}
+    </EnokiWrapper>
   );
 }

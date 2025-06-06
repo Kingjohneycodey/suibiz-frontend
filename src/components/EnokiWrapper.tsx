@@ -3,6 +3,7 @@ import {
 	createNetworkConfig,
 	SuiClientProvider,
 	useSuiClientContext,
+	WalletProvider,
 	// WalletProvider,
 } from '@mysten/dapp-kit';
 import { isEnokiNetwork, registerEnokiWallets } from '@mysten/enoki';
@@ -28,9 +29,9 @@ export default function EnokiWrapper({ children }: EnokiWrapperProps) {
         <QueryClientProvider client={queryClient}>
         <SuiClientProvider networks={networkConfig} defaultNetwork="testnet">
             <RegisterEnokiWallets />
-            {/* <WalletProvider autoConnect> */}
+            <WalletProvider autoConnect>
                 {children}
-            {/* </WalletProvider> */}
+            </WalletProvider>
         </SuiClientProvider>
         </QueryClientProvider>
     );
@@ -42,12 +43,14 @@ function RegisterEnokiWallets() {
 	useEffect(() => {
 		if (!isEnokiNetwork(network)) return;
 
+		console.log(process.env.NEXT_PUBLIC_NEXT_AUTH_URL)
+
 		const { unregister } = registerEnokiWallets({
 			apiKey: process.env.NEXT_PUBLIC_ENOKI_API_KEY || '',
 			providers: {
 				google: {
 					clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '',
-                    redirectUrl: `${process.env.NEXT_PUBLIC_NEXT_AUTH_URL}/api/auth/callback/google`,
+                    redirectUrl: `${process.env.NEXT_PUBLIC_NEXT_AUTH_URL}/callback`,
 				},
 			},
 			client,

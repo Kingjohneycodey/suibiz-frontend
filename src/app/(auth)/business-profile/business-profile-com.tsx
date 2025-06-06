@@ -32,25 +32,24 @@ export default function BusinessProfilePage() {
     });
     const [token, setToken] = useState<string | undefined>(undefined);
     const [loading, setLoading] = useState(false);
-    // const currentAccount = useCurrentAccount();
+    const currentAccount = useCurrentAccount();
     const [avatarPreview, setAvatarPreview] = useState<string>('');
     const [avatarFile, setAvatarFile] = useState<File | null>(null);
     const [storageData, setStorageData] = useState<any>(null);
 
-    // useEffect(() => {
-    //     console.log('Current wallet connection status:', {
-    //         isConnected: !!currentAccount,
-    //         address: currentAccount?.address,
-    //         chains: currentAccount?.chains
-    //     });
-    // }, [currentAccount]);
+    useEffect(() => {
+        console.log('Current wallet connection status:', {
+            currentAccount
+        });
+    }, [currentAccount]);
 
     useEffect(() => {
+      router.push("/business/orders")
         const authToken = Cookies.get('auth_token');
         setToken(authToken);
 
         try {
-            // const storedData = sessionStorage.getItem('@enoki/flow/state/enoki_public_9a3de95df9a16f168ba9ebf1cc36cc1d/testnet');
+            // const storedData = sessionStorage.getItem('@enoki/flow/state/enoki_public_e5a1d53741cdbe61403b4c6de297ca10/testnet');
             // if (storedData) {
             //     const parsedData = JSON.parse(storedData);
             //     setStorageData(parsedData);
@@ -65,7 +64,7 @@ export default function BusinessProfilePage() {
             console.error('Error parsing session storage data:', error);
             toast.error('Failed to load wallet data');
         }
-    }, []); //the dependency should be currentWallet.
+    }, []);
   
     const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       const { name, value } = e.target;
@@ -445,6 +444,12 @@ export default function BusinessProfilePage() {
                 />
               </div>
               <p className="mt-1 text-xs text-gray-500">Connected wallet address</p>
+            </div>
+
+
+            <div>
+
+  
             </div>
             <div>
               <button

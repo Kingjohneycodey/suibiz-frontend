@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import SessionProvider from "@/components/dashboard/session/page";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import EnokiWrapper from "@/components/EnokiWrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,6 +19,8 @@ export const metadata: Metadata = {
   description: "Web3 Marketplace & Service Booking Platform",
 };
 
+const queryClient = new QueryClient();
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -29,9 +32,9 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         
       >
-        <SessionProvider>
+          <EnokiWrapper>
           {children}
-        </SessionProvider>
+        </EnokiWrapper>
       </body>
 
     </html>

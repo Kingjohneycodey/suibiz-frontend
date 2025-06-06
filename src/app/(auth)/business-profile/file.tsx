@@ -42,7 +42,7 @@ export default function BusinessProfilePage() {
     setToken(authToken);
 
     try {
-      const storedData = sessionStorage.getItem('@enoki/flow/state/enoki_public_9a3de95df9a16f168ba9ebf1cc36cc1d/testnet');
+      const storedData = sessionStorage.getItem('@enoki/flow/state/enoki_public_e5a1d53741cdbe61403b4c6de297ca10/testnet');
       if (storedData) {
         const parsedData = JSON.parse(storedData);
         setStorageData(parsedData);

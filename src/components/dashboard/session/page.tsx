@@ -14,7 +14,7 @@ export default function SessionProvider({ children }: { children: React.ReactNod
 
     const session = sessionStorage
 
-    const exist = session.getItem('@enoki/flow/session/enoki_public_9a3de95df9a16f168ba9ebf1cc36cc1d/testnet')
+    const exist = session.getItem('@enoki/flow/session/enoki_public_e5a1d53741cdbe61403b4c6de297ca10/testnet')
     console.log("here-->>")
     console.log({ exist })
     return (

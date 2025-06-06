@@ -1,5 +1,6 @@
 "use client";
-import { useState } from 'react';
+import { useCurrentAccount } from '@mysten/dapp-kit';
+import { useEffect, useState } from 'react';
 import { FiPackage, FiCheckCircle, FiTruck, FiClock, FiSearch, FiFilter, FiUser, FiX, FiShoppingBag } from 'react-icons/fi';
 
 type OrderStatus = 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
@@ -25,6 +26,14 @@ interface Order {
 }
 
 const OrdersManagement = () => {
+   const currentAccount = useCurrentAccount();
+
+        useEffect(() => {
+            console.log('Current wallet connection status:', {
+                currentAccount
+            });
+        }, [currentAccount]);
+
     const [orders, setOrders] = useState<Order[]>([
         {
             id: '#ORD-001',
@@ -94,6 +103,8 @@ const OrdersManagement = () => {
         setSelectedOrder(null);
         document.body.style.overflow = 'auto';
     };
+
+
 
     const filteredOrders = orders.filter(order => {
         const matchesSearch = 

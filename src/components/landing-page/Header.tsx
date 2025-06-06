@@ -153,7 +153,7 @@ export const Header = () => {
               )}
             </form>
 
-            {user ? (
+            {/* {user ? (
               <div className="flex items-center space-x-3">
                 <ConnectButton 
                   className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium rounded-lg shadow-sm"
@@ -173,7 +173,11 @@ export const Header = () => {
               >
                 Sign in
               </Button>
-            )}
+            )} */}
+
+             <ConnectButton 
+                  className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium rounded-lg shadow-sm"
+                />
           </div>
 
           {/* Mobile Menu Button */}
@@ -249,7 +253,7 @@ export const Header = () => {
               </nav>
 
               <div className="pt-2 space-y-2">
-                {user ? (
+                {/* {user ? (
                   <>
                     <ConnectButton 
                       className="w-full justify-center bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium rounded-lg shadow-sm"
@@ -269,7 +273,12 @@ export const Header = () => {
                   >
                     Sign in
                   </Button>
-                )}
+                )} */}
+
+
+                 <ConnectButton 
+                      className="w-full justify-center bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium rounded-lg shadow-sm"
+                    />
               </div>
             </div>
           </div>
