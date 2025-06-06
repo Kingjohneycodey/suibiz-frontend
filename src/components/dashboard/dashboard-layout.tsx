@@ -17,6 +17,8 @@ export default function DashboardLayout({
     const { darkMode, toggleDarkMode } = useDarkMode();
     const { isMobile } = useMobileDetection();
 
+    console.log(darkMode)
+
     useEffect(() => {
         if (isMobile) {
             setIsCollapsed(true);

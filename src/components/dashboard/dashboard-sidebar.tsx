@@ -25,7 +25,6 @@ export default function DashboardSidebar({
 
     return (
         <>
-            {/* Backdrop overlay for mobile */}
             {isMobile && !isCollapsed && (
                 <div 
                     className="fixed inset-0 bg-black/50 z-40 lg:hidden"
@@ -41,7 +40,6 @@ export default function DashboardSidebar({
                 `}
             >
                 <div className="flex flex-col h-full p-4">
-                    {/* Mobile close button */}
                     {isMobile && !isCollapsed && (
                         <button
                             onClick={toggleSidebar}
@@ -51,7 +49,6 @@ export default function DashboardSidebar({
                         </button>
                     )}
 
-                    {/* Desktop toggle button */}
                     {!isMobile && (
                         <div className="flex justify-end mb-4">
                             <button 
@@ -67,7 +64,6 @@ export default function DashboardSidebar({
                         </div>
                     )}
 
-                    {/* Navigation items */}
                     <nav className="flex-1 mt-10">
                         <ul className="space-y-2">
                             {navItems.map((item) => (                    
@@ -76,7 +72,7 @@ export default function DashboardSidebar({
                                         href={item.href}
                                         className={`flex items-center p-3 rounded-lg transition-colors ${
                                             isActive(item.href)
-                                            ? 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300' 
+                                            ? 'bg-blue-100 dark:bg-purple-900 text-purple-600 dark:text-purple-300' 
                                             : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300'
                                         }`}
                                     >

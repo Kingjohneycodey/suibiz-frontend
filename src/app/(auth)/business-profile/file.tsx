@@ -3,7 +3,7 @@
 import { useState, ChangeEvent, FormEvent, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { useCurrentAccount } from '@mysten/dapp-kit';
+// import { useCurrentAccount } from '@mysten/dapp-kit';
 import { toast } from 'react-hot-toast';
 import Cookies from 'js-cookie';
 import { useUserStore } from '../../../../stores/userStore';
@@ -32,7 +32,7 @@ export default function BusinessProfilePage() {
   });
   const [token, setToken] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState(false);
-  const currentAccount = useCurrentAccount();
+  // const currentAccount = useCurrentAccount();
   const [avatarPreview, setAvatarPreview] = useState<string>('');
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [storageData, setStorageData] = useState<any>(null);

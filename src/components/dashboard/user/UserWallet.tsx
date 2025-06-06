@@ -2,21 +2,10 @@
 import { useState, useEffect, useMemo } from 'react';
 import { ArrowDown, ArrowUp, Search, Filter, ChevronDown, Plus, Minus, Clock, CheckCircle, Loader2 } from 'lucide-react';
 import Image from 'next/image';
+import { Transaction, UserWalletProps } from '../../../../types/wallet';
 
-type Transaction = {
-    id: number;
-    invoiceId: string;
-    name: string;
-    type: 'deposit' | 'withdrawal' | 'escrow';
-    amount: number;
-    currency: 'SUI' | 'USDC';
-    date: string;
-    status: 'completed' | 'pending';
-};
 
-const UserWallet = () => {
-    const balance = 2450.75;
-    const [transactions, setTransactions] = useState<Transaction[]>([]);
+const UserWallet = ({ transactions, balance }: UserWalletProps) => {
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [sortConfig, setSortConfig] = useState<{ key: keyof Transaction; direction: 'asc' | 'desc' } | null>(null);
     type StatusFilter = 'all' | 'completed' | 'pending';
@@ -28,58 +17,6 @@ const UserWallet = () => {
     useEffect(() => {
         setIsLoading(true);
         setTimeout(() => {
-            setTransactions([
-                { 
-                    id: 1, 
-                    invoiceId: 'INV-2023-001', 
-                    name: 'Service Payment', 
-                    type: 'deposit', 
-                    amount: 1000, 
-                    currency: 'SUI', 
-                    date: '2023-05-15', 
-                    status: 'completed' 
-                },
-                { 
-                    id: 2, 
-                    invoiceId: 'INV-2023-002', 
-                    name: 'Withdrawal Request', 
-                    type: 'withdrawal', 
-                    amount: 250, 
-                    currency: 'USDC', 
-                    date: '2023-05-10', 
-                    status: 'completed' 
-                },
-                { 
-                    id: 3, 
-                    invoiceId: 'INV-2023-003', 
-                    name: 'Escrow Deposit', 
-                    type: 'escrow', 
-                    amount: 500, 
-                    currency: 'SUI', 
-                    date: '2023-05-05', 
-                    status: 'pending' 
-                },
-                { 
-                    id: 4, 
-                    invoiceId: 'INV-2023-004', 
-                    name: 'Freelance Work', 
-                    type: 'deposit', 
-                    amount: 750, 
-                    currency: 'USDC', 
-                    date: '2023-05-20', 
-                    status: 'completed' 
-                },
-                { 
-                    id: 5, 
-                    invoiceId: 'INV-2023-005', 
-                    name: 'Platform Fee', 
-                    type: 'withdrawal', 
-                    amount: 50, 
-                    currency: 'SUI', 
-                    date: '2023-05-18', 
-                    status: 'completed' 
-                },
-            ]);
             setIsLoading(false);
         }, 1000);
     }, []);
@@ -151,7 +88,7 @@ const UserWallet = () => {
                 <div className="flex gap-3 w-full sm:w-auto">
                 <button 
                     onClick={handleDeposit}
-                    className="flex items-center justify-center gap-2 px-4 py-2.5 w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200"
+                    className="flex items-center justify-center gap-2 px-4 py-2.5 w-full sm:w-auto bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors duration-200"
                 >
                     <Plus className="w-5 h-5" />
                     <span>Deposit</span>
@@ -166,7 +103,7 @@ const UserWallet = () => {
                 </div>
             </div>
         
-            <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-6 rounded-xl shadow-lg text-white">
+            <div className="bg-gradient-to-r from-purple-900 to-indigo-700 p-6 rounded-xl shadow-lg text-white">
                 <div className="flex justify-between items-start">
                 <div>
                     <h2 className="text-sm font-medium opacity-80">Total Balance</h2>

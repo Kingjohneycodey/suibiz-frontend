@@ -51,7 +51,6 @@ const AboutSection = () => {
                         </div>
                     </div>
                 </div>
-
                 <div className="relative py-16 -mt-12 z-20">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">

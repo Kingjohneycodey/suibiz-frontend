@@ -9,5 +9,6 @@ export async function GET(request: NextRequest) {
     const response: ApiResponse<{ user: SessionUser | null }> = {
         data: { user: session },
     };
+    console.log(session)
     return NextResponse.json(response);
 }

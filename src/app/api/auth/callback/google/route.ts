@@ -24,9 +24,9 @@ export async function GET(request: Request) {
             },
             body: JSON.stringify({
                 client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
-                client_secret: process.env.GOOGLE_CLIENT_SECRET,
+                client_secret: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET,
                 code,
-                redirect_uri: `${process.env.NEXTAUTH_URL}/api/auth/callback/google`,
+                redirect_uri: `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/api/auth/callback/google`,
                 grant_type: 'authorization_code',
             }),
         });
@@ -59,11 +59,10 @@ export async function GET(request: Request) {
 
         const token = jwt.sign(
             sessionUser,
-            process.env.JWT_SECRET,
-            { expiresIn: '1h' }
+            process.env.NEXT_PUBLIC_JWT_SECRET,
+            { expiresIn: '30d' }
         );
 
-        // Create response
         const response = NextResponse.redirect(new URL('/', request.url));
 
         // Set cookies
@@ -72,7 +71,7 @@ export async function GET(request: Request) {
             value: token,
             path: '/',
             httpOnly: false,
-            secure: process.env.NODE_ENV === 'production',
+            secure: process.env.NEXT_PUBLIC_NODE_ENV === 'production',
             sameSite: 'lax',
             maxAge: 60 * 60, // 1 hour
         });

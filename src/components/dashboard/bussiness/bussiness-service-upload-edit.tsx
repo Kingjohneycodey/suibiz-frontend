@@ -241,180 +241,183 @@ export default function ServiceSessionUpload() {
     };
 
     return (
-        <div className="max-w-4xl p-5 mt-5 bg-white rounded-lg shadow-md">
-            <h1 className="text-2xl font-bold text-gray-800 mb-6">
+        <aside className='dark:bg-gray-800'>
+            <div className="max-w-4xl p-5 bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-700/50">
+            <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6">
                 {isEditing ? 'Edit Service Session' : 'Create New Service Session'}
             </h1>
             
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
-                    Session Title *
-                </label>
-                <input
-                    type="text"
-                    id="title"
-                    name="title"
-                    value={formData.title}
-                    onChange={handleInputChange}
-                    className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                    errors.title ? 'border-red-500' : 'border-gray-300'
-                    }`}
-                    disabled={isLoading}
-                />
-                {errors.title && <p className="mt-1 text-sm text-red-600">{errors.title}</p>}
+                    <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        Session Title *
+                    </label>
+                    <input
+                        type="text"
+                        id="title"
+                        name="title"
+                        value={formData.title}
+                        onChange={handleInputChange}
+                        className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-600 dark:focus:border-blue-600 ${
+                            errors.title ? 'border-red-500 dark:border-red-400' : 'border-gray-300 dark:border-gray-600'
+                        } dark:bg-gray-700 dark:text-gray-200`}
+                        disabled={isLoading}
+                    />
+                    {errors.title && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.title}</p>}
                 </div>
                 
                 <div>
-                <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
-                    Description *
-                </label>
-                <textarea
-                    id="description"
-                    name="description"
-                    rows={4}
-                    value={formData.description}
-                    onChange={handleInputChange}
-                    className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                    errors.description ? 'border-red-500' : 'border-gray-300'
-                    }`}
-                    disabled={isLoading}
-                />
-                {errors.description && (
-                    <p className="mt-1 text-sm text-red-600">{errors.description}</p>
-                )}
+                    <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        Description *
+                    </label>
+                    <textarea
+                        id="description"
+                        name="description"
+                        rows={4}
+                        value={formData.description}
+                        onChange={handleInputChange}
+                        className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-600 dark:focus:border-blue-600 ${
+                            errors.description ? 'border-red-500 dark:border-red-400' : 'border-gray-300 dark:border-gray-600'
+                        } dark:bg-gray-700 dark:text-gray-200`}
+                        disabled={isLoading}
+                    />
+                    {errors.description && (
+                        <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.description}</p>
+                    )}
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label htmlFor="duration" className="block text-sm font-medium text-gray-700 mb-1">
-                    Duration (minutes) *
-                    </label>
-                    <input
-                    type="text"
-                    id="duration"
-                    name="duration"
-                    value={formData.duration}
-                    onChange={handleInputChange}
-                    className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                        errors.duration ? 'border-red-500' : 'border-gray-300'
-                    }`}
-                    disabled={isLoading}
-                    />
-                    {errors.duration && <p className="mt-1 text-sm text-red-600">{errors.duration}</p>}
+                    <div>
+                        <label htmlFor="duration" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            Duration (minutes) *
+                        </label>
+                        <input
+                            type="text"
+                            id="duration"
+                            name="duration"
+                            value={formData.duration}
+                            onChange={handleInputChange}
+                            className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-600 dark:focus:border-blue-600 ${
+                                errors.duration ? 'border-red-500 dark:border-red-400' : 'border-gray-300 dark:border-gray-600'
+                            } dark:bg-gray-700 dark:text-gray-200`}
+                            disabled={isLoading}
+                        />
+                        {errors.duration && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.duration}</p>}
+                    </div>
+                    
+                    <div>
+                        <label htmlFor="price" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            Price *
+                        </label>
+                        <div className="relative">
+                            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500 dark:text-gray-400">
+                                $
+                            </span>
+                            <input
+                                type="text"
+                                id="price"
+                                name="price"
+                                value={formData.price}
+                                onChange={handleInputChange}
+                                className={`w-full pl-8 px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-600 dark:focus:border-blue-600 ${
+                                    errors.price ? 'border-red-500 dark:border-red-400' : 'border-gray-300 dark:border-gray-600'
+                                } dark:bg-gray-700 dark:text-gray-200`}
+                                disabled={isLoading}
+                            />
+                        </div>
+                        {errors.price && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.price}</p>}
+                    </div>
                 </div>
                 
                 <div>
-                    <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">
-                    Price *
+                    <label htmlFor="serviceId" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        Associated Service *
                     </label>
-                    <div className="relative">
-                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
-                        $
-                    </span>
-                    <input
-                        type="text"
-                        id="price"
-                        name="price"
-                        value={formData.price}
+                    <select
+                        id="serviceId"
+                        name="serviceId"
+                        value={formData.serviceId}
                         onChange={handleInputChange}
-                        className={`w-full pl-8 px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                        errors.price ? 'border-red-500' : 'border-gray-300'
-                        }`}
+                        className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-600 dark:focus:border-blue-600 ${
+                            errors.serviceId ? 'border-red-500 dark:border-red-400' : 'border-gray-300 dark:border-gray-600'
+                        } dark:bg-gray-700 dark:text-gray-200`}
+                        disabled={isLoading}
+                    >
+                        <option value="">Select a service</option>
+                        {services.map(service => (
+                            <option key={service.id} value={service.id}>
+                                {service.name}
+                            </option>
+                        ))}
+                    </select>
+                    {errors.serviceId && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.serviceId}</p>}
+                </div>
+                
+                <div>
+                    <label htmlFor="image" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        Session Image {!isEditing && '*'}
+                    </label>
+                    
+                    {formData.imagePreview ? (
+                        <div className="mb-4">
+                            <Image
+                                src={formData.imagePreview}
+                                alt="Session preview"
+                                width={160}
+                                height={160}
+                                className="h-40 w-40 object-cover rounded-md border border-gray-300 dark:border-gray-600"
+                            />
+                        </div>
+                    ) : null}
+                    
+                    <input
+                        type="file"
+                        id="image"
+                        name="image"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        className={`block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold ${
+                            errors.image ? 'file:bg-red-50 dark:file:bg-red-900/20 file:text-red-700 dark:file:text-red-400' 
+                            : 'file:bg-blue-50 dark:file:bg-blue-900/20 file:text-blue-700 dark:file:text-blue-400'
+                        } file:hover:cursor-pointer dark:file:hover:bg-gray-700`}
                         disabled={isLoading}
                     />
-                    </div>
-                    {errors.price && <p className="mt-1 text-sm text-red-600">{errors.price}</p>}
-                </div>
-                </div>
-                
-                <div>
-                <label htmlFor="serviceId" className="block text-sm font-medium text-gray-700 mb-1">
-                    Associated Service *
-                </label>
-                <select
-                    id="serviceId"
-                    name="serviceId"
-                    value={formData.serviceId}
-                    onChange={handleInputChange}
-                    className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                    errors.serviceId ? 'border-red-500' : 'border-gray-300'
-                    }`}
-                    disabled={isLoading}
-                >
-                    <option value="">Select a service</option>
-                    {services.map(service => (
-                    <option key={service.id} value={service.id}>
-                        {service.name}
-                    </option>
-                    ))}
-                </select>
-                {errors.serviceId && <p className="mt-1 text-sm text-red-600">{errors.serviceId}</p>}
-                </div>
-                
-                <div>
-                <label htmlFor="image" className="block text-sm font-medium text-gray-700 mb-1">
-                    Session Image {!isEditing && '*'}
-                </label>
-                
-                {formData.imagePreview ? (
-                    <div className="mb-4">
-                    <Image
-                        src={formData.imagePreview}
-                        alt="Session preview"
-                        width={160}
-                        height={160}
-                        className="h-40 w-40 object-cover rounded-md border border-gray-300"
-                    />
-                    </div>
-                ) : null}
-                
-                <input
-                    type="file"
-                    id="image"
-                    name="image"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    className={`block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold ${
-                    errors.image ? 'file:bg-red-50 file:text-red-700' : 'file:bg-blue-50 file:text-blue-700'
-                    } file:hover:cursor-pointer`}
-                    disabled={isLoading}
-                />
-                {errors.image && <p className="mt-1 text-sm text-red-600">{errors.image}</p>}
-                <p className="mt-1 text-xs text-gray-500">Upload a high-quality image (max 5MB)</p>
+                    {errors.image && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.image}</p>}
+                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Upload a high-quality image (max 5MB)</p>
                 </div>
                 
                 {/* Form Actions */}
                 <div className="flex justify-end space-x-4 pt-4">
-                <button
-                    type="button"
-                    onClick={() => router.push('/dashboard/service-sessions')}
-                    className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    disabled={isLoading}
-                >
-                    Cancel
-                </button>
-                <button
-                    type="submit"
-                    className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
-                    disabled={isLoading}
-                >
-                    {isLoading ? (
-                    <span className="flex items-center">
-                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        {isEditing ? 'Updating...' : 'Creating...'}
-                    </span>
-                    ) : isEditing ? (
-                    'Update Session'
-                    ) : (
-                    'Create Session'
-                    )}
-                </button>
+                    <button
+                        type="button"
+                        onClick={() => router.push('/dashboard/service-sessions')}
+                        className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800"
+                        disabled={isLoading}
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        type="submit"
+                        className="px-6 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-md hover:bg-blue-700 dark:hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 disabled:opacity-50"
+                        disabled={isLoading}
+                    >
+                        {isLoading ? (
+                            <span className="flex items-center">
+                                <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                {isEditing ? 'Updating...' : 'Creating...'}
+                            </span>
+                        ) : isEditing ? (
+                            'Update Session'
+                        ) : (
+                            'Create Session'
+                        )}
+                    </button>
                 </div>
             </form>
-        </div>
+            </div>
+        </aside>
     );
 }

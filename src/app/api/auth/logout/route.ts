@@ -1,8 +1,11 @@
-// app/api/auth/logout/route.ts
 import { NextResponse } from 'next/server';
 
-export function GET() {
-    const response = NextResponse.redirect(new URL('/', '/'));
-    response.cookies.delete('auth_token');
+export async function GET() {
+    const response = NextResponse.redirect(new URL('/', process.env.NEXT_PUBLIC_NEXTAUTH_URL));
+    response.cookies.set('auth_token', '', {
+        httpOnly: true,
+        expires: new Date(0),
+        path: '/',
+    });
     return response;
 }

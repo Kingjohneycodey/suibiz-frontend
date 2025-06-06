@@ -68,13 +68,6 @@ const statusText: Record<BookingStatus, string> = {
     pending: 'Pending'
 };
 
-const serviceIcons: Record<string, React.ReactElement> = {
-    'hair': <Scissors className="size-5 text-purple-500" />,
-    'fitness': <Dumbbell className="size-5 text-blue-500" />,
-    'spa': <Flame className="size-5 text-pink-500" />,
-    'tech': <Smartphone className="size-5 text-cyan-500" />,
-    'default': <User className="size-5 text-gray-500" />
-};
 
 const BookingsDashboard = () => {
     const [bookings, setBookings] = useState<Booking[]>([]);
@@ -262,10 +255,6 @@ const BookingsDashboard = () => {
         ));
     };
 
-    const getServiceIcon = (category: string) => {
-        return serviceIcons[category] || serviceIcons['default'];
-    };
-
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleDateString('en-US', {
             weekday: 'short',
@@ -293,7 +282,7 @@ const BookingsDashboard = () => {
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 dark:bg-gray-900 h-full">
             {rescheduleModal.open && (
-                <div className="fixed inset-0 bg-opacity-50 flex items-center justify-center z-50">
+                <div className="fixed bg-opacity-50 flex items-center justify-center z-50">
                     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-full max-w-md">
                         <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Reschedule Booking</h3>
                         
@@ -340,7 +329,7 @@ const BookingsDashboard = () => {
             )}
 
             {selectedBooking && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div className="fixed inset-0 bg-black/60 bg-opacity-50 flex items-center justify-center z-50">
                     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
                         <div className="flex justify-between items-start mb-4">
                             <h3 className="text-lg font-medium text-gray-900 dark:text-white">Booking Details</h3>
@@ -354,7 +343,7 @@ const BookingsDashboard = () => {
                         
                         <div className="space-y-4">
                             <div className="flex items-center gap-3">
-                                {getServiceIcon(selectedBooking.service.category)}
+                                {/* {getServiceIcon(selectedBooking.service.category)} */}
                                 <div>
                                     <h4 className="text-lg font-semibold text-gray-900 dark:text-white">
                                         {selectedBooking.service.name}
@@ -538,7 +527,6 @@ const BookingsDashboard = () => {
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <div className="flex items-center gap-3">
-                                                    {getServiceIcon(booking.service.category)}
                                                     <div>
                                                         <div className="text-sm font-medium text-gray-900 dark:text-white">{booking.service.name}</div>
                                                         <div className="text-xs text-gray-500 dark:text-gray-400">
@@ -628,7 +616,7 @@ const BookingsDashboard = () => {
                                         <div>
                                             <div className="font-medium text-gray-900 dark:text-white">{booking.id}</div>
                                             <div className="text-sm text-gray-500 dark:text-gray-400 mt-1 flex items-center gap-2">
-                                                {getServiceIcon(booking.service.category)}
+                                                {/* {getServiceIcon(booking.service.category)} */}
                                                 {booking.service.name}
                                             </div>
                                         </div>
