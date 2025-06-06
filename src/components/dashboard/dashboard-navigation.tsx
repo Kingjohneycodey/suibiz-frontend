@@ -1,6 +1,9 @@
 "use client";
 import { useState } from 'react';
 import { Menu, Search, Sun, Moon, Bell, User, LogOut } from 'lucide-react';
+import { useUserStore } from '../../../stores/userStore';
+import { useRouter } from 'next/navigation';
+import { User as UserType } from '../../../types/types';
 
 interface DashboardNavigationProps {
     darkMode: boolean;
@@ -17,8 +20,16 @@ export default function DashboardNavigation({
 }: DashboardNavigationProps) {
     const [showProfileDropdown, setShowProfileDropdown] = useState(false);
 
+    const { user, setUser } = useUserStore()
+
+    const router = useRouter()
+
     const handleSignOut = () => {
         console.log('Signing out...');
+        sessionStorage.removeItem('@enoki/flow/session/enoki_public_e5a1d53741cdbe61403b4c6de297ca10/testnet');
+        sessionStorage.removeItem('@enoki/flow/state/enoki_public_e5a1d53741cdbe61403b4c6de297ca10/testnet');
+        setUser({} as UserType)
+        location.href = '/';
         setShowProfileDropdown(false);
     };
 
@@ -79,7 +90,7 @@ export default function DashboardNavigation({
                             </div>
                             {!isCollapsed && (
                                 <span className="text-sm font-medium text-gray-700 dark:text-gray-300 hidden md:inline">
-                                    John Doe
+                                    {user?.username}
                                 </span>
                             )}
                         </button>

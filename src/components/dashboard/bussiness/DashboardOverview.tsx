@@ -10,7 +10,7 @@ type Activity = {
   type: 'payment' | 'service' | 'verification' | 'alert';
 };
 
-const DashboardOverview = () => {
+const BusinessDashboardOverview = () => {
   // Internal state management
   const balance = 2450.75;
   const pendingOrders = 3;
@@ -208,4 +208,4 @@ const DashboardOverview = () => {
   );
 };
 
-export default DashboardOverview;
+export default BusinessDashboardOverview;

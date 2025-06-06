@@ -1,3 +1,4 @@
+// walrus utils functions
 
 export async function storeFileToWalrus(file: File, address: string): Promise<string> {
   const walrusUrl = `https://publisher.walrus-testnet.walrus.space/v1/blobs?epochs=20&send_object_to=${address}`;
@@ -58,4 +59,40 @@ export async function storeDataToWalrus(metadata: Record<string, any>, address: 
   }
 
   return blobId;
+}
+
+export async function fetchDataFromWalrus(blobId: string) {
+  
+
+  const url = `https://aggregator.walrus-testnet.walrus.space/v1/blobs/${blobId}`;
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error('Failed to fetch Walrus aggregator data');
+    }
+    const data = await response.json();
+    console.log(data);
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+export async function fetchDataFromWalrusById(blobId: string) {
+  
+
+  const url = `https://aggregator.walrus-testnet.walrus.space/v1/blobs/by-object-id/${blobId}`;
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error('Failed to fetch Walrus aggregator data');
+    }
+    const data = await response.json();
+    console.log(data);
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 }
