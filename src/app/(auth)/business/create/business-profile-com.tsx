@@ -8,6 +8,7 @@ import { toast } from 'react-hot-toast';
 import { useUserStore } from '../../../../../stores/userStore';
 import { storeDataToWalrus, storeFileToWalrus } from '@/utils/walrus';
 import { TransactionBlock } from '@mysten/sui.js/transactions';
+import { Button } from '@/components/ui/button';
 
 type BusinessFormData = {
   name: string;
@@ -368,7 +369,7 @@ export default function BusinessProfilePage() {
                   onChange={handleChange}
                   required
                   className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2 border"
-                  placeholder="yourusername"
+                  placeholder="your username"
                   disabled={loading}
                 />
               </div>
@@ -461,6 +462,15 @@ export default function BusinessProfilePage() {
                   'Create Profile'
                 )}
               </button>
+
+              <Button 
+              type='button'
+              variant="outline" 
+              onClick={() => router.push("/register")}
+              className="text-slate-600 hover:text-slate-800 mt-8 cursor-pointer"
+            >
+              Back to Register
+            </Button>
             </div>
           </form>
         </div>

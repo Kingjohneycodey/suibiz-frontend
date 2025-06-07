@@ -159,9 +159,18 @@ export default function SingleProductPage() {
           <h2 className="text-2xl font-bold mb-4 text-slate-800">
             Product Not Found
           </h2>
-          <Button onClick={() => router.push("/marketplace")}>
-            Back to Marketplace
-          </Button>
+          <div className="space-y-4">
+            <Button onClick={() => router.push("/marketplace")}>
+              Back to Marketplace
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={() => router.push("/register")}
+              className="ml-4"
+            >
+              Back to Register
+            </Button>
+          </div>
         </div>
         <Footer />
       </div>

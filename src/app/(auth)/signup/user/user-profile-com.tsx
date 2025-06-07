@@ -3,12 +3,14 @@
 import { useState, ChangeEvent, FormEvent, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-// import { useCurrentAccount } from '@mysten/dapp-kit';
+import { useCurrentAccount, useSignAndExecuteTransaction } from '@mysten/dapp-kit';
 import { toast } from 'react-hot-toast';
-import Cookies from 'js-cookie';
 import { useUserStore } from '../../../../../stores/userStore';
+import { storeDataToWalrus, storeFileToWalrus } from '@/utils/walrus';
+import { TransactionBlock } from '@mysten/sui.js/transactions';
+import { Button } from '@/components/ui/button';
 
-type BusinessFormData = {
+type UserFormData = {
   name: string;
   username: string;
   bio: string;
@@ -19,43 +21,55 @@ type BusinessFormData = {
 const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
 const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
-export default function BusinessProfilePage() {
+export default function UserSignup() {
   const router = useRouter();
   const [uploading, setUploading] = useState(false);
   const setUser = useUserStore(state => state.setUser);
-  const [formData, setFormData] = useState<BusinessFormData>({
+  const [formData, setFormData] = useState<UserFormData>({
     name: '',
     username: '',
     bio: '',
     avatar_url: '',
     address: '',
   });
-  const [token, setToken] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState(false);
-  // const currentAccount = useCurrentAccount();
+  const currentAccount = useCurrentAccount();
   const [avatarPreview, setAvatarPreview] = useState<string>('');
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
-  const [storageData, setStorageData] = useState<any>(null);
+
+  const { mutate: signAndExecuteTransaction } = useSignAndExecuteTransaction();
 
   useEffect(() => {
-    const authToken = Cookies.get('auth_token');
-    setToken(authToken);
+    console.log('Current wallet connection status:', {
+      currentAccount
+    });
 
+    if(!currentAccount){
+      router.refresh()
+    }
+  }, [currentAccount]);
+
+  useEffect(() => {
     try {
       const storedData = sessionStorage.getItem('@enoki/flow/state/enoki_public_e5a1d53741cdbe61403b4c6de297ca10/testnet');
       if (storedData) {
         const parsedData = JSON.parse(storedData);
-        setStorageData(parsedData);
+
         setFormData(prev => ({
           ...prev,
-          address: parsedData?.address || ''
+          address: parsedData?.address || currentAccount?.address
+        }));
+      } else if (currentAccount?.address){
+        setFormData(prev => ({
+          ...prev,
+          address: currentAccount?.address || ""
         }));
       }
     } catch (error) {
       console.error('Error parsing session storage data:', error);
       toast.error('Failed to load wallet data');
     }
-  }, []);
+  }, [currentAccount]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -68,45 +82,15 @@ export default function BusinessProfilePage() {
   const validateFile = (file: File): boolean => {
     if (!ALLOWED_FILE_TYPES.includes(file.type)) {
       toast.error('Only JPEG, PNG, and WebP images are allowed');
+      console.log("error")
       return false;
     }
     if (file.size > MAX_FILE_SIZE) {
       toast.error('Image size should be less than 2MB');
+      console.log("error")
       return false;
     }
     return true;
-  };
-
-  const uploadToCloudinary = async (file: File): Promise<string> => {
-    if (!process.env.NEXT_PUBLIC_CLOUDE_NAME) {
-      throw new Error('Cloudinary configuration missing');
-    }
-
-    const uploadData = new FormData();
-    uploadData.append('file', file);
-    uploadData.append('upload_preset', 'productimage');
-    uploadData.append('cloud_name', process.env.NEXT_PUBLIC_CLOUDE_NAME);
-
-    try {
-      const res = await fetch(
-        `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDE_NAME}/image/upload`,
-        {
-          method: 'POST',
-          body: uploadData,
-        }
-      );
-
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message || 'Upload failed');
-      }
-
-      const data = await res.json();
-      return data.secure_url;
-    } catch (err) {
-      console.error('Upload error:', err);
-      throw new Error('Failed to upload image');
-    }
   };
 
   const handleAvatarChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -135,7 +119,7 @@ export default function BusinessProfilePage() {
 
   const validateForm = (): boolean => {
     if (!formData.name.trim()) {
-      toast.error('Business name is required');
+      toast.error('Full name is required');
       return false;
     }
     if (!formData.username.trim()) {
@@ -143,15 +127,7 @@ export default function BusinessProfilePage() {
       return false;
     }
     if (!formData.address.trim()) {
-      toast.error('Address is required');
-      return false;
-    }
-    if (!token) {
-      toast.error('Authentication token missing');
-      return false;
-    }
-    if (!storageData?.address) {
-      toast.error('Wallet address not found');
+      toast.error('Wallet address is required');
       return false;
     }
     return true;
@@ -165,10 +141,16 @@ export default function BusinessProfilePage() {
     try {
       setLoading(true);
 
+      const walletAddress = formData.address;
+      if (!walletAddress) {
+        throw new Error('No wallet address available');
+      }
+
       let avatarUrl = formData.avatar_url;
       if (avatarFile) {
         try {
-          avatarUrl = await uploadToCloudinary(avatarFile);
+          avatarUrl = await storeFileToWalrus(avatarFile, formData.address);
+          console.log(avatarUrl)
           setFormData(prev => ({ ...prev, avatar_url: avatarUrl }));
         } catch (error) {
           toast.error('Failed to upload avatar');
@@ -178,40 +160,70 @@ export default function BusinessProfilePage() {
       }
 
       const payload = {
-        authToken: token,
-        walletAddress: storageData.address,
-        userType: "user",
+        address: formData.address,
+        role: "user",
         bio: formData.bio,
         username: formData.username,
+        name: formData.name,
+        photo: avatarUrl
       };
 
-      if (!process.env.NEXT_PUBLIC_BACKEND_URL) {
-        throw new Error('Backend URL not configured');
-      }
+      const data = await storeDataToWalrus(payload, formData.address);
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/signup`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      });
+      await handleListItem({ metadata_uri: data, role: payload.role })
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || 'Submission failed');
-      }
-
-      const result = await response.json();
-
-      
-      toast.success('Profile created successfully!');
-      router.push('/business');
     } catch (err) {
-      console.error('Submission error:', err);
+      console.warn('Submission error:', err);
       toast.error(err instanceof Error ? err.message : 'Error creating profile');
     } finally {
       setLoading(false);
+    }
+  };
+
+  interface HandleListItemParams {
+    metadata_uri: string;
+    role: string;
+  }
+
+  const handleListItem = async ({ metadata_uri, role }: HandleListItemParams): Promise<void> => {
+
+
+    try {
+      const tx = new TransactionBlock();
+      tx.moveCall({
+        target: `${process.env.NEXT_PUBLIC_PACKAGE_ID}::user::create_profile`,
+        arguments: [
+          tx.object(`${process.env.NEXT_PUBLIC_REGISTRY_ID}`),
+          tx.pure(metadata_uri),
+          tx.pure(role)
+        ],
+      });
+
+      signAndExecuteTransaction(
+        {
+          transaction: tx.serialize(),
+          chain: 'sui:testnet',
+        },
+        {
+          onSuccess: (result: { digest: string }) => {
+            toast.success('Profile created successfully!');
+
+            location.href = '/user'
+          },
+          onError: (err: { message: string }) => {
+            if (err.message == "No valid gas coins found for the transaction.") {
+              toast.error(err.message + "Fund your sui wallet account and try agains")
+            } else {
+              toast.error(err.message)
+            }
+
+
+            console.error('Transaction Error:', err.message);
+          },
+        }
+      );
+    } catch (err) {
+      console.error('Error preparing transaction:', err);
     }
   };
 
@@ -220,12 +232,16 @@ export default function BusinessProfilePage() {
       <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl">
         <div className="p-8">
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold text-gray-800">Business Profile</h2>
+            <h2 className="text-2xl font-bold text-gray-800">User Profile</h2>
             <p className="mt-2 text-sm text-gray-600">
-              Complete your business profile to get started
+              Complete your user profile to get started
             </p>
+            {/* {currentAccount && (
+              <p className="mt-2 text-xs text-green-600">
+                Wallet connected: {currentAccount.address.slice(0, 6)}...{currentAccount.address.slice(-4)}
+              </p>
+            )} */}
           </div>
-
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="flex flex-col items-center">
               <div className="relative">
@@ -294,10 +310,9 @@ export default function BusinessProfilePage() {
                 </p>
               )}
             </div>
-
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                Business Name *
+                Full Name *
               </label>
               <div className="mt-1 relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -322,12 +337,11 @@ export default function BusinessProfilePage() {
                   onChange={handleChange}
                   required
                   className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2 border"
-                  placeholder="Your business name"
+                  placeholder="Your full name"
                   disabled={loading}
                 />
               </div>
             </div>
-
             <div>
               <label htmlFor="username" className="block text-sm font-medium text-gray-700">
                 Username *
@@ -355,12 +369,11 @@ export default function BusinessProfilePage() {
                   onChange={handleChange}
                   required
                   className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2 border"
-                  placeholder="yourusername"
+                  placeholder="your username"
                   disabled={loading}
                 />
               </div>
             </div>
-
             <div>
               <label htmlFor="bio" className="block text-sm font-medium text-gray-700">
                 Bio
@@ -387,12 +400,11 @@ export default function BusinessProfilePage() {
                   value={formData.bio}
                   onChange={handleChange}
                   className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2 border"
-                  placeholder="Tell us about your business"
+                  placeholder="Tell us about your yourself"
                   disabled={loading}
                 />
               </div>
             </div>
-
             <div>
               <label htmlFor="address" className="block text-sm font-medium text-gray-700">
                 Wallet Address *
@@ -427,6 +439,11 @@ export default function BusinessProfilePage() {
               <p className="mt-1 text-xs text-gray-500">Connected wallet address</p>
             </div>
 
+
+            <div>
+
+
+            </div>
             <div>
               <button
                 type="submit"
@@ -445,6 +462,17 @@ export default function BusinessProfilePage() {
                   'Create Profile'
                 )}
               </button>
+
+              <Button 
+              type='button'
+              variant="outline" 
+              onClick={() => router.push("/register")}
+              className="text-slate-600 hover:text-slate-800 mt-8 cursor-pointer"
+            >
+              Back to Register
+            </Button>
+              
+              
             </div>
           </form>
         </div>
