@@ -18,7 +18,7 @@ import {
 import { TransactionBlock } from "@mysten/sui.js/transactions";
 import { normalizeSuiAddress } from "@mysten/sui.js/utils";
 import toast from "react-hot-toast";
-import { fetchOrders } from "@/services/orders";
+// import { fetchOrders } from "@/services/orders";
 import { getFullnodeUrl, SuiClient } from "@mysten/sui/client";
 import { Transaction } from "@mysten/sui/transactions";
 
@@ -62,9 +62,9 @@ export default function SingleProductPage() {
       setLoading(false);
       console.log(data);
 
-      const data2 = await fetchOrders();
+      // const data2 = await fetchOrders();
 
-      console.log(data2);
+      // console.log(data2);
     };
 
     fetchListings();
