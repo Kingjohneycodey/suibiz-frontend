@@ -38,9 +38,9 @@ export default function UploadProductDashboard() {
   console.log(userStore)
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div className="dark:bg-gray-900" >Loading...</div>}>
       {isLoading ? (
-        <div>Loading...</div>
+        <div className="dark:bg-gray-900 h-screen dark:text-white">Loading...</div>
       ) : userHasStore ? (
         <ProductUploadPage kioskId={userStore?.store?.kiosk_id} />
       ) : (

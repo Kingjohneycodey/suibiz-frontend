@@ -1,5 +1,5 @@
 import { getFullnodeUrl, SuiClient } from "@mysten/sui/client";
-import { KioskClient, Network, OwnedKiosks } from "@mysten/kiosk";
+import { KioskClient, Network } from "@mysten/kiosk";
 
 const client = new SuiClient({ url: getFullnodeUrl("testnet") });
 

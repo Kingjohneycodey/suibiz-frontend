@@ -96,3 +96,25 @@ export async function fetchDataFromWalrusById(blobId: string) {
     throw error;
   }
 }
+
+export async function fetchBlobFromWalrus(blobId: string) {
+  const url = `https://aggregator.walrus-testnet.walrus.space/v1/blobs/${blobId}`;
+  
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error('Failed to fetch Walrus aggregator blob data');
+    }
+
+    const blob = await response.blob();
+
+    console.log(blob)
+    const objectUrl = URL.createObjectURL(blob);
+
+    return objectUrl;
+
+  } catch (error) {
+    console.error('Error fetching blob from Walrus:', error);
+    throw error;
+  }
+}

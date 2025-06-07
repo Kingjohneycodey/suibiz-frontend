@@ -253,8 +253,9 @@ export default function CreateStorePage() {
 
 
     return (
-        <div className="dark:bg-gray-900 mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-2xl lg:mx-0">
-            <div className="mb-8">
+        <div className="dark:bg-gray-900 mx-auto px-4 sm:px-6 lg:px-8 py-8">
+           <div className='max-w-2xl lg:mx-0'>
+           <div className="mb-8">
                 <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                     {isEditMode ? 'Edit Product' : 'Create Store'}
                 </h1>
@@ -455,6 +456,7 @@ export default function CreateStorePage() {
                     </button>
                 </div>
             </form>
+           </div>
         </div>
     );
 }
