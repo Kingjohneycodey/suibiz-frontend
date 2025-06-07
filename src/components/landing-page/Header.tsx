@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { Search, Menu, X, Wallet } from "lucide-react";
 import { useState, useEffect } from "react";
-import { ConnectButton } from "@mysten/dapp-kit";
+import { ConnectButton, useCurrentAccount } from "@mysten/dapp-kit";
 import Link from "next/link";
 import Image from "next/image";
 import { useUserStore } from "../../../stores/userStore";
@@ -22,6 +22,7 @@ export const Header = () => {
   const router = useRouter();
   const { user } = useUserStore();
   const [loading, setLoading] = useState(false);
+  const account = useCurrentAccount();
 
   const handleSignout = async () => {
   };
@@ -38,6 +39,8 @@ export const Header = () => {
   };
 
   const clearSearch = () => setSearchQuery("");
+
+  console.log(account?.address)
 
   if (loading) {
     return (
@@ -152,7 +155,17 @@ export const Header = () => {
                     </Link>
                   )}
                 </div>
-              ) : (
+              ) : account !== null ? (
+
+            <Link href="/register">
+            
+            <Button 
+                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium rounded-lg shadow-sm px-4"
+              >
+                Sign Up
+              </Button>
+            </Link>
+              ) :(
                 <ConnectButton className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 !text-white font-medium rounded-lg shadow-sm" />
               )}
             </div>

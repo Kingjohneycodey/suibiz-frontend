@@ -8,7 +8,7 @@ export async function storeFileToWalrus(file: File, address: string): Promise<st
 
   const response = await fetch(walrusUrl, {
     method: 'PUT',
-    body: file, // Walrus expects raw file binary, not FormData
+    body: file,
     headers: {
       'Content-Type': file.type,
     },

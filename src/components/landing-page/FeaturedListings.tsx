@@ -5,68 +5,92 @@ import { Badge } from "@/components/ui/badge";
 import { Star, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { fetchProducts } from "@/services/products";
 
 export const FeaturedListings = () => {
-  interface Listing {
+  interface Product {
     id: string;
-    title: string;
-    image: string;
+    name: string;
+    photo: string;
     category: string;
-    rating: number;
-    reviews: number;
-    seller: string;
+
+    creator: string;
     price: string;
+    store: {
+      name: string;
+      photo: string;
+    }
   }
 
-  const [listings, setListings] = useState<Listing[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     console.log("here")
-    const fetchListings = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch('https://suibiz-backend.onrender.com/api/products', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
+    // const fetchListings = async () => {
+    //   try {
+    //     setLoading(true);
+    //     const response = await fetch('https://suibiz-backend.onrender.com/api/products', {
+    //       method: 'GET',
+    //       headers: {
+    //         'Content-Type': 'application/json',
+    //       },
+    //     });
 
-        console.log("loading...")
+    //     console.log("loading...")
 
-        if (!response.ok) {
-          console.error('Failed to fetch listings');
-          return;
-        }
+    //     if (!response.ok) {
+    //       console.error('Failed to fetch listings');
+    //       return;
+    //     }
         
 
-        const data = await response.json();
-        const products = data.products;
+    //     const data = await response.json();
+    //     const products = data.products;
 
 
-        console.log("products", products)
+    //     console.log("products", products)
 
-        const formattedListings = products.map((item: any) => ({
-          id: item.id || 'unknown-id',
-          title: item.name || 'Untitled',
-          image: item.image_url || '/placeholder-image.jpg',
-          category: item.collection || 'Uncategorized',
-          rating: 4.5,
-          reviews: 12,
-          seller: `Seller ${item.owner.slice(0, 6)}`,
-          price: `${item.price || '0.00'}`,
-        }));
+    //     const formattedListings = products.map((item: any) => ({
+    //       id: item.id || 'unknown-id',
+    //       title: item.name || 'Untitled',
+    //       image: item.image_url || '/placeholder-image.jpg',
+    //       category: item.collection || 'Uncategorized',
+    //       rating: 4.5,
+    //       reviews: 12,
+    //       seller: `Seller ${item.owner.slice(0, 6)}`,
+    //       price: `${item.price || '0.00'}`,
+    //     }));
 
-        setListings(formattedListings);
-      } catch (error) {
-        console.error('Error fetching listings:', error);
-      } finally {
-        setLoading(false);
-      }
+    //     setListings(formattedListings);
+
+
+
+
+    //   } catch (error) {
+    //     console.error('Error fetching listings:', error);
+    //   } finally {
+    //     setLoading(false);
+    //   }
+    // };
+
+  }, []);
+
+  useEffect(() => {
+    const fetchAllroducts = async () => {
+
+        
+      const stores = await fetchProducts();
+
+
+      console.log(stores)
+
+      setProducts(stores.products as any)
+      console.log(stores);
+
+      setLoading(false)
     };
-
-    fetchListings();
+    fetchAllroducts();
   }, []);
 
   if (loading) {
@@ -90,15 +114,15 @@ export const FeaturedListings = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {listings.map((listing) => (
+          {products.map((listing) => (
             <Link href={`/marketplace/${listing.id}`} key={listing.id}>
               <Card className="hover:shadow-lg transition-shadow duration-300 cursor-pointer">
                 <div className="aspect-video overflow-hidden rounded-t-lg">
                   <Image
                     width={300}
                     height={200}
-                    src={listing.image}
-                    alt={listing.title}
+                    src={listing.photo}
+                    alt={listing.name}
                     className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                     onError={(e) => {
                       (e.target as HTMLImageElement).src = '/placeholder-image.jpg';
@@ -112,22 +136,37 @@ export const FeaturedListings = () => {
                     </Badge>
                     <div className="flex items-center space-x-1">
                       <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                      <span className="text-sm font-medium">{listing.rating}</span>
-                      <span className="text-xs text-slate-500">({listing.reviews})</span>
+                      <span className="text-sm font-medium">5</span>
+                      {/* <span className="text-sm font-medium">{listing.rating}</span> */}
+                      {/* <span className="text-xs text-slate-500">({listing.reviews || 0})</span> */}
+
+                      <span className="text-xs text-slate-500">({0})</span>
                     </div>
                   </div>
-                  <CardTitle className="text-lg leading-tight">{listing.title}</CardTitle>
+                  <CardTitle className="text-lg leading-tight">{listing.name}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
-                      <div className="w-6 h-6 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center">
+                      {/* <div className="w-6 h-6 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center">
                         <User className="w-3 h-3 text-white" />
+                      </div> */}
+                      <div>
+                      <Image
+                    width={10}
+                    height={10}
+                    src={listing.store.photo}
+                    alt={listing.store.name}
+                    className="w-10 h-10 rounded-full object-cover hover:scale-105 transition-transform duration-300"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = '/placeholder-image.jpg';
+                    }}
+                  />
                       </div>
-                      <span className="text-sm text-slate-600">{listing.seller}</span>
+                      <span className="text-sm text-slate-600">{listing.store.name}</span>
                     </div>
                     <div className="text-lg font-semibold text-slate-800">
-                      {listing.price} sui
+                      {Number(listing.price)/1000000000} SUI
                     </div>
                   </div>
                 </CardContent>
