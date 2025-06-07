@@ -14,7 +14,6 @@ const UserProfile = () => {
   };
 
   const connectSocialMedia = () => {
-    console.log('Connecting to social media...');
   };
 
   return (

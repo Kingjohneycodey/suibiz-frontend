@@ -116,7 +116,6 @@ export default function ServiceSessionUpload() {
             }
             } catch (error) {
             toast.error('Failed to fetch service session details');
-            console.error('Error fetching service session:', error);
             } finally {
             setIsLoading(false);
             }
@@ -234,7 +233,6 @@ export default function ServiceSessionUpload() {
             router.push('/dashboard/service-sessions');
         } catch (error) {
             toast.error(`Failed to ${isEditing ? 'update' : 'create'} service session`);
-            console.error('Error submitting form:', error);
         } finally {
             setIsLoading(false);
         }

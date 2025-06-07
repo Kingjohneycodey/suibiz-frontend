@@ -29,7 +29,6 @@ export default function CategoryPage() {
     };
 
     const handleContinue = (): void => {
-        console.log('Selected categories:', selectedCategories);
     };
 
     return (

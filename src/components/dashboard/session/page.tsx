@@ -37,7 +37,6 @@ export default function SessionProvider({
       const exist = sessionStorage.getItem(
         "@enoki/flow/session/enoki_public_e5a1d53741cdbe61403b4c6de297ca10/testnet"
       );
-      console.log("Session existence check →", { exist });
 
       const timeout = setTimeout(() => {
         const isLoggedIn = localStorage.getItem("loggedIn") === "true";
@@ -58,9 +57,7 @@ export default function SessionProvider({
     }
   }, []);
 
-  console.log(currentWallet);
 
-  console.log(shouldCheck);
 
   const currentWalletAddress = currentWallet?.accounts[0]?.address;
 
@@ -68,7 +65,6 @@ export default function SessionProvider({
     if (currentWalletAddress) {
       async function getUserProfile() {
         const data = await getUserProfileInfo(currentWalletAddress || "");
-        console.log(data);
         setUser(data);
         setShowConnectDialog(false);
       }

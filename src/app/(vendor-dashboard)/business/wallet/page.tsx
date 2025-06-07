@@ -66,14 +66,11 @@ export default function VendorWalletPage() {
 
     const currentAccount = currentWallet?.accounts[0]?.address
 
-    console.log(currentWallet)
 
     const client = new SuiClient({ url: getFullnodeUrl('testnet') });
 
     useEffect(() => {
-        console.log("ji")
         const fetchBalance = async () => {
-            console.log(currentWallet)
             if (!currentAccount) return;
 
             const data = await client.getBalance({
@@ -81,8 +78,6 @@ export default function VendorWalletPage() {
             });
 
             setBalance(Number(data.totalBalance)/1000000000)
-
-            console.log('💰 SUI Balance:', data.totalBalance);
         };
 
         fetchBalance();

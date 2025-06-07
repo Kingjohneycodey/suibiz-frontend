@@ -7,6 +7,7 @@ import { User as UserType } from '../../../types/types';
 import { EnokiClient } from '@mysten/enoki';
 import { useDisconnectWallet } from '@mysten/dapp-kit';
 
+
 interface DashboardNavigationProps {
     darkMode: boolean;
     toggleDarkMode: () => void;
@@ -25,7 +26,6 @@ export default function DashboardNavigation({
     const { user, setUser, clearUser } = useUserStore()
 
     const handleSignOut = () => {
-        console.log('Signing out...');
         sessionStorage.removeItem('@enoki/flow/session/enoki_public_e5a1d53741cdbe61403b4c6de297ca10/testnet');
         sessionStorage.removeItem('@enoki/flow/state/enoki_public_e5a1d53741cdbe61403b4c6de297ca10/testnet');
         clearUser();

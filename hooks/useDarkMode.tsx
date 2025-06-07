@@ -3,10 +3,8 @@ import { useState, useEffect } from 'react'
 
 export function useDarkMode() {
     const [darkMode, setDarkMode] = useState(false)
-    console.log({ darkMode });
     useEffect(() => {
         const storedValue = localStorage.getItem('darkMode')
-        console.log("store");
         if (storedValue !== null) {
             setDarkMode(storedValue === 'true')
         } else {
@@ -19,7 +17,6 @@ export function useDarkMode() {
     const toggleDarkMode = () => {
         const newMode = !darkMode
         setDarkMode(newMode)
-        console.log("here")
         localStorage.setItem('darkMode', String(newMode))
     }
 

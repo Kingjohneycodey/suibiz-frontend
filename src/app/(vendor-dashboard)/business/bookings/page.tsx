@@ -92,7 +92,6 @@ export default function BusinessBookingPage() {
             setBookings(dummyBookings);
         } catch (error) {
             toast.error('Failed to load bookings');
-            console.error('Error fetching bookings:', error);
         } finally {
             setIsLoading(false);
         }
@@ -113,7 +112,6 @@ export default function BusinessBookingPage() {
         toast.success('Booking confirmed successfully');
         } catch (error) {
         toast.error('Failed to confirm booking');
-        console.error('Error confirming booking:', error);
         } finally {
         setIsLoading(false);
         }
@@ -140,7 +138,6 @@ export default function BusinessBookingPage() {
             setCurrentDeclineId(null);
         } catch (error) {
             toast.error('Failed to decline booking');
-            console.error('Error declining booking:', error);
         } finally {
             setIsLoading(false);
         }

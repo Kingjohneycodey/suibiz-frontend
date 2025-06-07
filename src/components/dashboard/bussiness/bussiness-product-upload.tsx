@@ -271,7 +271,6 @@ export default function ProductUploadPage() {
             const data = await res.json();
             return data.secure_url;
         } catch (err) {
-            console.error('Upload error:', err);
             throw err;
         }
     };
@@ -294,13 +293,11 @@ export default function ProductUploadPage() {
             }
 
             const image = await uploadToCloudinary(imageFile!);
-            console.log({ image, name: formData.name, description: formData.description, price: formData.price, category: formData.category })
             // await handleListItem({ image, name: formData.name, description: formData.description, price: formData.price, category: formData.category });
             
             toast.success(isEditMode ? 'Product updated successfully!' : 'Product uploaded successfully!');
         } catch (error) {
             toast.error(isEditMode ? 'Failed to update product' : 'Failed to upload product');
-            console.error('Error:', error);
         } finally {
             setIsLoading(false);
         }

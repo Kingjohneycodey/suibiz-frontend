@@ -80,7 +80,6 @@ export async function GET(request: Request) {
 
         return response;
     } catch (error) {
-        console.error('Google callback error:', error);
         return NextResponse.json(
             { error: 'Authentication failed' },
             { status: 500 }

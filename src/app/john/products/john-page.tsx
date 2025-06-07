@@ -32,7 +32,6 @@ export default function ProductListPage() {
 
       return productObject?.reference.objectId ?? null;
     } catch (err) {
-      console.error("Error fetching transaction block:", err);
       return null;
     }
   }
@@ -62,7 +61,6 @@ export default function ProductListPage() {
           // Fetch objectId using txDigest
           const objectId = await fetchObjectIdFromTransaction(event.id.txDigest);
 
-          console.log(`Processing event: ${event.id.txDigest}, Object ID: ${objectId}`);
 
           const product: ProductListedEvent = {
             productId: parsedJson.product_id,
@@ -82,7 +80,6 @@ export default function ProductListPage() {
 
       setProducts(allEvents);
     } catch (err) {
-      console.error("Error fetching product events:", err);
       setError('Failed to load product events. Please try again.');
     } finally {
       setLoading(false);

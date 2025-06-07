@@ -52,7 +52,6 @@ export default function BusinessProfilePage() {
         }));
       }
     } catch (error) {
-      console.error('Error parsing session storage data:', error);
       toast.error('Failed to load wallet data');
     }
   }, []);
@@ -104,7 +103,6 @@ export default function BusinessProfilePage() {
       const data = await res.json();
       return data.secure_url;
     } catch (err) {
-      console.error('Upload error:', err);
       throw new Error('Failed to upload image');
     }
   };
@@ -172,7 +170,6 @@ export default function BusinessProfilePage() {
           setFormData(prev => ({ ...prev, avatar_url: avatarUrl }));
         } catch (error) {
           toast.error('Failed to upload avatar');
-          console.error(error);
           return;
         }
       }
@@ -208,7 +205,6 @@ export default function BusinessProfilePage() {
       toast.success('Profile created successfully!');
       router.push('/business');
     } catch (err) {
-      console.error('Submission error:', err);
       toast.error(err instanceof Error ? err.message : 'Error creating profile');
     } finally {
       setLoading(false);

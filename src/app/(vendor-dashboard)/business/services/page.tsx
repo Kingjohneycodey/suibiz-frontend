@@ -73,7 +73,6 @@ export default function ServicesDisplay() {
                 setServices(dummyServices);
             } catch (error) {
                 toast.error('Failed to load services');
-                console.error('Error fetching services:', error);
             } finally {
                 setIsLoading(false);
             }
@@ -92,7 +91,6 @@ export default function ServicesDisplay() {
             toast.success('Service deleted successfully');
         } catch (error) {
             toast.error('Failed to delete service');
-            console.error('Error deleting service:', error);
         }
     };
 

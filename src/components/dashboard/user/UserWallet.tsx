@@ -65,12 +65,10 @@ const UserWallet = ({ transactions, balance }: UserWalletProps) => {
 
     const handleDeposit = () => {
         // Implement actual deposit logic
-        console.log('Deposit initiated');
     };
 
     const handleWithdraw = () => {
         // Implement actual withdrawal logic
-        console.log('Withdrawal initiated');
     };
 
     const formatDate = (dateString: string) => {

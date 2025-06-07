@@ -6,7 +6,6 @@ import { useUserStore } from "../../../stores/userStore";
 export const Hero = () => {
   const { user } = useUserStore();
 
-  console.log(user?.role)
   return (
     <section className="py-20 px-4">
       <div className="container mx-auto text-center">

@@ -16,14 +16,7 @@ export default function LoginPage() {
         setError('');
 
         try {
-            console.log(
-                {
-                    email,
-                    password,
-                }
-            )
         } catch (err) {
-            console.error('Login error:', err);
             setError('An unexpected error occurred');
         } finally {
             setIsLoading(false);
@@ -31,7 +24,6 @@ export default function LoginPage() {
     };
 
     const handleGoogleSignIn = async () => {
-        console.log("for signing in with google")
     };
 
     return (

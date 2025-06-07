@@ -39,10 +39,6 @@ export default function BusinessProfilePage() {
   const { mutate: signAndExecuteTransaction } = useSignAndExecuteTransaction();
 
   useEffect(() => {
-    console.log('Current wallet connection status:', {
-      currentAccount
-    });
-
     if(!currentAccount){
       router.refresh()
     }
@@ -65,7 +61,6 @@ export default function BusinessProfilePage() {
         }));
       }
     } catch (error) {
-      console.error('Error parsing session storage data:', error);
       toast.error('Failed to load wallet data');
     }
   }, [currentAccount]);
@@ -81,12 +76,10 @@ export default function BusinessProfilePage() {
   const validateFile = (file: File): boolean => {
     if (!ALLOWED_FILE_TYPES.includes(file.type)) {
       toast.error('Only JPEG, PNG, and WebP images are allowed');
-      console.log("error")
       return false;
     }
     if (file.size > MAX_FILE_SIZE) {
       toast.error('Image size should be less than 2MB');
-      console.log("error")
       return false;
     }
     return true;
@@ -149,11 +142,9 @@ export default function BusinessProfilePage() {
       if (avatarFile) {
         try {
           avatarUrl = await storeFileToWalrus(avatarFile, formData.address);
-          console.log(avatarUrl)
           setFormData(prev => ({ ...prev, avatar_url: avatarUrl }));
         } catch (error) {
           toast.error('Failed to upload avatar');
-          console.error(error);
           return;
         }
       }
@@ -172,7 +163,6 @@ export default function BusinessProfilePage() {
       await handleListItem({ metadata_uri: data, role: payload.role })
 
     } catch (err) {
-      console.warn('Submission error:', err);
       toast.error(err instanceof Error ? err.message : 'Error creating profile');
     } finally {
       setLoading(false);
@@ -215,14 +205,10 @@ export default function BusinessProfilePage() {
             } else {
               toast.error(err.message)
             }
-
-
-            console.error('Transaction Error:', err.message);
           },
         }
       );
     } catch (err) {
-      console.error('Error preparing transaction:', err);
     }
   };
 

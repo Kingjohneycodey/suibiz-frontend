@@ -14,7 +14,6 @@ export function getSession(req: NextRequest): SessionUser | null {
     const token = req.cookies.get('auth_token')?.value;
     if (!token) return null;
 
-    console.log({token})
     return verifyToken(token);
 }
 

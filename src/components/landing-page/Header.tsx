@@ -26,8 +26,6 @@ export const Header = () => {
   const handleSignout = async () => {
   };
 
-  console.log(user)
-
 
 
   const handleSearch = (e: React.FormEvent) => {
