@@ -1,5 +1,6 @@
 import { fetchBlobFromWalrus, fetchDataFromWalrus } from "@/utils/walrus";
 import { getFullnodeUrl, SuiClient, EventId } from "@mysten/sui/client";
+import { getSingleStore } from "./business";
 
 const client = new SuiClient({ url: getFullnodeUrl("testnet") });
 
@@ -81,15 +82,39 @@ export const fetchProducts = async (page: number = 1, pageSize: number = 20): Pr
                     if (blobId) {
                        metadata = await fetchDataFromWalrus(blobId);
                        photo = await fetchBlobFromWalrus(metadata.photo); 
-                       console.log(photo)
+    
                     }
+
+                    const storeContent = await getSingleStore((objectData.data.content.fields as any).kiosk_id)
+
+                    console.log(storeContent)
+
+                    const storeblobId = (storeContent as any)?.metadata_uri;
+                
+                    let storeMetadata = null;
+                    let storePhoto = null
+                    if (storeblobId) {
+                      storeMetadata = await fetchDataFromWalrus(storeblobId);
+
+                      console.log(storeMetadata)
+                      storePhoto = await fetchBlobFromWalrus(storeMetadata.photo); 
+    
+                    }
+
+
+
+
                 
                     product.data = {
                       ...objectData.data.content.fields,
                       id: objectData.data.objectId,
                       ...metadata,
                       photo,
-                      timestamp: product.timestamp
+                      timestamp: product.timestamp,
+                      store: {
+                        name: storeMetadata.fullname,
+                        photo: storePhoto
+                      }
                     };
                 }
             }
@@ -107,7 +132,7 @@ export const fetchProducts = async (page: number = 1, pageSize: number = 20): Pr
       page,
       pageSize,
       total: allEvents.length,
-      products: productsWithDetails as ProductWithDetails[]
+      products: productsWithDetails as []
     };
   } catch (error) {
     console.error('Error fetching products:', error);
@@ -221,3 +246,54 @@ export const fetchCreatorsProducts = async (address: string, page: number = 1, p
       throw new Error('Failed to load products');
     }
   };
+
+export const fetchSingleProduct = async (productId: string) => {
+  try {
+    const objectData = await client.getObject({
+      id: productId,
+      options: {
+        showContent: true,
+        showDisplay: true,
+        showType: true
+      }
+    });
+
+    if (!objectData.data?.content || objectData.data.content.dataType !== 'moveObject') {
+      throw new Error('Invalid product object');
+    }
+
+    const blobId = (objectData.data.content.fields as any).metadata_uri;
+    let metadata = null;
+    let photo = null;
+
+    if (blobId) {
+      metadata = await fetchDataFromWalrus(blobId);
+      photo = await fetchBlobFromWalrus(metadata.photo);
+    }
+
+    const storeContent = await getSingleStore((objectData.data.content.fields as any).kiosk_id);
+    const storeblobId = (storeContent as any)?.metadata_uri;
+    
+    let storeMetadata = null;
+    let storePhoto = null;
+    
+    if (storeblobId) {
+      storeMetadata = await fetchDataFromWalrus(storeblobId);
+      storePhoto = await fetchBlobFromWalrus(storeMetadata.photo);
+    }
+
+    return {
+      ...objectData.data.content.fields,
+      id: objectData.data.objectId,
+      ...metadata,
+      photo,
+      store: {
+        name: storeMetadata?.fullname,
+        photo: storePhoto
+      }
+    };
+  } catch (error) {
+    console.error('Error fetching single product:', error);
+    throw error;
+  }
+};

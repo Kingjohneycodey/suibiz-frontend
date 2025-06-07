@@ -142,34 +142,6 @@ const DashboardOverview = () => {
       <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white">Quick Stats</h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400">At-a-glance performance metrics</p>
-          </div>
-        </div>
-        
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
-            <p className="text-sm text-blue-600 dark:text-blue-400">Avg. Response Time</p>
-            <p className="text-xl font-bold mt-1 dark:text-gray-300">2.4h</p>
-          </div>
-          <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
-            <p className="text-sm text-green-600 dark:text-green-400">Completion Rate</p>
-            <p className="text-xl font-bold mt-1 dark:text-gray-300">98%</p>
-          </div>
-          <div className="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg">
-            <p className="text-sm text-purple-600 dark:text-purple-400">Repeat Clients</p>
-            <p className="text-xl font-bold mt-1 dark:text-gray-300">72%</p>
-          </div>
-          <div className="bg-orange-50 dark:bg-orange-900/20 p-4 rounded-lg">
-            <p className="text-sm text-orange-600 dark:text-orange-400">Satisfaction</p>
-            <p className="text-xl font-bold mt-1 dark:text-gray-300">4.9★</p>
-          </div>
-        </div>
-      </div>
-
-      <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
-        <div className="flex items-center justify-between mb-6">
-          <div>
             <h2 className="text-xl font-bold text-gray-900 dark:text-white">Recent Activity</h2>
             <p className="text-sm text-gray-500 dark:text-gray-400">Your latest notifications and updates</p>
           </div>

@@ -122,7 +122,7 @@ const UserWallet = ({ transactions, balance }: UserWalletProps) => {
                 </div>
             </div>
 
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow">
+            {/* <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
                 <div>
                     <h2 className="text-xl font-bold text-gray-900 dark:text-white">Transaction History</h2>
@@ -321,7 +321,7 @@ const UserWallet = ({ transactions, balance }: UserWalletProps) => {
                         </table>
                     )}
                 </div>
-            </div>
+            </div> */}
         </div>
     );
 };

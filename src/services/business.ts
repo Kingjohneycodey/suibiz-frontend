@@ -22,6 +22,8 @@ export async function getAllStores() {
     throw new Error("Invalid Registry object");
   }
 
+  console.log(registryContent.fields)
+
   // 2. Extract the stores map from registry
   const storesMap =
     (registryContent.fields as any).stores?.fields?.contents || [];
@@ -82,6 +84,52 @@ export async function getSingleKioskCap(address: string, kioskId: string) {
   console.log("Matched kioskOwnerCap:", matchedCap);
 
   return matchedCap;
+}
+
+export async function getSingleStore(address: string) {
+  // 1. Get the registry object
+  const registry = await client.getObject({
+    id: process.env.NEXT_PUBLIC_STORE_REGISTRY_ID || "",
+    options: {
+      showContent: true,
+    },
+  });
+
+  const registryContent = registry.data?.content;
+  if (!registryContent || registryContent.dataType !== "moveObject") {
+    throw new Error("Invalid Registry object");
+  }
+
+  // 2. Extract the stores map from registry
+  const storesMap =
+    (registryContent.fields as any).stores?.fields?.contents || [];
+
+  console.log('Stores map:', storesMap);
+
+  // 3. Find the store with matching key
+  const matchingStore = storesMap.find((item: any) => item.fields.key === address);
+  
+  if (!matchingStore) {
+    console.log('No store found for address:', address);
+    return null;
+  }
+
+  const storeId = matchingStore.fields.value;
+
+  // 4. Get the store object
+  const store = await client.getObject({
+    id: storeId,
+    options: {
+      showContent: true,
+    },
+  });
+
+  const storeContent = store.data?.content;
+  if (!storeContent || storeContent.dataType !== "moveObject") {
+    return { store: null, kiosk: null };
+  }
+
+  return storeContent.fields
 }
 
 // useEffect(() => {
