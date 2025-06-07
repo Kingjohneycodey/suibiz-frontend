@@ -97,7 +97,7 @@ export default function SingleProductPage() {
       console.log(totalPrice)
       const paymentCoin = coins.data.find(c => BigInt(c.balance) >= totalPrice);
 
-      console.log(paymentCoin)
+      console.log(paymentCoin) 
 
       if (!paymentCoin) {
         throw new Error(`No coin found with sufficient balance (needed ${totalPrice.toString()} MIST)`);
