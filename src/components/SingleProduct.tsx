@@ -104,7 +104,7 @@ export default function SingleProductPage() {
       }
 
 
-    // Call the Move function
+    // Call the Move function 
     tx.moveCall({
       target: `${process.env.NEXT_PUBLIC_PACKAGE_ID}::marketplace::create_order`,
       arguments: [
