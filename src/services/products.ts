@@ -120,7 +120,7 @@ export const fetchCreatorsProducts = async (address: string, page: number = 1, p
     page: number;
     pageSize: number;
     total: number;
-    products: ProductWithDetails[];
+    products: [];
   }> => {
     const skip = (page - 1) * pageSize;
     const allEvents: ProductEvent[] = [];
@@ -214,7 +214,7 @@ export const fetchCreatorsProducts = async (address: string, page: number = 1, p
         page,
         pageSize,
         total: allEvents.length,
-        products: productsWithDetails as ProductWithDetails[]
+        products: productsWithDetails as []
       };
     } catch (error) {
       console.error('Error fetching products:', error);

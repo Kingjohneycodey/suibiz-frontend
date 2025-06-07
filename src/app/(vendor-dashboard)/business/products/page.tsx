@@ -19,7 +19,7 @@ interface Product {
   description: string;
   price: number;
   category: string;
-  available_items: number;
+  available_items: [];
   photo: string;
 }
 
@@ -218,7 +218,7 @@ export default function ProductDisplay() {
                       }
                     />
                   </div>
-                  <div>
+                  {/* <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                       Stock Quantity
                     </label>
@@ -233,7 +233,7 @@ export default function ProductDisplay() {
                         })
                       }
                     />
-                  </div>
+                  </div> */}
                   <div className="md:col-span-2">
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                       Image URL
