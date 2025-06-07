@@ -3,12 +3,10 @@ import { SuiClient } from '@mysten/sui/client';
 
 const client = new SuiClient({ url: 'https://fullnode.testnet.sui.io' });
 
-const profileRegistryId = "0x627e06cb181c38367c0fbc140c8de7b043ab20dd3291fd0b4118e2dc263e36cf"
-
 export async function getUserProfileInfo(userAddress: string) {
   // Step 1: Get the ProfileRegistry object
   const profileRegistry = await client.getObject({
-    id: profileRegistryId,
+    id: process.env.NEXT_PUBLIC_REGISTRY_ID || "",
     options: {
       showContent: true,
     },
@@ -59,10 +57,5 @@ export async function getUserProfileInfo(userAddress: string) {
   const metadataUri = profileFields?.metadata_uri;
 
   const metadata = await fetchDataFromWalrus(metadataUri)
-
-  console.log(metadata)
-
-
-
   return metadata
 }
