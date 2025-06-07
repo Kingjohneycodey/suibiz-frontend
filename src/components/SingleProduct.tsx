@@ -10,10 +10,17 @@ import { Button } from "@/components/ui/button";
 import { Header } from "@/components/landing-page/Header";
 import { Footer } from "@/components/landing-page/Footer";
 import { fetchSingleProduct } from "@/services/products";
-import { useSuiClient, useCurrentAccount, useSignAndExecuteTransaction } from "@mysten/dapp-kit";
+import {
+  useSuiClient,
+  useCurrentAccount,
+  useSignAndExecuteTransaction,
+} from "@mysten/dapp-kit";
 import { TransactionBlock } from "@mysten/sui.js/transactions";
 import { normalizeSuiAddress } from "@mysten/sui.js/utils";
 import toast from "react-hot-toast";
+import { fetchOrders } from "@/services/orders";
+import { getFullnodeUrl, SuiClient } from "@mysten/sui/client";
+import { Transaction } from "@mysten/sui/transactions";
 
 interface Listing {
   id: string;
@@ -36,7 +43,6 @@ export default function SingleProductPage() {
   const router = useRouter();
   const { id } = params as { id: string };
 
-
   const [product, setProduct] = useState<Listing | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -55,65 +61,86 @@ export default function SingleProductPage() {
 
       setLoading(false);
       console.log(data);
+
+      const data2 = await fetchOrders();
+
+      console.log(data2);
     };
 
     fetchListings();
   }, [id]);
 
-
   const handleCreateOrder = async () => {
     if (!account) return alert("Connect wallet first");
     if (!product) return alert("Product not found");
     // if (quantity > availableQuantity) return alert("Not enough stock");
-    
-    setIsLoading(true);
 
-    try {
-        const tx = new TransactionBlock();
-
-        tx.setGasBudget(100_000_000);
-        
-        // 1. Split payment from gas coins
-        const [paymentCoin] = tx.splitCoins(tx.gas, [tx.pure(BigInt(Number(product.price)) * BigInt(quantity))]);
-        
-        // 2. Call create_order function
-        tx.moveCall({
-          target: `${process.env.NEXT_PUBLIC_PACKAGE_ID}::marketplace::create_order`,
-          arguments: [
-            tx.object(id),  // product_type
-            tx.pure(quantity),         // quantity
-            tx.object(paymentCoin),   // payment
-          ],
-        });
     
-        // 3. Execute transaction
-        signAndExecuteTransaction(
-          {
-            transaction: tx.serialize(),
-            chain: "sui:testnet",
-          },
-          {
-            onSuccess: () => {
-              toast.success("Order created successfully!");
-              setLoading(false);
-            //   router.push("/orders"); // Redirect after success
-            },
-            onError: (err: { message: string }) => {
-              if (err.message.includes("No valid gas coins")) {
-                toast.error("Insufficient balance. Fund your wallet and try again");
-              } else {
-                toast.error(`Order failed: ${err.message}`);
-              }
-              setLoading(false);
-              console.error("Transaction Error:", err);
-            },
-          }
-        );
-      } catch (err) {
-        setLoading(false);
-        console.error("Error preparing transaction:", err);
-        toast.error("Failed to prepare transaction");
+  try {
+    const tx = new Transaction();
+
+    tx.setGasBudget(100_000_000); 
+
+     // Set the sender address!
+     tx.setSender(account.address);
+
+     console.log(account.address)
+
+     const coins = await client.getCoins({
+        owner: account.address,
+        coinType: "0x2::sui::SUI",
+      });
+
+
+      const totalPrice = BigInt(Number(product.price)) * BigInt(quantity);
+
+      console.log(totalPrice)
+      const paymentCoin = coins.data.find(c => BigInt(c.balance) >= totalPrice);
+
+      console.log(paymentCoin)
+
+      if (!paymentCoin) {
+        throw new Error(`No coin found with sufficient balance (needed ${totalPrice.toString()} MIST)`);
       }
+
+
+    // Call the Move function
+    tx.moveCall({
+      target: `${process.env.NEXT_PUBLIC_PACKAGE_ID}::marketplace::create_order`,
+      arguments: [
+        tx.object(id),
+        tx.pure.u64(Number(quantity)),   
+        tx.object(paymentCoin.coinObjectId),
+      ],
+    });
+
+    // Execute transaction if dry run succeeds
+    signAndExecuteTransaction(
+      {
+        transaction: tx,
+      },
+      {
+        onSuccess: () => {
+          toast.success("Order created successfully!");
+          setIsLoading(false);
+          // router.push("/orders")
+        },
+        onError: (err) => {
+          if (err.message.includes("No valid gas coins")) {
+            toast.error("Insufficient balance. Fund your wallet and try again");
+          } else {
+            toast.error(`Order failed: ${err.message}`);
+          }
+          setIsLoading(false);
+          console.error("Transaction Error:", err);
+        },
+      }
+    );
+  } catch (err) {
+    setIsLoading(false);
+    console.error("Error preparing transaction:", err);
+    toast.error("Failed to prepare transaction");
+  }
   };
 
   if (loading) {
@@ -218,7 +245,8 @@ export default function SingleProductPage() {
             <div className="pt-4 border-t border-slate-200">
               <Button
                 size="lg"
-                className="w-full text-lg py-6 font-semibold bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-200" onClick={handleCreateOrder}
+                className="w-full text-lg py-6 font-semibold bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-200"
+                onClick={handleCreateOrder}
               >
                 Buy Now
               </Button>
