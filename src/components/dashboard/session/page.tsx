@@ -58,10 +58,6 @@ export default function SessionProvider({
     }
   }, []);
 
-  console.log(currentWallet);
-
-  console.log(shouldCheck);
-
   const currentWalletAddress = currentWallet?.accounts[0]?.address;
 
   useEffect(() => {
