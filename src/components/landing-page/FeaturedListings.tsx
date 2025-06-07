@@ -22,7 +22,6 @@ export const FeaturedListings = () => {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    console.log("here")
     const fetchListings = async () => {
       try {
         setLoading(true);
@@ -33,10 +32,8 @@ export const FeaturedListings = () => {
           },
         });
 
-        console.log("loading...")
 
         if (!response.ok) {
-          console.error('Failed to fetch listings');
           return;
         }
         
@@ -45,7 +42,6 @@ export const FeaturedListings = () => {
         const products = data.products;
 
 
-        console.log("products", products)
 
         const formattedListings = products.map((item: any) => ({
           id: item.id || 'unknown-id',
@@ -60,7 +56,6 @@ export const FeaturedListings = () => {
 
         setListings(formattedListings);
       } catch (error) {
-        console.error('Error fetching listings:', error);
       } finally {
         setLoading(false);
       }

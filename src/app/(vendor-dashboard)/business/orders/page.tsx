@@ -26,13 +26,8 @@ interface Order {
 }
 
 const OrdersManagement = () => {
-   const currentAccount = useCurrentAccount();
+    const currentAccount = useCurrentAccount();
 
-        useEffect(() => {
-            console.log('Current wallet connection status:', {
-                currentAccount
-            });
-        }, [currentAccount]);
 
     const [orders, setOrders] = useState<Order[]>([
         {

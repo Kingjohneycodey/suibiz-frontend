@@ -20,7 +20,6 @@ export async function storeFileToWalrus(file: File, address: string): Promise<st
 
   const result = await response.json();
 
-  console.log(result)
 
   const blobId = result?.newlyCreated?.blobObject?.blobId || result?.alreadyCertified.blobId
 
@@ -49,7 +48,6 @@ export async function storeDataToWalrus(metadata: Record<string, any>, address: 
 
   const result = await response.json();
 
-  console.log(result)
   
   const blobId = result?.newlyCreated?.blobObject?.blobId || result?.alreadyCertified.blobId
 
@@ -71,10 +69,8 @@ export async function fetchDataFromWalrus(blobId: string) {
       throw new Error('Failed to fetch Walrus aggregator data');
     }
     const data = await response.json();
-    console.log(data);
     return data;
   } catch (error) {
-    console.error(error);
     throw error;
   }
 }
@@ -89,10 +85,8 @@ export async function fetchDataFromWalrusById(blobId: string) {
       throw new Error('Failed to fetch Walrus aggregator data');
     }
     const data = await response.json();
-    console.log(data);
     return data;
   } catch (error) {
-    console.error(error);
     throw error;
   }
 }

@@ -13,10 +13,8 @@ export function useSession() {
                 const response = await fetch('/api/auth/session');
                 const data = await response.json();
 
-                console.log({ data })
                 setUser(data?.user);
             } catch (error) {
-                console.error('Session check failed:', error);
                 setUser(null);
             } finally {
                 setLoading(false);

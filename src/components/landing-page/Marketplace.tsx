@@ -36,7 +36,6 @@ export const MarketPlace = () => {
                 });
 
                 if (!response.ok) {
-                    console.error('Failed to fetch listings');
                     return;
                 }
 
@@ -56,7 +55,6 @@ export const MarketPlace = () => {
 
                 setListings(formattedListings);
             } catch (error) {
-                console.error('Error fetching listings:', error);
             }
         };
 

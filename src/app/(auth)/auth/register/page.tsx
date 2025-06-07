@@ -42,7 +42,6 @@ export default function RegistrationPage() {
     
         try {
             await new Promise(resolve => setTimeout(resolve, 1000));
-            console.log('Form submitted:', { userType, ...formData });
             alert(`Registration successful for ${userType}: ${formData.name}`);
             
             setUserType(null);
@@ -56,14 +55,12 @@ export default function RegistrationPage() {
                 router.push('/dashboard')
             }, 5000)
         } catch (error) {
-            console.error('Submission error:', error);
         } finally {
             setIsSubmitting(false);
         }
     };
 
     const handleGoogleSignIn = async () => {
-        console.log("for singing with google....");
         // try {
         //     await signIn('google', { callbackUrl: '/dashboard' });
         // } catch (error) {

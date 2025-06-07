@@ -49,7 +49,6 @@ const services: IService[] = [
 export default function ServiceDetailsPage() {
     const params = useParams();
     const serviceId = Number(params.id);
-    console.log({params})
     const service = services.find(s => s.id === serviceId);
 
     if (!service) {
