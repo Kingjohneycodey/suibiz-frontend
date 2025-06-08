@@ -1,6 +1,6 @@
 "use client";
 import { Button } from '@/components/ui/button';
-import { fetchOrders, fetchUserOrders } from '@/services/orders';
+import { fetchUserOrders } from '@/services/orders';
 import { useCurrentAccount, useSignAndExecuteTransaction } from '@mysten/dapp-kit';
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
@@ -16,12 +16,6 @@ import toast from 'react-hot-toast';
 import { TransactionBlock } from '@mysten/sui.js/transactions';
 
 type OrderStatus = 'paid' | 'received' | 'delivered' | 'cancelled';
-
-interface OrderItem {
-    name: string;
-    price: number;
-    quantity: number;
-}
 
 interface Order {
     order_id: string;

@@ -9,13 +9,16 @@ import { useUserStore } from '../../../../../stores/userStore';
 import { storeDataToWalrus, storeFileToWalrus } from '@/utils/walrus';
 import { TransactionBlock } from '@mysten/sui.js/transactions';
 import { Button } from '@/components/ui/button';
+import { Mail, MapPin } from 'lucide-react';
 
 type UserFormData = {
   name: string;
   username: string;
+  email: string;
   bio: string;
   avatar_url: string;
   address: string;
+  location: string;
 };
 
 const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
@@ -28,9 +31,11 @@ export default function UserSignup() {
   const [formData, setFormData] = useState<UserFormData>({
     name: '',
     username: '',
+    email: '',
     bio: '',
     avatar_url: '',
     address: '',
+    location: '',
   });
   const [loading, setLoading] = useState(false);
   const currentAccount = useCurrentAccount();
@@ -166,6 +171,8 @@ export default function UserSignup() {
         bio: formData.bio,
         username: formData.username,
         name: formData.name,
+        email: formData.email,
+        location: formData.location,
         photo: avatarUrl
       };
 
@@ -370,7 +377,49 @@ export default function UserSignup() {
                   onChange={handleChange}
                   required
                   className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2 border"
-                  placeholder="your username"
+                  placeholder="Your username"
+                  disabled={loading}
+                />
+              </div>
+            </div>
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                Email *
+              </label>
+              <div className="mt-1 relative rounded-md shadow-sm">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Mail size={18} color='#718096' />
+                </div>
+                <input
+                  type="text"
+                  name="email"
+                  id="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                  className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2 border"
+                  placeholder="Your email"
+                  disabled={loading}
+                />
+              </div>
+            </div>
+            <div>
+              <label htmlFor="location" className="block text-sm font-medium text-gray-700">
+                Location *
+              </label>
+              <div className="mt-1 relative rounded-md shadow-sm">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <MapPin size={18} color='#718096' />
+                </div>
+                <input
+                  type="text"
+                  name="location"
+                  id="location"
+                  value={formData.location}
+                  onChange={handleChange}
+                  required
+                  className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2 border"
+                  placeholder="Your location"
                   disabled={loading}
                 />
               </div>

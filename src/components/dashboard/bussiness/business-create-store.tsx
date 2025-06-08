@@ -448,7 +448,7 @@ export default function CreateStorePage() {
                         ) : (
                             <span className="flex items-center">
                                 <FiUpload className="-ml-1 mr-2 h-5 w-5" />
-                                'Create Store'
+                                Create Store
                             </span>
                         )}
                     </button>
