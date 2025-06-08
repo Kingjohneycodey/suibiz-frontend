@@ -319,7 +319,7 @@ const OrdersDashboard = () => {
                                                     <Button disabled={order.data.status !== "paid"} className='bg-green-500 text-white hover:bg-green-600' onClick={() => {
                                                         setOrder(order.order_id)
                                                         setShowDialog(true)
-                                                    }} >Confirm</Button>
+                                                    }} >{order.data.status !== "paid" ? "Confirmed" : "Confirm"}</Button>
                                                 </td>
 
                                                 <td className="px-2 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -427,6 +427,13 @@ const OrdersDashboard = () => {
                                             <div className="font-medium dark:text-white">{((order.escrow.amount) / 1000000000).toFixed(7)} SUI</div>
                                         </div>
                                     </div>
+
+                                      <div className='mt-4'>
+                                                    <Button disabled={order.data.status !== "paid"} className='bg-green-500 text-white hover:bg-green-600' onClick={() => {
+                                                        setOrder(order.order_id)
+                                                        setShowDialog(true)
+                                                    }} >{order.data.status !== "paid" ? "Confirmed" : "Confirm"}</Button>
+                                                </div>
 
                                     {expandedOrder === order.order_id && (
                                         <div className="mt-4 pl-2">
