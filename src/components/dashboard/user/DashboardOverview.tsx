@@ -2,6 +2,8 @@
 import { useState, useEffect } from 'react';
 import { Clock, CheckCircle, AlertCircle, DollarSign, ShoppingCart, Calendar, ArrowUp, ArrowDown } from 'lucide-react';
 import Image from 'next/image';
+import { useCurrentWallet } from "@mysten/dapp-kit";
+import { getFullnodeUrl, SuiClient } from "@mysten/sui/client";
 
 type Activity = {
   id: number;
@@ -12,9 +14,8 @@ type Activity = {
 
 const DashboardOverview = () => {
   // Internal state management
-  const balance = 2450.75;
-  const pendingOrders = 3;
-  const serviceBookings = 2;
+  const pendingOrders = 0;
+  const serviceBookings = 0;
   const [activities, setActivities] = useState<Activity[]>([]);
   const balanceChange = 12.5; // percentage change
 
@@ -48,6 +49,31 @@ const DashboardOverview = () => {
       ]);
     }, 500);
   }, []);
+
+  const [balance, setBalance] = useState(0);
+      
+  const { currentWallet } = useCurrentWallet()
+
+  const currentAccount = currentWallet?.accounts[0]?.address
+
+  const client = new SuiClient({ url: getFullnodeUrl('testnet') });
+  
+  useEffect(() => {
+      const fetchBalance = async () => {
+          console.log(currentWallet)
+          if (!currentAccount) return;
+
+          const data = await client.getBalance({
+              owner: currentAccount || "",
+          });
+
+          setBalance(Number(data.totalBalance)/1000000000)
+
+          console.log('💰 SUI Balance:', data.totalBalance);
+      };
+
+      fetchBalance();
+  }, [currentAccount]);
 
   const getActivityIcon = (type: string) => {
     switch(type) {

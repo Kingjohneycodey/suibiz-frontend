@@ -11,5 +11,4 @@ export type Transaction = {
 
 export type UserWalletProps = {
     transactions: Transaction[];
-    balance: number;
 };

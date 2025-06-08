@@ -139,36 +139,42 @@ export const Header = () => {
               </Button>
             )} */}
 
+        <div>
+          {user?.role ? (
             <div>
-              {user?.role ? (
-                <div>
-                  {/* <p>{user.username}</p> */}
+              {/* <p>{user.username}</p> */}
 
-                  {user?.role === "business" && (
-                    <Link href="/business">
-                      <Button
-                        size="lg"
-                        className="text-white bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-lg px-8 py-3"
-                      >
-                        Dashboard
-                      </Button>
-                    </Link>
-                  )}
-                </div>
-              ) : account !== null ? (
-
+              {user.role === "business" ? (
+                <Link href="/business">
+                  <Button
+                    size="lg"
+                    className="text-white bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-lg px-8 py-3"
+                  >
+                    Dashboard
+                  </Button>
+                </Link>
+              ) : user.role === "user" ? (
+                <Link href="/user">
+                  <Button
+                    size="lg"
+                    className="text-white bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-lg px-8 py-3"
+                  >
+                    Dashboard
+                  </Button>
+                </Link>
+              ) : null}
+            </div>
+          ) : account !== null ? (
             <Link href="/register">
-            
-            <Button 
-                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium rounded-lg shadow-sm px-4"
-              >
+              <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium rounded-lg shadow-sm px-4">
                 Sign Up
               </Button>
             </Link>
-              ) :(
-                <ConnectButton className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 !text-white font-medium rounded-lg shadow-sm" />
-              )}
-            </div>
+          ) : (
+            <ConnectButton className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 !text-white font-medium rounded-lg shadow-sm" />
+          )}
+        </div>
+
           </div>
 
           {/* Mobile Menu Button */}

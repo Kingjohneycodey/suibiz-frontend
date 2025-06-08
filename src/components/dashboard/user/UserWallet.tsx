@@ -3,9 +3,11 @@ import { useState, useEffect, useMemo } from 'react';
 import { ArrowDown, ArrowUp, Search, Filter, ChevronDown, Plus, Minus, Clock, CheckCircle, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { Transaction, UserWalletProps } from '../../../../types/wallet';
+import { useCurrentWallet } from "@mysten/dapp-kit";
+import { getFullnodeUrl, SuiClient } from "@mysten/sui/client";
 
 
-const UserWallet = ({ transactions, balance }: UserWalletProps) => {
+const UserWallet = ({ transactions }: UserWalletProps) => {
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [sortConfig, setSortConfig] = useState<{ key: keyof Transaction; direction: 'asc' | 'desc' } | null>(null);
     type StatusFilter = 'all' | 'completed' | 'pending';
@@ -13,6 +15,30 @@ const UserWallet = ({ transactions, balance }: UserWalletProps) => {
     const [filterStatus, setFilterStatus] = useState<StatusFilter>('all');
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
+    const [balance, setBalance] = useState(0);
+    
+    const { currentWallet } = useCurrentWallet()
+
+    const currentAccount = currentWallet?.accounts[0]?.address
+
+    const client = new SuiClient({ url: getFullnodeUrl('testnet') });
+    
+        useEffect(() => {
+            const fetchBalance = async () => {
+                console.log(currentWallet)
+                if (!currentAccount) return;
+    
+                const data = await client.getBalance({
+                    owner: currentAccount || "",
+                });
+    
+                setBalance(Number(data.totalBalance)/1000000000)
+    
+                console.log('💰 SUI Balance:', data.totalBalance);
+            };
+    
+            fetchBalance();
+        }, [currentAccount]);
 
     useEffect(() => {
         setIsLoading(true);
@@ -79,7 +105,7 @@ const UserWallet = ({ transactions, balance }: UserWalletProps) => {
     };
 
     return (
-        <div className="space-y-6 sm:p-6 max-w-7xl mx-auto dark:bg-gray-900 ">
+        <div className="space-y-6 p-4 sm:p-6 max-w-7xl mx-auto dark:bg-gray-900 ">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
                     <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">My Wallet</h1>
