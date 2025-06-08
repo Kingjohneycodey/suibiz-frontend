@@ -1,5 +1,7 @@
 "use client";
-import { fetchOrders } from '@/services/orders';
+import { fetchOrders, fetchUserOrders } from '@/services/orders';
+import { useCurrentAccount } from '@mysten/dapp-kit';
+import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
 import { FiPackage, FiSearch, FiChevronDown, FiChevronRight, FiClock, FiCheckCircle, FiTruck, FiXCircle, FiArrowUp, FiArrowDown } from 'react-icons/fi';
 
@@ -25,6 +27,10 @@ interface Order {
     data: {
         status: OrderStatus;
         items: string[]
+    };
+    product: {
+        name: string;
+        photo: string;
     };
 }
 
@@ -64,104 +70,42 @@ const OrdersDashboard = () => {
     const [activeTab, setActiveTab] = useState<string>('all');
     const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState<string>('');
-    const [sortConfig, setSortConfig] = useState<{ key: keyof Order; direction: 'asc' | 'desc' }>({ 
-        key: 'date', 
-        direction: 'desc' 
+    const [sortConfig, setSortConfig] = useState<{ key: keyof Order; direction: 'asc' | 'desc' }>({
+        key: 'date',
+        direction: 'desc'
     });
+    const account = useCurrentAccount()
 
-    // Load sample data
-    // useEffect(() => {
-    //     const sampleOrders: Order[] = [
-    //         {
-    //             id: 'ORD-78945',
-    //             date: '2023-06-15',
-    //             status: 'delivered',
-    //             items: 3,
-    //             total: 149.99,
-    //             delivery: 'FedEx 2-Day',
-    //             tracking: '934857634985',
-    //             itemsDetail: [
-    //                 { name: 'Wireless Headphones', price: 89.99, quantity: 1 },
-    //                 { name: 'Phone Case', price: 29.99, quantity: 2 }
-    //             ]
-    //         },
-    //         {
-    //             id: 'ORD-78123',
-    //             date: '2023-06-10',
-    //             status: 'shipped',
-    //             items: 2,
-    //             total: 75.50,
-    //             delivery: 'USPS Priority',
-    //             tracking: '920384756123',
-    //             itemsDetail: [
-    //                 { name: 'Smart Watch', price: 65.50, quantity: 1 },
-    //                 { name: 'Screen Protector', price: 10.00, quantity: 1 }
-    //             ]
-    //         },
-    //         {
-    //             id: 'ORD-77654',
-    //             date: '2023-06-05',
-    //             status: 'processing',
-    //             items: 1,
-    //             total: 45.00,
-    //             delivery: 'Standard Shipping',
-    //             tracking: '',
-    //             itemsDetail: [
-    //                 { name: 'Bluetooth Speaker', price: 45.00, quantity: 1 }
-    //             ]
-    //         },
-    //         {
-    //             id: 'ORD-77231',
-    //             date: '2023-05-28',
-    //             status: 'cancelled',
-    //             items: 2,
-    //             total: 120.00,
-    //             delivery: '',
-    //             tracking: '',
-    //             itemsDetail: [
-    //                 { name: 'Fitness Tracker', price: 80.00, quantity: 1 },
-    //                 { name: 'Yoga Mat', price: 40.00, quantity: 1 }
-    //             ]
-    //         }
-    //     ];
-        
-    //     setOrders(sampleOrders);
-    //     setFilteredOrders(sampleOrders);
-
-        
-    // }, []);
-
-
-      useEffect(() => {
+    useEffect(() => {
         const fetchAllOrder = async () => {
-    
-          const data2 = await fetchOrders();
-    
-          console.log(data2);
 
-               setOrders(data2.orders);
-        setFilteredOrders(data2.orders);
+            const data2 = await fetchUserOrders(account?.address || "");
+
+            console.log(data2);
+
+            setOrders(data2.orders as any[]);
+            setFilteredOrders(data2.orders as any[]);
         };
-    
+
         fetchAllOrder();
-      }, []);
+    }, [account]);
 
     useEffect(() => {
         let result = [...orders];
-        
+
         if (activeTab !== 'all') {
             result = result.filter(order => order.data.status === activeTab);
         }
-        
+
         if (searchQuery) {
             const query = searchQuery.toLowerCase();
-            result = result.filter(order => 
+            result = result.filter(order =>
                 order.order_id.toLowerCase().includes(query) ||
-                order.delivery?.toLowerCase().includes(query) ||
-                order.tracking?.toLowerCase().includes(query)
+                order.product.name.toLowerCase().includes(query) ||
+                order.status?.toLowerCase().includes(query)
             );
         }
-        
+
         result.sort((a, b) => {
             if (a[sortConfig.key] < b[sortConfig.key]) {
                 return sortConfig.direction === 'asc' ? -1 : 1;
@@ -171,7 +115,7 @@ const OrdersDashboard = () => {
             }
             return 0;
         });
-        
+
         setFilteredOrders(result);
     }, [orders, activeTab, searchQuery, sortConfig]);
 
@@ -211,7 +155,7 @@ const OrdersDashboard = () => {
                             {filteredOrders.length} orders
                         </span>
                     </div>
-                
+
                     <div className="flex w-full sm:w-auto gap-2">
                         <div className="relative flex-1 sm:w-64">
                             <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -231,11 +175,10 @@ const OrdersDashboard = () => {
                         {['all', 'paid', 'shipped', 'delivered', 'cancelled'].map((tab) => (
                             <button
                                 key={tab}
-                                className={`px-4 py-3 font-medium text-sm whitespace-nowrap border-b-2 ${
-                                    activeTab === tab
+                                className={`px-4 py-3 font-medium text-sm whitespace-nowrap border-b-2 ${activeTab === tab
                                         ? 'border-purple-600 dark:border-purple-400 text-purple-600 dark:text-purple-400'
                                         : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
-                                }`}
+                                    }`}
                                 onClick={() => setActiveTab(tab)}
                             >
                                 {tab === 'all' ? 'All Orders' : statusText[tab as OrderStatus]}
@@ -251,21 +194,20 @@ const OrdersDashboard = () => {
                             <thead className="bg-gray-50 dark:bg-gray-700">
                                 <tr>
                                     {[
+                                        { key: 'photo', label: 'Photo' },
                                         { key: 'id', label: 'Order ID' },
-                                         { key: 'delivery', label: 'Product Name' },
+                                        { key: 'name', label: 'Product Name' },
                                         { key: 'date', label: 'Date' },
                                         { key: 'status', label: 'Status' },
                                         { key: 'items', label: 'Items' },
                                         { key: 'total', label: 'Total' },
-                                       
-                                        { label: 'Tracking' }
+                                        { key: 'action', label: 'Action' },
                                     ].map((header) => (
                                         <th
                                             key={header.key || header.label}
                                             scope="col"
-                                            className={`px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider ${
-                                                header.key ? 'cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600' : ''
-                                            }`}
+                                            className={`px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider ${header.key ? 'cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600' : ''
+                                                }`}
                                             onClick={() => header.key && requestSort(header.key as keyof Order)}
                                         >
                                             <div className="flex items-center gap-1">
@@ -281,13 +223,24 @@ const OrdersDashboard = () => {
                                 {filteredOrders.length > 0 ? (
                                     filteredOrders.map((order) => (
                                         <React.Fragment key={order.order_id}>
-                                            <tr 
+                                            <tr
                                                 className="hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
                                                 onClick={() => toggleOrderExpand(order.order_id)}
                                             >
+                                                <div className="ml-4 mt-2 h-10 w-10">
+                                                    <Image
+                                                        width={100}
+                                                        height={100}
+                                                        className="h-10 w-10 rounded-md object-cover"
+                                                        src={order.product.photo}
+                                                        alt={order.product.name}
+                                                    />
+                                                </div>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
                                                     {order.order_id.slice(0, 9)}...
-                                                       
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                                    {order.product.name || ''}
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                                     {formatDate(order.timestamp)}
@@ -302,23 +255,9 @@ const OrdersDashboard = () => {
                                                     {order.data.items.length}
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
-                                                    {((order.escrow.amount)/1000000000).toFixed(7)} SUI
+                                                    {((order.escrow.amount) / 1000000000).toFixed(7)} SUI
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                                    {order.delivery || '-'}
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                                    {order.tracking ? (
-                                                        <a
-                                                            href={`https://tracking.com/${order.tracking}`}
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                            className="text-blue-600 dark:text-blue-400 hover:underline"
-                                                        >
-                                                            {order.tracking}
-                                                        </a>
-                                                    ) : '-'}
-                                                </td>
+
                                                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                                     <button
                                                         className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-600"
@@ -354,7 +293,7 @@ const OrdersDashboard = () => {
                                                             </div>
                                                             <div className="flex justify-between border-t border-gray-200 dark:border-gray-600 pt-3 text-sm font-medium">
                                                                 <span className="text-gray-900 dark:text-white">Total:</span>
-                                                                <span className="text-gray-900 dark:text-white">{((order.escrow.amount)/1000000000).toFixed(7)} SUI</span>
+                                                                <span className="text-gray-900 dark:text-white">{((order.escrow.amount) / 1000000000).toFixed(7)} SUI</span>
                                                             </div>
                                                         </div>
                                                     </td>
@@ -393,11 +332,14 @@ const OrdersDashboard = () => {
                         <div className="divide-y divide-gray-200 dark:divide-gray-700">
                             {filteredOrders.map((order) => (
                                 <div key={order.order_id} className="p-4">
-                                    <div 
+                                    <div
                                         className="flex justify-between items-start cursor-pointer"
                                         onClick={() => toggleOrderExpand(order.order_id)}
                                     >
                                         <div>
+
+                                            <div className="font-medium text-gray-900 dark:text-white">           {order.product.name || ''}</div>
+
                                             <div className="font-medium text-gray-900 dark:text-white">{order.order_id.slice(0, 20)}...
                                             </div>
                                             <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">{formatDate(order.timestamp)}</div>
@@ -410,7 +352,7 @@ const OrdersDashboard = () => {
                                             )}
                                         </button>
                                     </div>
-                                    
+
                                     <div className="mt-3 flex justify-between items-center">
                                         <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium ${statusStyles[order.data.status].bg} ${statusStyles[order.data.status].text}`}>
                                             {statusStyles[order.data.status].icon}
@@ -418,10 +360,10 @@ const OrdersDashboard = () => {
                                         </div>
                                         <div className="text-right">
                                             <div className="text-sm text-gray-500 dark:text-gray-400"> {order.data.items.length} {order.data.items.length > 1 ? 'items' : 'item'}</div>
-                                            <div className="font-medium dark:text-white">{((order.escrow.amount)/1000000000).toFixed(7)} SUI</div>
+                                            <div className="font-medium dark:text-white">{((order.escrow.amount) / 1000000000).toFixed(7)} SUI</div>
                                         </div>
                                     </div>
-                                    
+
                                     {expandedOrder === order.order_id && (
                                         <div className="mt-4 pl-2">
                                             <h4 className="text-sm font-medium text-gray-900 dark:text-white mb-3">Order Details</h4>
@@ -438,22 +380,22 @@ const OrdersDashboard = () => {
                                                 ))}
                                             </div> */}
 
-                                             <div className="space-y-3 mb-4">
-                                                                {order.data.items.map((item, index) => (
-                                                                    <div key={index} className="flex justify-between text-sm">
-                                                                        <span className="text-gray-600 dark:text-gray-300">
-                                                                            {item.slice(0, 20)}...
-                                                                        </span>
-                                                                        <span className="text-gray-600 dark:text-gray-300">
-                                                                            {(((order.escrow.amount) / 1000000000) / order.data.items.length).toFixed(7)} SUI
-                                                                        </span>
-                                                                    </div>
-                                                                ))}
-                                                            </div>
-                                 
+                                            <div className="space-y-3 mb-4">
+                                                {order.data.items.map((item, index) => (
+                                                    <div key={index} className="flex justify-between text-sm">
+                                                        <span className="text-gray-600 dark:text-gray-300">
+                                                            {item.slice(0, 20)}...
+                                                        </span>
+                                                        <span className="text-gray-600 dark:text-gray-300">
+                                                            {(((order.escrow.amount) / 1000000000) / order.data.items.length).toFixed(7)} SUI
+                                                        </span>
+                                                    </div>
+                                                ))}
+                                            </div>
+
                                             <div className="flex justify-between border-t border-gray-200 dark:border-gray-600 pt-3 text-sm font-medium">
                                                 <span className="text-gray-900 dark:text-white">Total:</span>
-                                                <span className="text-gray-900 dark:text-white">{((order.escrow.amount)/1000000000).toFixed(7)} SUI</span>
+                                                <span className="text-gray-900 dark:text-white">{((order.escrow.amount) / 1000000000).toFixed(7)} SUI</span>
                                             </div>
                                         </div>
                                     )}

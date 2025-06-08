@@ -165,8 +165,6 @@ export const fetchCreatorsProducts = async (address: string, page: number = 1, p
   
         if (response.data.length === 0) break;
 
-        console.log(address)
-
         const filteredEvents = response.data.filter(event => event.sender === address);
   
         // Transform events to our ProductEvent format
