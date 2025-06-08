@@ -55,14 +55,10 @@ export default function UserDashboardWallet() {
             status: 'completed' 
         },
     ];
-
-    const balance = 1450.75;
-
     return (
         <div className="space-y-6">
             <UserWallet 
                 transactions={vendorData} 
-                balance={balance} 
             />
         </div>
     );

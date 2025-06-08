@@ -1,9 +1,6 @@
 "use client"
 import UserWallet from "@/components/dashboard/user/UserWallet";
 import { Transaction } from "../../../../../types/wallet";
-import { useEffect, useState } from "react";
-import { ConnectButton, useCurrentAccount, useCurrentWallet, useSuiClient } from "@mysten/dapp-kit";
-import { getFullnodeUrl, SuiClient } from "@mysten/sui/client";
 
 
 export default function VendorWalletPage() {
@@ -60,39 +57,11 @@ export default function VendorWalletPage() {
         },
     ];
 
-    const [balance, setBalance] = useState(0);
-
-    const { currentWallet } = useCurrentWallet()
-
-    const currentAccount = currentWallet?.accounts[0]?.address
-
-    console.log(currentWallet)
-
-    const client = new SuiClient({ url: getFullnodeUrl('testnet') });
-
-    useEffect(() => {
-        console.log("ji")
-        const fetchBalance = async () => {
-            console.log(currentWallet)
-            if (!currentAccount) return;
-
-            const data = await client.getBalance({
-                owner: currentAccount || "",
-            });
-
-            setBalance(Number(data.totalBalance)/1000000000)
-
-            console.log('💰 SUI Balance:', data.totalBalance);
-        };
-
-        fetchBalance();
-    }, [currentAccount]);
-
+    
     return (
         <div className="space-y-6">
             <UserWallet
                 transactions={vendorData}
-                balance={balance}
             />
         </div>
     );
