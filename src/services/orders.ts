@@ -342,3 +342,90 @@ export const fetchUserOrders = async (
     throw new Error("Failed to load orders");
   }
 };
+
+export const fetchUserPendingOrders = async (
+  address: string,
+  page: number = 1,
+  pageSize: number = 10000
+): Promise<number> => {
+  const skip = (page - 1) * pageSize;
+  const allEvents: ProductEvent[] = [];
+  let cursor: EventId | null = null;
+
+  try {
+    // First, fetch all relevant events with pagination
+    while (allEvents.length < skip + pageSize) {
+      const response = await client.queryEvents({
+        query: {
+          MoveEventType: `${process.env.NEXT_PUBLIC_PACKAGE_ID}::marketplace::OrderCreatedEvent`,
+        },
+        cursor,
+        limit: 1000, // Fetch more to account for filtering
+        order: "descending",
+      });
+
+      if (response.data.length === 0) break;
+
+       const filteredEvents = response.data.filter(event => event.sender === address);
+
+      // Transform events to our ProductEvent format
+      for (const event of filteredEvents) {
+        const parsed = event.parsedJson as any;
+
+
+
+        allEvents.push({
+          timestamp: Number(event.timestampMs || "0"),
+          txDigest: event.id.txDigest,
+          creator: parsed.creator,
+          seller: parsed.seller,
+          order_id: parsed.order_id,
+        });
+      }
+
+      cursor = response.nextCursor || null;
+      if (!cursor) break;
+    }
+
+    // Apply pagination
+    const paginatedEvents = allEvents.slice(skip, skip + pageSize);
+
+    let count = 0
+
+    // Then fetch additional details for each order
+    await Promise.all(
+      paginatedEvents.map(async (event) => {
+        const order: ProductWithDetails = { ...event };
+
+        if (event.order_id) {
+          try {
+            const objectData = await client.getObject({
+              id: event.order_id,
+              options: {
+            showContent: true,
+            showDisplay: true,
+            showType: true,
+              },
+            });
+
+            // Only process orders with status === "paid"
+            if (
+              objectData.data?.content?.dataType === "moveObject" &&
+              (objectData.data.content as any).fields?.status == "paid"
+            ) {
+                count++
+            }
+          } catch (error) {
+            console.error(`Failed to fetch object ${event.order_id}:`, error);
+          }
+        }
+        return order;
+      })
+    );
+
+    return count
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+    throw new Error("Failed to load orders");
+  }
+};

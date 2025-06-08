@@ -4,6 +4,7 @@ import { Clock, CheckCircle, AlertCircle, DollarSign, ShoppingCart, Calendar, Ar
 import Image from 'next/image';
 import { useCurrentWallet } from "@mysten/dapp-kit";
 import { getFullnodeUrl, SuiClient } from "@mysten/sui/client";
+import { fetchUserPendingOrders } from '@/services/orders';
 
 type Activity = {
   id: number;
@@ -14,7 +15,6 @@ type Activity = {
 
 const DashboardOverview = () => {
   // Internal state management
-  const pendingOrders = 0;
   const serviceBookings = 0;
   const [activities, setActivities] = useState<Activity[]>([]);
   const balanceChange = 1; // percentage change
@@ -51,6 +51,8 @@ const DashboardOverview = () => {
   }, []);
 
   const [balance, setBalance] = useState(0);
+
+  const [pendingOrders, setPendingOrders] = useState(0)
       
   const { currentWallet } = useCurrentWallet()
 
@@ -74,6 +76,17 @@ const DashboardOverview = () => {
 
       fetchBalance();
   }, [currentAccount]);
+
+      useEffect(() => {
+          const fetchPendingOrder = async () => {
+  
+              const data = await fetchUserPendingOrders(currentAccount || "");
+  
+              setPendingOrders(data || 0);
+          };
+  
+          fetchPendingOrder();
+      }, [currentAccount]);
 
   const getActivityIcon = (type: string) => {
     switch(type) {
@@ -136,9 +149,9 @@ const DashboardOverview = () => {
               <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center gap-1">
                 <ShoppingCart className="w-4 h-4" /> Pending Orders
               </h3>
-              <p className="text-2xl font-bold mt-1 dark:text-gray-300 text-gray-900 dark:text-white">{pendingOrders}</p>
+              <p className="text-2xl font-bold mt-1 text-gray-900 dark:text-white">{pendingOrders}</p>
               <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                <span className="text-green-600">+2</span> from yesterday
+                <span className="text-green-600">+0</span> from yesterday
               </div>
             </div>
             <div className="bg-orange-100 dark:bg-orange-900/30 p-2 rounded-lg text-orange-600 dark:text-orange-400">

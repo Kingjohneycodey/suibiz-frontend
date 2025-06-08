@@ -139,7 +139,7 @@ const BusinessDashboardOverview = () => {
               </h3>
               <p className="text-2xl font-bold mt-1 dark:text-gray-300 text-gray-900 dark:text-white">{pendingOrders}</p>
               <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                <span className="text-green-600">+2</span> from yesterday
+                <span className="text-green-600">+0</span> from yesterday
               </div>
             </div>
             <div className="bg-orange-100 dark:bg-orange-900/30 p-2 rounded-lg text-orange-600 dark:text-orange-400">

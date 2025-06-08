@@ -1,11 +1,21 @@
 "use client";
+import { Button } from '@/components/ui/button';
 import { fetchOrders, fetchUserOrders } from '@/services/orders';
-import { useCurrentAccount } from '@mysten/dapp-kit';
+import { useCurrentAccount, useSignAndExecuteTransaction } from '@mysten/dapp-kit';
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
 import { FiPackage, FiSearch, FiChevronDown, FiChevronRight, FiClock, FiCheckCircle, FiTruck, FiXCircle, FiArrowUp, FiArrowDown } from 'react-icons/fi';
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogDescription,
+} from "@/components/ui/dialog";
+import toast from 'react-hot-toast';
+import { TransactionBlock } from '@mysten/sui.js/transactions';
 
-type OrderStatus = 'paid' | 'shipped' | 'delivered' | 'cancelled';
+type OrderStatus = 'paid' | 'received' | 'delivered' | 'cancelled';
 
 interface OrderItem {
     name: string;
@@ -15,12 +25,7 @@ interface OrderItem {
 
 interface Order {
     order_id: string;
-    date: string;
-    status: OrderStatus;
-    delivery: string;
-    tracking: string;
     timestamp: string;
-    itemsDetail: OrderItem[];
     escrow: {
         amount: number;
     };
@@ -40,7 +45,7 @@ const statusStyles: Record<OrderStatus, { bg: string; text: string; icon: React.
         text: 'text-orange-600 dark:text-orange-400',
         icon: <FiClock className="text-orange-600 dark:text-orange-400" />
     },
-    shipped: {
+    received: {
         bg: 'bg-blue-50 dark:bg-blue-900/30',
         text: 'text-blue-600 dark:text-blue-400',
         icon: <FiTruck className="text-blue-600 dark:text-blue-400" />
@@ -59,7 +64,7 @@ const statusStyles: Record<OrderStatus, { bg: string; text: string; icon: React.
 
 const statusText: Record<OrderStatus, string> = {
     paid: 'Paid',
-    shipped: 'Shipped',
+    received: 'Received',
     delivered: 'Delivered',
     cancelled: 'Cancelled'
 };
@@ -69,26 +74,28 @@ const OrdersDashboard = () => {
     const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
     const [activeTab, setActiveTab] = useState<string>('all');
     const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
+    const [order, setOrder] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [sortConfig, setSortConfig] = useState<{ key: keyof Order; direction: 'asc' | 'desc' }>({
-        key: 'date',
+        key: 'timestamp',
         direction: 'desc'
     });
     const account = useCurrentAccount()
+    const [showDialog, setShowDialog] = useState(false);
+    const { mutate: signAndExecuteTransaction } = useSignAndExecuteTransaction();
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const fetchAllOrder = async () => {
 
-            const data2 = await fetchUserOrders(account?.address || "");
+            const data = await fetchUserOrders(account?.address || "");
 
-            console.log(data2);
-
-            setOrders(data2.orders as any[]);
-            setFilteredOrders(data2.orders as any[]);
+            setOrders(data.orders as any[]);
+            setFilteredOrders(data.orders as any[]);
         };
 
         fetchAllOrder();
-    }, [account]);
+    }, [account, order]);
 
     useEffect(() => {
         let result = [...orders];
@@ -102,7 +109,7 @@ const OrdersDashboard = () => {
             result = result.filter(order =>
                 order.order_id.toLowerCase().includes(query) ||
                 order.product.name.toLowerCase().includes(query) ||
-                order.status?.toLowerCase().includes(query)
+                order.data.status?.toLowerCase().includes(query)
             );
         }
 
@@ -144,8 +151,59 @@ const OrdersDashboard = () => {
         });
     };
 
+      const handleConfirmOrder = async (): Promise<void> => {
+    setLoading(true);
+
+    try {
+      const tx = new TransactionBlock();
+      tx.moveCall({
+        target: `${process.env.NEXT_PUBLIC_PACKAGE_ID}::marketplace::mark_received`,
+        arguments: [
+          tx.object(order || ""),
+        ],
+      });
+
+      signAndExecuteTransaction(
+        {
+          transaction: tx.serialize(),
+          chain: "sui:testnet",
+        },
+        {
+          onSuccess: () => {
+            toast.success("Order confirmed as received successfully!");
+
+            setLoading(false);
+
+            setShowDialog(false)
+
+            setOrder(null)
+
+            // router.push("/business/products")
+          },
+          onError: (err: { message: string }) => {
+            if (
+              err.message == "No valid gas coins found for the transaction."
+            ) {
+              toast.error(
+                err.message + "Fund your sui wallet account and try agains"
+              );
+            } else {
+              toast.error(err.message);
+            }
+
+            setLoading(false);
+
+            console.error("Transaction Error:", err.message);
+          },
+        }
+      );
+    } catch (err) {
+      console.error("Error preparing transaction:", err);
+    }
+  };
+
     return (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 h-full dark:bg-gray-900">
+        <div className="max-w-7xl mx-auto px-4 sm:px-2 lg:px-8 py-8 h-full dark:bg-gray-900">
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden">
                 <div className="p-6 border-b border-gray-100 dark:border-gray-700 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                     <div className="flex items-center gap-3">
@@ -172,12 +230,12 @@ const OrdersDashboard = () => {
 
                 <div className="border-b border-gray-100 dark:border-gray-700 overflow-x-auto">
                     <div className="flex">
-                        {['all', 'paid', 'shipped', 'delivered', 'cancelled'].map((tab) => (
+                        {['all', 'paid', 'received', 'delivered', 'cancelled'].map((tab) => (
                             <button
                                 key={tab}
                                 className={`px-4 py-3 font-medium text-sm whitespace-nowrap border-b-2 ${activeTab === tab
-                                        ? 'border-purple-600 dark:border-purple-400 text-purple-600 dark:text-purple-400'
-                                        : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+                                    ? 'border-purple-600 dark:border-purple-400 text-purple-600 dark:text-purple-400'
+                                    : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
                                     }`}
                                 onClick={() => setActiveTab(tab)}
                             >
@@ -206,7 +264,7 @@ const OrdersDashboard = () => {
                                         <th
                                             key={header.key || header.label}
                                             scope="col"
-                                            className={`px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider ${header.key ? 'cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600' : ''
+                                            className={`px-2 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider ${header.key ? 'cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600' : ''
                                                 }`}
                                             onClick={() => header.key && requestSort(header.key as keyof Order)}
                                         >
@@ -216,7 +274,7 @@ const OrdersDashboard = () => {
                                             </div>
                                         </th>
                                     ))}
-                                    <th scope="col" className="px-6 py-3"></th>
+                                    <th scope="col" className="px-2 py-3"></th>
                                 </tr>
                             </thead>
                             <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
@@ -225,9 +283,9 @@ const OrdersDashboard = () => {
                                         <React.Fragment key={order.order_id}>
                                             <tr
                                                 className="hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
-                                                onClick={() => toggleOrderExpand(order.order_id)}
+
                                             >
-                                                <div className="ml-4 mt-2 h-10 w-10">
+                                                <div className="ml-4 mt-2 h-10 w-10" onClick={() => toggleOrderExpand(order.order_id)}>
                                                     <Image
                                                         width={100}
                                                         height={100}
@@ -236,29 +294,35 @@ const OrdersDashboard = () => {
                                                         alt={order.product.name}
                                                     />
                                                 </div>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                                                <td className="px-2 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white" onClick={() => toggleOrderExpand(order.order_id)}>
                                                     {order.order_id.slice(0, 9)}...
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                                <td className="px-2 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400" onClick={() => toggleOrderExpand(order.order_id)}>
                                                     {order.product.name || ''}
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                                <td className="px-2 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                                     {formatDate(order.timestamp)}
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap">
-                                                    <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium ${statusStyles[order.data.status].bg} ${statusStyles[order.data.status].text}`}>
-                                                        {statusStyles[order.data.status].icon}
+                                                <td className="px-2 py-4 whitespace-nowrap">
+                                                    <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium ${statusStyles[order.data?.status]?.bg} ${statusStyles[order.data.status]?.text}`}>
+                                                        {statusStyles[order.data.status]?.icon}
                                                         {statusText[order.data.status]}
                                                     </div>
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                                <td className="px-2 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                                     {order.data.items.length}
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                                                <td className="px-2 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
                                                     {((order.escrow.amount) / 1000000000).toFixed(7)} SUI
                                                 </td>
+                                                <td>
+                                                    <Button disabled={order.data.status !== "paid"} className='bg-green-500 text-white hover:bg-green-600' onClick={() => {
+                                                        setOrder(order.order_id)
+                                                        setShowDialog(true)
+                                                    }} >Confirm</Button>
+                                                </td>
 
-                                                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                                <td className="px-2 py-4 whitespace-nowrap text-right text-sm font-medium">
                                                     <button
                                                         className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-600"
                                                         onClick={(e) => {
@@ -276,7 +340,7 @@ const OrdersDashboard = () => {
                                             </tr>
                                             {expandedOrder === order.order_id && (
                                                 <tr className="bg-gray-50 dark:bg-gray-700">
-                                                    <td colSpan={8} className="px-6 py-4">
+                                                    <td colSpan={8} className="px-2 py-4">
                                                         <div className="pl-12 pr-4">
                                                             <h4 className="text-sm font-medium text-gray-900 dark:text-white mb-3">Order Items</h4>
                                                             <div className="space-y-3 mb-4">
@@ -303,7 +367,7 @@ const OrdersDashboard = () => {
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan={8} className="px-6 py-12 text-center">
+                                        <td colSpan={8} className="px-2 py-12 text-center">
                                             <div className="flex flex-col items-center justify-center text-gray-400">
                                                 <FiPackage className="h-12 w-12 mb-3" />
                                                 <h3 className="text-lg font-medium text-gray-900 dark:text-white">No orders found</h3>
@@ -354,8 +418,8 @@ const OrdersDashboard = () => {
                                     </div>
 
                                     <div className="mt-3 flex justify-between items-center">
-                                        <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium ${statusStyles[order.data.status].bg} ${statusStyles[order.data.status].text}`}>
-                                            {statusStyles[order.data.status].icon}
+                                        <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium ${statusStyles[order.data.status]?.bg} ${statusStyles[order.data.status]?.text}`}>
+                                            {statusStyles[order.data.status]?.icon}
                                             {statusText[order.data.status]}
                                         </div>
                                         <div className="text-right">
@@ -367,18 +431,7 @@ const OrdersDashboard = () => {
                                     {expandedOrder === order.order_id && (
                                         <div className="mt-4 pl-2">
                                             <h4 className="text-sm font-medium text-gray-900 dark:text-white mb-3">Order Details</h4>
-                                            {/* <div className="space-y-3 mb-4">
-                                                {order.itemsDetail.map((item, index) => (
-                                                    <div key={index} className="flex justify-between text-sm">
-                                                        <span className="text-gray-600 dark:text-gray-300">
-                                                            {item.quantity}x {item.name}
-                                                        </span>
-                                                        <span className="font-medium text-gray-900 dark:text-white">
-                                                            ${item.price.toFixed(7)}
-                                                        </span>
-                                                    </div>
-                                                ))}
-                                            </div> */}
+                    
 
                                             <div className="space-y-3 mb-4">
                                                 {order.data.items.map((item, index) => (
@@ -421,6 +474,37 @@ const OrdersDashboard = () => {
                         </div>
                     )}
                 </div>
+
+                <Dialog open={showDialog} onOpenChange={setShowDialog}>
+                    <DialogContent
+                        className="sm:max-w-[425px] bg-white transition-opacity duration-300"
+                        style={{
+                            opacity: showDialog ? 1 : 0,
+                            transition: "opacity 300ms",
+                            transform: showDialog ? "translateY(0)" : "translateY(-20px)"
+                        }}
+                    >
+                        <DialogHeader>
+                            <DialogTitle>Confirm your Order</DialogTitle>
+                            <DialogDescription>
+                        Are you sure you want to confirm this order as received?
+                            </DialogDescription>
+                        </DialogHeader>
+                        <div className="space-y-4">
+
+                            <Button
+                                className="w-full bg-green-600 hover:bg-green-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer mt-8"
+                                onClick={() => {
+                                    setLoading(true);
+                                    handleConfirmOrder();
+                                }}
+                                disabled={loading}
+                            >
+                                {loading ? "Processing..." : "Confirm Order"}
+                            </Button>
+                        </div>
+                    </DialogContent>
+                </Dialog>
             </div>
         </div>
     );
