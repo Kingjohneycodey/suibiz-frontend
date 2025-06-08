@@ -100,7 +100,7 @@ export default function SingleProductPage() {
       console.log(paymentCoin) 
 
       if (!paymentCoin) {
-        toast.error(`No coin found with sufficient balance (needed ${totalPrice.toString()} MIST)`);
+        toast.error(`No coin found with sufficient balance (needed ${totalPrice.toString()} MIST), Fund your sui address with testnet tokens and try again`);
         return
         // throw new Error(`No coin found with sufficient balance (needed ${totalPrice.toString()} MIST)`);
       }
