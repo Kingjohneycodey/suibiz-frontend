@@ -9,87 +9,47 @@ import { Header } from "./Header";
 import Link from "next/link";
 import { fetchProducts } from "@/services/products";
 
-export const MarketPlace = () => {
-
-    interface Product {
-        id: string;
+interface Product {
+    id: string;
+    name: string;
+    photo: string;
+    category: string;
+    creator: string;
+    price: string;
+    store: {
         name: string;
         photo: string;
-        category: string;
-        creator: string;
-        price: string;
-        store: {
-            name: string;
-            photo: string;
-        }
     }
-    
+}
+
+export const MarketPlace = () => {
+
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("All");
     const [sortOption, setSortOption] = useState("featured");
 
-    // useEffect(() => {
-    //     const fetchListings = async () => {
-    //         try {
-    //             const response = await fetch('https://suibiz-backend.onrender.com/api/products', {
-    //                 method: 'GET',
-    //                 headers: {
-    //                     'Content-Type': 'application/json',
-    //                 },
-    //             });
-
-    //             if (!response.ok) {
-    //                 console.error('Failed to fetch listings');
-    //                 return;
-    //             }
-
-    //             const data = await response.json();
-    //             const products = data.products;
-
-    //             const formattedListings = products.map((item: any) => ({
-    //                 id: item.id || 'unknown-id',
-    //                 title: item.name || 'Untitled',
-    //                 image: item.image_url || '/placeholder-image.jpg',
-    //                 category: item.collection || 'Uncategorized',
-    //                 rating: 4.5,
-    //                 reviews: 12,
-    //                 seller: `Seller ${item.owner?.slice(0, 6) || 'Unknown'}`,
-    //                 price: `${item.price || '0.00'}`,
-    //             }));
-
-    //             setListings(formattedListings);
-    //         } catch (error) {
-    //             console.error('Error fetching listings:', error);
-    //         }
-    //     };
-
-    //     fetchListings();
-    // }, []);
-
     console.log(products)
     useEffect(() => {
-        const fetchAllroducts = async () => {
+        const fetchAllProducts = async () => {
 
-        
-        const stores = await fetchProducts();
+            const stores = await fetchProducts();
 
+            console.log(stores)
 
-        console.log(stores)
+            setProducts(stores.products as any)
+            console.log(stores);
 
-        setProducts(stores.products as any)
-        console.log(stores);
+            setLoading(false)
+        };
 
-        setLoading(false)
-    };
-
-        fetchAllroducts();
+        fetchAllProducts();
     }, []);
     const categories = ["All", ...Array.from(new Set(products.map(item => item.category)))];
 
     const filteredListings = products
-        .filter(listing => 
+        .filter(listing =>
             listing.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
             (selectedCategory === "All" || listing.category === selectedCategory)
         )
@@ -103,12 +63,12 @@ export const MarketPlace = () => {
     return (
         <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white flex flex-col">
             <Header />
-            
+
             <div className="bg-gradient-to-r from-purple-600 to-blue-600 py-16 text-white">
                 <div className="container mx-auto px-4 text-center">
                     <h1 className="text-4xl md:text-5xl font-bold mb-4">Shop Amazing Products</h1>
                     <p className="text-xl md:text-2xl mb-8">Shop the best products secured by the Sui Blockchain</p>
-                    
+
                     <div className="max-w-2xl mx-auto relative">
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <Search className="h-5 w-5 text-gray-400" />
@@ -132,17 +92,16 @@ export const MarketPlace = () => {
                                 <button
                                     key={category}
                                     onClick={() => setSelectedCategory(category)}
-                                    className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                                        selectedCategory === category
-                                            ? 'bg-purple-600 text-white'
-                                            : 'bg-gray-100 hover:bg-gray-200 text-gray-800'
-                                    }`}
+                                    className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${selectedCategory === category
+                                        ? 'bg-purple-600 text-white'
+                                        : 'bg-gray-100 hover:bg-gray-200 text-gray-800'
+                                        }`}
                                 >
                                     {category}
                                 </button>
                             ))}
                         </div>
-                        
+
                         <div className="relative">
                             <select
                                 value={sortOption}
@@ -160,28 +119,33 @@ export const MarketPlace = () => {
                         </div>
                     </div>
 
-                    {filteredListings.length === 0 ? (
-                        <div className="col-span-full flex flex-col items-center justify-center py-20 text-center">
-                            <Search className="h-12 w-12 text-gray-400 mb-4" />
-                            <h3 className="text-xl font-medium text-gray-900 mb-2">No products found</h3>
-                            <p className="text-gray-500">Try adjusting your search or filter criteria</p>
-                            <button 
-                                onClick={() => {
-                                    setSearchQuery("");
-                                    setSelectedCategory("All");
-                                }}
-                                className="mt-4 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
-                            >
-                                Reset filters
-                            </button>
+                    {loading ? (
+
+                        <div className="flex items-center justify-center h-64">
+                            <div className="loader">Loading...</div>
                         </div>
+                    ) : filteredListings.length === 0 ? (
+                    <div className="col-span-full flex flex-col items-center justify-center py-20 text-center">
+                        <Search className="h-12 w-12 text-gray-400 mb-4" />
+                        <h3 className="text-xl font-medium text-gray-900 mb-2">No products found</h3>
+                        <p className="text-gray-500">Try adjusting your search or filter criteria</p>
+                        <button
+                            onClick={() => {
+                                setSearchQuery("");
+                                setSelectedCategory("All");
+                            }}
+                            className="mt-4 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                        >
+                            Reset filters
+                        </button>
+                    </div>
                     ) : (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                            {filteredListings.map((listing) => (
-                                <Link href={`/marketplace/${listing.id}`} key={listing.id}>
-                                    <Card className="hover:shadow-lg transition-shadow duration-300 cursor-pointer">
-                                        <div className="aspect-video overflow-hidden rounded-t-lg">
-                                            <Image
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        {filteredListings.map((listing) => (
+                            <Link href={`/marketplace/${listing.id}`} key={listing.id}>
+                                <Card className="hover:shadow-lg transition-shadow duration-300 cursor-pointer">
+                                    <div className="aspect-video overflow-hidden rounded-t-lg">
+                                        <Image
                                             width={300}
                                             height={200}
                                             src={listing.photo}
@@ -190,11 +154,14 @@ export const MarketPlace = () => {
                                             onError={(e) => {
                                                 (e.target as HTMLImageElement).src = '/placeholder-image.jpg';
                                             }}
-                                            />
-                                        </div>
-                                        <CardHeader className="pb-2">
-                                            <div className="flex items-center justify-between mb-2">
-                                            <Badge variant="secondary" className="text-xs">
+                                        />
+                                    </div>
+                                    <CardHeader className="pb-2 px-3">
+                                        <div className="flex items-center justify-between mb-2">
+                                            <Badge
+                                                variant="default"
+                                                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
+                                            >
                                                 {listing.category}
                                             </Badge>
                                             <div className="flex items-center space-x-1">
@@ -202,41 +169,41 @@ export const MarketPlace = () => {
                                                 <span className="text-sm font-medium">5</span>
                                                 {/* <span className="text-sm font-medium">{listing.rating}</span> */}
                                                 {/* <span className="text-xs text-slate-500">({listing.reviews || 0})</span> */}
-                        
+
                                                 <span className="text-xs text-slate-500">({0})</span>
                                             </div>
-                                            </div>
-                                            <CardTitle className="text-lg leading-tight">{listing.name}</CardTitle>
-                                        </CardHeader>
-                                        <CardContent>
-                                            <div className="flex items-center justify-between">
+                                        </div>
+                                        <CardTitle className="text-lg leading-tight py-2">{listing.name}</CardTitle>
+                                    </CardHeader>
+                                    <CardContent className="px-3">
+                                        <div className="flex items-center justify-between">
                                             <div className="flex items-center space-x-2">
                                                 {/* <div className="w-6 h-6 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center">
                                                 <User className="w-3 h-3 text-white" />
                                                 </div> */}
                                                 <div>
-                                                <Image
-                                            width={10}
-                                            height={10}
-                                            src={listing.store.photo}
-                                            alt={listing.store.name}
-                                            className="w-10 h-10 rounded-full object-cover hover:scale-105 transition-transform duration-300"
-                                            onError={(e) => {
-                                                (e.target as HTMLImageElement).src = '/placeholder-image.jpg';
-                                            }}
-                                            />
+                                                    <Image
+                                                        width={10}
+                                                        height={10}
+                                                        src={listing.store.photo}
+                                                        alt={listing.store.name}
+                                                        className="w-10 h-10 rounded-full object-cover hover:scale-105 transition-transform duration-300"
+                                                        onError={(e) => {
+                                                            (e.target as HTMLImageElement).src = '/placeholder-image.jpg';
+                                                        }}
+                                                    />
                                                 </div>
                                                 <span className="text-sm text-slate-600">{listing.store.name}</span>
                                             </div>
                                             <div className="text-lg font-semibold text-slate-800">
-                                                {Number(listing.price)/1000000000} SUI
+                                                {(Number(listing.price) / 1000000000).toFixed(7)} SUI
                                             </div>
-                                            </div>
-                                        </CardContent>
-                                    </Card>
-                                </Link>
-                            ))}
-                        </div>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </Link>
+                        ))}
+                    </div>
                     )}
                 </div>
             </main>

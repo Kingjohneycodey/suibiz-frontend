@@ -18,7 +18,7 @@ const BusinessDashboardOverview = () => {
   const pendingOrders = 0;
   const serviceBookings = 0;
   const [activities, setActivities] = useState<Activity[]>([]);
-  const balanceChange = 12.5; // percentage change
+  const balanceChange = 1; // percentage change
 
   useEffect(() => {
     setTimeout(() => {
@@ -105,10 +105,10 @@ const BusinessDashboardOverview = () => {
           <div className="flex justify-between items-start">
             <div>
               <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center gap-1">
-                <DollarSign className="w-4 h-4" /> Total Balance
+                SUI Total Balance
               </h3>
               <p className="text-2xl font-bold mt-1 dark:text-gray-300 text-gray-900">
-                ${balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              {balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <small>SUI</small>
               </p>
               <div className={`flex items-center mt-2 text-sm ${balanceChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                 {balanceChange >= 0 ? (
@@ -166,7 +166,7 @@ const BusinessDashboardOverview = () => {
         </div>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+      {/* <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
         <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="text-xl font-bold text-gray-900 dark:text-white">Quick Stats</h2>
@@ -192,7 +192,7 @@ const BusinessDashboardOverview = () => {
             <p className="text-xl font-bold mt-1 dark:text-gray-300">4.9★</p>
           </div>
         </div>
-      </div>
+      </div> */}
 
       <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
         <div className="flex items-center justify-between mb-6">

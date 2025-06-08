@@ -226,11 +226,9 @@ export default function CreateStorePage() {
               onSuccess: () => {
                 toast.success('Store created successfully!');
 
-                console.log("the")
-
                 setLoading(false);
     
-                // router.refresh()
+                router.refresh()
               },
               onError: (err: { message: string }) => {
                 if (err.message == "No valid gas coins found for the transaction.") {

@@ -211,7 +211,7 @@ export default function ProductUploadPage({ kioskId }: ProductUploadPageProps) {
 
       await handleListItem({
         metadata_uri: data,
-        price: Number(formData.price),
+        price: Number(formData.price) * 1000000000,
         quantity: Number(formData.quantity),
       });
     } catch (err) {
@@ -287,7 +287,8 @@ export default function ProductUploadPage({ kioskId }: ProductUploadPageProps) {
 
   return (
     <div className="dark:bg-gray-900 mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-2xl lg:mx-0">
-      <div className="mb-8">
+     <div>
+       <div className="mb-8">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
           {isEditMode ? "Edit Product" : "Upload New Product"}
         </h1>
@@ -570,6 +571,7 @@ export default function ProductUploadPage({ kioskId }: ProductUploadPageProps) {
           </button>
         </div>
       </form>
+     </div>
     </div>
   );
 }
