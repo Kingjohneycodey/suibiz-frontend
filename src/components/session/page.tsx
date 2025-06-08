@@ -2,7 +2,7 @@
 import { getUserProfileInfo } from "@/services/profile";
 import { ConnectButton, useCurrentWallet } from "@mysten/dapp-kit";
 import { useEffect, useState } from "react";
-import { useUserStore } from "../../../../stores/userStore";
+import { useUserStore } from "../../../stores/userStore";
 import {
   Dialog,
   DialogContent,

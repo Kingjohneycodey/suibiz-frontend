@@ -13,7 +13,7 @@ export const FeaturedListings = () => {
     name: string;
     photo: string;
     category: string;
-
+    available_items: any[];
     creator: string;
     price: string;
     store: {
@@ -93,7 +93,14 @@ export const FeaturedListings = () => {
                       <span className="text-xs text-slate-500">({0})</span>
                     </div>
                   </div>
-                  <CardTitle className="text-lg leading-tight py-2">{listing.name}</CardTitle>
+                 <div className="flex items-center justify-between">
+                   <CardTitle className="text-lg leading-tight py-2">{listing.name}</CardTitle>
+
+                   <div>
+                    ({listing.available_items.length} items)
+                   </div>
+
+                 </div>
                 </CardHeader>
                 <CardContent className="px-3">
                   <div className="flex items-center justify-between">

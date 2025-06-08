@@ -91,7 +91,7 @@ const DashboardOverview = () => {
   };
 
   return (
-    <div className="space-y-6 p-4 sm:p-6 max-w-7xl mx-auto dark:bg-gray-900">
+    <div className="space-y-6 p-4 sm:p-6 max-w-7xl mx-auto dark:bg-gray-900 min-h-screen">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">Dashboard Overview</h1>
