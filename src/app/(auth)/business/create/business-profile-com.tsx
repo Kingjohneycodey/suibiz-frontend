@@ -44,8 +44,9 @@ export default function BusinessProfilePage() {
       currentAccount
     });
 
-    if(!currentAccount){
-      router.refresh()
+    if(!currentAccount && !sessionStorage.getItem("refreshed")) {
+      sessionStorage.setItem("refreshed", "true")
+      window.location.reload()
     }
   }, [currentAccount]);
 
