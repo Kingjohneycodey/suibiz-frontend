@@ -1,173 +1,156 @@
-// import { useState, useEffect } from 'react';
-// import { EventId, SuiClient } from '@mysten/sui/client';
+import { useState, useEffect } from 'react';
+import { SuiClient, EventId } from '@mysten/sui/client';
 
-// const client = new SuiClient({ url: 'https://fullnode.testnet.sui.io' });
+const client = new SuiClient({ url: 'https://fullnode.testnet.sui.io' });
 
-// interface ProductEvent {
-//   timestamp: number;
-//   txDigest: string;
-//   creator?: string;
-//   order_id?: string;
-//   seller?: string;
-// }
+interface ProductEvent {
+  timestamp: number;
+  txDigest: string;
+  creator?: string;
+  order_id?: string;
+  seller?: string;
+}
 
-// interface ProductWithDetails extends ProductEvent {
-//   data?: Record<string, any>;
-//   escrow?: Record<string, any>;
-// }
+interface ProductWithDetails extends ProductEvent {
+  data?: Record<string, any>;
+  escrow?: Record<string, any>;
+  product?: Record<string, any>;
+}
 
-// export const fetchOrders = async (page: number = 1, pageSize: number = 20): Promise<{
-//   page: number;
-//   pageSize: number;
-//   total?: number;
-//   products?: ProductWithDetails[];
-// }> => {
-//   const skip = (page - 1) * pageSize;
-//   const allEvents: ProductEvent[] = [];
-//   let cursor: string | null = null;
+export const fetchOrders = async (page: number = 1, pageSize: number = 20): Promise<{
+  page: number;
+  pageSize: number;
+  total?: number;
+  orders?: any[];
+}> => {
+  const skip = (page - 1) * pageSize;
+  const allEvents: ProductEvent[] = [];
+  let cursor: EventId | null = null;
 
-//   try {
-//     // First, fetch all relevant events with pagination
-//     while (allEvents.length < skip + pageSize) {
-//       const response = await client.queryEvents({
-//         query: {
-//           MoveEventType: `${process.env.NEXT_PUBLIC_PACKAGE_ID}::marketplace::OrderCreatedEvent`
-//         },
-//         cursor: (cursor as EventId | null | undefined) || undefined,
-//         limit: Math.min(pageSize * 2, 50), // Fetch more to account for filtering
-//         order: "descending",
-//       });
+  try {
+    // First, fetch all relevant events with pagination
+    while (allEvents.length < skip + pageSize) {
+      const response = await client.queryEvents({
+        query: {
+          MoveEventType: `${process.env.NEXT_PUBLIC_PACKAGE_ID}::marketplace::OrderCreatedEvent`
+        },
+        cursor,
+        limit: Math.min(pageSize * 2, 50), // Fetch more to account for filtering
+        order: "descending",
+      });
 
-//       if (response.data.length === 0) break;
+      if (response.data.length === 0) break;
 
-//       // Transform events to our ProductEvent format
-//       for (const event of response.data) {
-//         const parsed = event.parsedJson as any;
+      // Transform events to our ProductEvent format
+      for (const event of response.data) {
+        const parsed = event.parsedJson as any;
 
-//         console.log(parsed)
-//         allEvents.push({
-//           timestamp: Number(event.timestampMs || '0'),
-//           txDigest: event.id.txDigest,
-//           creator: parsed.creator,
-//           seller: parsed.seller,
-//           order_id: parsed.order_id
-//         });
-//       }
+        allEvents.push({
+          timestamp: Number(event.timestampMs || '0'),
+          txDigest: event.id.txDigest,
+          creator: parsed.creator,
+          seller: parsed.seller,
+          order_id: parsed.order_id
+        });
+      }
 
-//       cursor = response.nextCursor ? String(response.nextCursor) : null;
-//       if (!cursor) break;
-//     }
+      cursor = response.nextCursor || null;
+      if (!cursor) break;
+    }
 
-//     // Apply pagination
-//     const paginatedEvents = allEvents.slice(skip, skip + pageSize);
+    // Apply pagination
+    const paginatedEvents = allEvents.slice(skip, skip + pageSize);
 
-//     // // Then fetch additional details for each product
-//     const ordersWithDetails = await Promise.all(
-//       paginatedEvents.map(async (event) => {
-//         const product: ProductWithDetails = { ...event };
+    // // Then fetch additional details for each order
+    const ordersWithDetails = await Promise.all(
+      paginatedEvents.map(async (event) => {
+        const order: ProductWithDetails = { ...event };
 
-//         if (event.order_id) {
-//           try {
-//             const objectData = await client.getObject({
-//               id: event.order_id,
-//               options: {
-//                 showContent: true,
-//                 showDisplay: true,
-//                 showType: true
-//               }
-//             });
+        if (event.order_id) {
+          try {
+            const objectData = await client.getObject({
+              id: event.order_id,
+              options: {
+                showContent: true,
+                showDisplay: true,
+                showType: true
+              }
+            });
 
-//             if (objectData.data?.content) {
+            if (objectData.data?.content) {
+              if (objectData.data?.content?.dataType === 'moveObject') {
+                const fields = (objectData.data.content as any).fields;
 
+                if (fields?.escrow_id) {
+                  try {
+                    const objectData2 = await client.getObject({
+                      id: fields.escrow_id,
+                      options: {
+                        showContent: true,
+                        showDisplay: true,
+                        showType: true
+                      }
+                    });
 
-//               if ('fields' in (objectData.data?.content || {}) && objectData.data?.content.fields?.escrow_id) {
-//                 try {
+                    if (objectData2.data?.content?.dataType === 'moveObject') {
+                      const escrowFields = (objectData2.data.content as any).fields;
 
-//                   const objectData2 = await client.getObject({
-//                     id: 'fields' in (objectData.data?.content || {}) ? objectData.data?.content.fields?.escrow_id : undefined,
-//                     options: {
-//                       showContent: true,
-//                       showDisplay: true,
-//                       showType: true
-//                     }
+                      order.escrow = {
+                        ...escrowFields,
+                        id: objectData2.data.objectId,
+                      }
+                    }
+                  } catch (error) {
+                    console.error(`Failed to fetch object ${event.order_id}:`, error);
+                  }
+                }
 
-//                   });
+                if (fields?.product_type) {
+                  try {
+                    const objectData2 = await client.getObject({
+                      id: fields.product_type,
+                      options: {
+                        showContent: true,
+                        showDisplay: true,
+                        showType: true
+                      }
+                    });
 
+                    if (objectData2.data?.content?.dataType === 'moveObject') {
+                      const productFields = (objectData2.data.content as any).fields;
 
-//                   if (objectData2.data?.content) {
-//                     if ('fields' in (objectData2.data?.content || {})) {
-//                         console.log(objectData2.data?.content.fields);
-//                     } else {
-//                         console.warn('Content does not have fields property:', objectData2.data?.content);
-//                     }
+                      order.product = {
+                        ...productFields,
+                        id: objectData2.data.objectId,
+                      }
+                    }
+                  } catch (error) {
+                    console.error(`Failed to fetch object ${event.order_id}:`, error);
+                  }
+                }
 
-//                     product.escrow = {
-//                       ...objectData2.data?.content.fields,
-//                       id: objectData2.data.objectId,
-//                     }
-//                   }
+                order.data = {
+                  ...fields,
+                  id: objectData.data.objectId,
+                };
+              }
+            }
+          } catch (error) {
+            console.error(`Failed to fetch object ${event.order_id}:`, error);
+          }
+        }
+        return order;
+      })
+    );
 
-//                 } catch (error) {
-//                   console.error(`Failed to fetch object ${event.order_id}:`, error);
-//                 }
-
-//               }
-
-//               if (objectData.data?.content?.fields?.product_type) {
-//                 try {
-
-//                   const objectData2 = await client.getObject({
-//                     id: objectData.data?.content?.fields?.product_type,
-//                     options: {
-//                       showContent: true,
-//                       showDisplay: true,
-//                       showType: true
-//                     }
-
-//                   });
-
-
-//                   if (objectData2.data?.content) {
-//                     console.log(objectData2.data?.content.fields)
-
-//                     product.product = {
-//                       ...objectData2.data?.content.fields,
-//                       id: objectData2.data.objectId,
-//                     }
-//                   }
-
-//                 } catch (error) {
-//                   console.error(`Failed to fetch object ${event.order_id}:`, error);
-//                 }
-
-//               }
-
-
-//               product.data = {
-//                 ...objectData.data.content.fields,
-//                 // Normalize fields if needed
-//                 id: objectData.data.objectId,
-//               };
-//             }
-//           } catch (error) {
-//             console.error(`Failed to fetch object ${event.order_id}:`, error);
-//           }
-//         }
-
-//         console.log(product)
-
-//         return product;
-//       })
-//     );
-
-//     return {
-//       page,
-//       pageSize,
-//       total: allEvents.length,
-//       products: ordersWithDetails
-//     };
-//   } catch (error) {
-//     console.error('Error fetching products:', error);
-//     throw new Error('Failed to load products');
-//   }
-// };
+    return {
+      page,
+      pageSize,
+      total: allEvents.length,
+      orders: ordersWithDetails
+    };
+  } catch (error) {
+    console.error('Error fetching orders:', error);
+    throw new Error('Failed to load orders');
+  }
+};

@@ -1,8 +1,9 @@
 "use client";
+import { fetchOrders } from '@/services/orders';
 import React, { useState, useEffect } from 'react';
 import { FiPackage, FiSearch, FiChevronDown, FiChevronRight, FiClock, FiCheckCircle, FiTruck, FiXCircle, FiArrowUp, FiArrowDown } from 'react-icons/fi';
 
-type OrderStatus = 'processing' | 'shipped' | 'delivered' | 'cancelled';
+type OrderStatus = 'paid' | 'shipped' | 'delivered' | 'cancelled';
 
 interface OrderItem {
     name: string;
@@ -11,18 +12,24 @@ interface OrderItem {
 }
 
 interface Order {
-    id: string;
+    order_id: string;
     date: string;
     status: OrderStatus;
-    items: number;
-    total: number;
     delivery: string;
     tracking: string;
+    timestamp: string;
     itemsDetail: OrderItem[];
+    escrow: {
+        amount: number;
+    };
+    data: {
+        status: OrderStatus;
+        items: string[]
+    };
 }
 
 const statusStyles: Record<OrderStatus, { bg: string; text: string; icon: React.ReactElement }> = {
-    processing: {
+    paid: {
         bg: 'bg-orange-50 dark:bg-orange-900/30',
         text: 'text-orange-600 dark:text-orange-400',
         icon: <FiClock className="text-orange-600 dark:text-orange-400" />
@@ -45,7 +52,7 @@ const statusStyles: Record<OrderStatus, { bg: string; text: string; icon: React.
 };
 
 const statusText: Record<OrderStatus, string> = {
-    processing: 'Processing',
+    paid: 'Paid',
     shipped: 'Shipped',
     delivered: 'Delivered',
     cancelled: 'Cancelled'
@@ -63,79 +70,95 @@ const OrdersDashboard = () => {
     });
 
     // Load sample data
-    useEffect(() => {
-        const sampleOrders: Order[] = [
-            {
-                id: 'ORD-78945',
-                date: '2023-06-15',
-                status: 'delivered',
-                items: 3,
-                total: 149.99,
-                delivery: 'FedEx 2-Day',
-                tracking: '934857634985',
-                itemsDetail: [
-                    { name: 'Wireless Headphones', price: 89.99, quantity: 1 },
-                    { name: 'Phone Case', price: 29.99, quantity: 2 }
-                ]
-            },
-            {
-                id: 'ORD-78123',
-                date: '2023-06-10',
-                status: 'shipped',
-                items: 2,
-                total: 75.50,
-                delivery: 'USPS Priority',
-                tracking: '920384756123',
-                itemsDetail: [
-                    { name: 'Smart Watch', price: 65.50, quantity: 1 },
-                    { name: 'Screen Protector', price: 10.00, quantity: 1 }
-                ]
-            },
-            {
-                id: 'ORD-77654',
-                date: '2023-06-05',
-                status: 'processing',
-                items: 1,
-                total: 45.00,
-                delivery: 'Standard Shipping',
-                tracking: '',
-                itemsDetail: [
-                    { name: 'Bluetooth Speaker', price: 45.00, quantity: 1 }
-                ]
-            },
-            {
-                id: 'ORD-77231',
-                date: '2023-05-28',
-                status: 'cancelled',
-                items: 2,
-                total: 120.00,
-                delivery: '',
-                tracking: '',
-                itemsDetail: [
-                    { name: 'Fitness Tracker', price: 80.00, quantity: 1 },
-                    { name: 'Yoga Mat', price: 40.00, quantity: 1 }
-                ]
-            }
-        ];
+    // useEffect(() => {
+    //     const sampleOrders: Order[] = [
+    //         {
+    //             id: 'ORD-78945',
+    //             date: '2023-06-15',
+    //             status: 'delivered',
+    //             items: 3,
+    //             total: 149.99,
+    //             delivery: 'FedEx 2-Day',
+    //             tracking: '934857634985',
+    //             itemsDetail: [
+    //                 { name: 'Wireless Headphones', price: 89.99, quantity: 1 },
+    //                 { name: 'Phone Case', price: 29.99, quantity: 2 }
+    //             ]
+    //         },
+    //         {
+    //             id: 'ORD-78123',
+    //             date: '2023-06-10',
+    //             status: 'shipped',
+    //             items: 2,
+    //             total: 75.50,
+    //             delivery: 'USPS Priority',
+    //             tracking: '920384756123',
+    //             itemsDetail: [
+    //                 { name: 'Smart Watch', price: 65.50, quantity: 1 },
+    //                 { name: 'Screen Protector', price: 10.00, quantity: 1 }
+    //             ]
+    //         },
+    //         {
+    //             id: 'ORD-77654',
+    //             date: '2023-06-05',
+    //             status: 'processing',
+    //             items: 1,
+    //             total: 45.00,
+    //             delivery: 'Standard Shipping',
+    //             tracking: '',
+    //             itemsDetail: [
+    //                 { name: 'Bluetooth Speaker', price: 45.00, quantity: 1 }
+    //             ]
+    //         },
+    //         {
+    //             id: 'ORD-77231',
+    //             date: '2023-05-28',
+    //             status: 'cancelled',
+    //             items: 2,
+    //             total: 120.00,
+    //             delivery: '',
+    //             tracking: '',
+    //             itemsDetail: [
+    //                 { name: 'Fitness Tracker', price: 80.00, quantity: 1 },
+    //                 { name: 'Yoga Mat', price: 40.00, quantity: 1 }
+    //             ]
+    //         }
+    //     ];
         
-        setOrders(sampleOrders);
-        setFilteredOrders(sampleOrders);
-    }, []);
+    //     setOrders(sampleOrders);
+    //     setFilteredOrders(sampleOrders);
+
+        
+    // }, []);
+
+
+      useEffect(() => {
+        const fetchAllOrder = async () => {
+    
+          const data2 = await fetchOrders();
+    
+          console.log(data2);
+
+               setOrders(data2.orders);
+        setFilteredOrders(data2.orders);
+        };
+    
+        fetchAllOrder();
+      }, []);
 
     useEffect(() => {
         let result = [...orders];
         
         if (activeTab !== 'all') {
-            result = result.filter(order => order.status === activeTab);
+            result = result.filter(order => order.data.status === activeTab);
         }
         
         if (searchQuery) {
             const query = searchQuery.toLowerCase();
             result = result.filter(order => 
-                order.id.toLowerCase().includes(query) ||
+                order.order_id.toLowerCase().includes(query) ||
                 order.delivery?.toLowerCase().includes(query) ||
-                order.tracking?.toLowerCase().includes(query) ||
-                order.itemsDetail.some(item => item.name.toLowerCase().includes(query))
+                order.tracking?.toLowerCase().includes(query)
             );
         }
         
@@ -205,7 +228,7 @@ const OrdersDashboard = () => {
 
                 <div className="border-b border-gray-100 dark:border-gray-700 overflow-x-auto">
                     <div className="flex">
-                        {['all', 'processing', 'shipped', 'delivered', 'cancelled'].map((tab) => (
+                        {['all', 'paid', 'shipped', 'delivered', 'cancelled'].map((tab) => (
                             <button
                                 key={tab}
                                 className={`px-4 py-3 font-medium text-sm whitespace-nowrap border-b-2 ${
@@ -229,11 +252,12 @@ const OrdersDashboard = () => {
                                 <tr>
                                     {[
                                         { key: 'id', label: 'Order ID' },
+                                         { key: 'delivery', label: 'Product Name' },
                                         { key: 'date', label: 'Date' },
                                         { key: 'status', label: 'Status' },
                                         { key: 'items', label: 'Items' },
                                         { key: 'total', label: 'Total' },
-                                        { key: 'delivery', label: 'Delivery' },
+                                       
                                         { label: 'Tracking' }
                                     ].map((header) => (
                                         <th
@@ -256,28 +280,29 @@ const OrdersDashboard = () => {
                             <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                                 {filteredOrders.length > 0 ? (
                                     filteredOrders.map((order) => (
-                                        <React.Fragment key={order.id}>
+                                        <React.Fragment key={order.order_id}>
                                             <tr 
                                                 className="hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
-                                                onClick={() => toggleOrderExpand(order.id)}
+                                                onClick={() => toggleOrderExpand(order.order_id)}
                                             >
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
-                                                    {order.id}
+                                                    {order.order_id.slice(0, 9)}...
+                                                       
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                                    {formatDate(order.date)}
+                                                    {formatDate(order.timestamp)}
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap">
-                                                    <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium ${statusStyles[order.status].bg} ${statusStyles[order.status].text}`}>
-                                                        {statusStyles[order.status].icon}
-                                                        {statusText[order.status]}
+                                                    <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium ${statusStyles[order.data.status].bg} ${statusStyles[order.data.status].text}`}>
+                                                        {statusStyles[order.data.status].icon}
+                                                        {statusText[order.data.status]}
                                                     </div>
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                                    {order.items}
+                                                    {order.data.items.length}
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
-                                                    ${order.total.toFixed(2)}
+                                                    {((order.escrow.amount)/1000000000).toFixed(7)} SUI
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                                     {order.delivery || '-'}
@@ -299,10 +324,10 @@ const OrdersDashboard = () => {
                                                         className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-600"
                                                         onClick={(e) => {
                                                             e.stopPropagation();
-                                                            toggleOrderExpand(order.id);
+                                                            toggleOrderExpand(order.order_id);
                                                         }}
                                                     >
-                                                        {expandedOrder === order.id ? (
+                                                        {expandedOrder === order.order_id ? (
                                                             <FiChevronDown className="text-gray-400" />
                                                         ) : (
                                                             <FiChevronRight className="text-gray-400" />
@@ -310,26 +335,26 @@ const OrdersDashboard = () => {
                                                     </button>
                                                 </td>
                                             </tr>
-                                            {expandedOrder === order.id && (
+                                            {expandedOrder === order.order_id && (
                                                 <tr className="bg-gray-50 dark:bg-gray-700">
                                                     <td colSpan={8} className="px-6 py-4">
                                                         <div className="pl-12 pr-4">
                                                             <h4 className="text-sm font-medium text-gray-900 dark:text-white mb-3">Order Items</h4>
                                                             <div className="space-y-3 mb-4">
-                                                                {order.itemsDetail.map((item, index) => (
+                                                                {order.data.items.map((item, index) => (
                                                                     <div key={index} className="flex justify-between text-sm">
                                                                         <span className="text-gray-600 dark:text-gray-300">
-                                                                            {item.quantity}x {item.name}
+                                                                            {item.slice(0, 9)}...
                                                                         </span>
-                                                                        <span className="font-medium text-gray-900 dark:text-white">
-                                                                            ${item.price.toFixed(2)}
+                                                                        <span className="text-gray-600 dark:text-gray-300">
+                                                                            {(((order.escrow.amount) / 1000000000) / order.data.items.length).toFixed(7)} SUI
                                                                         </span>
                                                                     </div>
                                                                 ))}
                                                             </div>
                                                             <div className="flex justify-between border-t border-gray-200 dark:border-gray-600 pt-3 text-sm font-medium">
                                                                 <span className="text-gray-900 dark:text-white">Total:</span>
-                                                                <span className="text-gray-900 dark:text-white">${order.total.toFixed(2)}</span>
+                                                                <span className="text-gray-900 dark:text-white">{((order.escrow.amount)/1000000000).toFixed(7)} SUI</span>
                                                             </div>
                                                         </div>
                                                     </td>
@@ -367,17 +392,18 @@ const OrdersDashboard = () => {
                     {filteredOrders.length > 0 ? (
                         <div className="divide-y divide-gray-200 dark:divide-gray-700">
                             {filteredOrders.map((order) => (
-                                <div key={order.id} className="p-4">
+                                <div key={order.order_id} className="p-4">
                                     <div 
                                         className="flex justify-between items-start cursor-pointer"
-                                        onClick={() => toggleOrderExpand(order.id)}
+                                        onClick={() => toggleOrderExpand(order.order_id)}
                                     >
                                         <div>
-                                            <div className="font-medium text-gray-900 dark:text-white">{order.id}</div>
-                                            <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">{formatDate(order.date)}</div>
+                                            <div className="font-medium text-gray-900 dark:text-white">{order.order_id.slice(0, 20)}...
+                                            </div>
+                                            <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">{formatDate(order.timestamp)}</div>
                                         </div>
                                         <button className="p-1">
-                                            {expandedOrder === order.id ? (
+                                            {expandedOrder === order.order_id ? (
                                                 <FiChevronDown className="text-gray-400" />
                                             ) : (
                                                 <FiChevronRight className="text-gray-400" />
@@ -386,47 +412,48 @@ const OrdersDashboard = () => {
                                     </div>
                                     
                                     <div className="mt-3 flex justify-between items-center">
-                                        <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium ${statusStyles[order.status].bg} ${statusStyles[order.status].text}`}>
-                                            {statusStyles[order.status].icon}
-                                            {statusText[order.status]}
+                                        <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium ${statusStyles[order.data.status].bg} ${statusStyles[order.data.status].text}`}>
+                                            {statusStyles[order.data.status].icon}
+                                            {statusText[order.data.status]}
                                         </div>
                                         <div className="text-right">
-                                            <div className="text-sm text-gray-500 dark:text-gray-400">{order.items} {order.items > 1 ? 'items' : 'item'}</div>
-                                            <div className="font-medium dark:text-white">${order.total.toFixed(2)}</div>
+                                            <div className="text-sm text-gray-500 dark:text-gray-400"> {order.data.items.length} {order.data.items.length > 1 ? 'items' : 'item'}</div>
+                                            <div className="font-medium dark:text-white">{((order.escrow.amount)/1000000000).toFixed(7)} SUI</div>
                                         </div>
                                     </div>
                                     
-                                    {expandedOrder === order.id && (
+                                    {expandedOrder === order.order_id && (
                                         <div className="mt-4 pl-2">
                                             <h4 className="text-sm font-medium text-gray-900 dark:text-white mb-3">Order Details</h4>
-                                            <div className="space-y-3 mb-4">
+                                            {/* <div className="space-y-3 mb-4">
                                                 {order.itemsDetail.map((item, index) => (
                                                     <div key={index} className="flex justify-between text-sm">
                                                         <span className="text-gray-600 dark:text-gray-300">
                                                             {item.quantity}x {item.name}
                                                         </span>
                                                         <span className="font-medium text-gray-900 dark:text-white">
-                                                            ${item.price.toFixed(2)}
+                                                            ${item.price.toFixed(7)}
                                                         </span>
                                                     </div>
                                                 ))}
-                                            </div>
-                                            {order.tracking && (
-                                                <div className="mb-4">
-                                                    <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">Tracking:</div>
-                                                    <a
-                                                        href={`https://tracking.com/${order.tracking}`}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        className="text-blue-600 dark:text-blue-400 hover:underline text-sm"
-                                                    >
-                                                        {order.delivery} #{order.tracking}
-                                                    </a>
-                                                </div>
-                                            )}
+                                            </div> */}
+
+                                             <div className="space-y-3 mb-4">
+                                                                {order.data.items.map((item, index) => (
+                                                                    <div key={index} className="flex justify-between text-sm">
+                                                                        <span className="text-gray-600 dark:text-gray-300">
+                                                                            {item.slice(0, 20)}...
+                                                                        </span>
+                                                                        <span className="text-gray-600 dark:text-gray-300">
+                                                                            {(((order.escrow.amount) / 1000000000) / order.data.items.length).toFixed(7)} SUI
+                                                                        </span>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                 
                                             <div className="flex justify-between border-t border-gray-200 dark:border-gray-600 pt-3 text-sm font-medium">
                                                 <span className="text-gray-900 dark:text-white">Total:</span>
-                                                <span className="text-gray-900 dark:text-white">${order.total.toFixed(2)}</span>
+                                                <span className="text-gray-900 dark:text-white">{((order.escrow.amount)/1000000000).toFixed(7)} SUI</span>
                                             </div>
                                         </div>
                                     )}
