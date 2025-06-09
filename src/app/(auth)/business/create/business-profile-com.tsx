@@ -24,7 +24,6 @@ const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 export default function BusinessProfilePage() {
   const router = useRouter();
   const [uploading, setUploading] = useState(false);
-  const setUser = useUserStore(state => state.setUser);
   const [formData, setFormData] = useState<BusinessFormData>({
     name: '',
     username: '',
@@ -44,8 +43,8 @@ export default function BusinessProfilePage() {
       currentAccount
     });
 
-    if(!currentAccount && !sessionStorage.getItem("refreshed")) {
-      sessionStorage.setItem("refreshed", "true")
+    if(!currentAccount && !sessionStorage.getItem("refreshed1")) {
+      sessionStorage.setItem("refreshed1", "true")
       window.location.reload()
     }
   }, [currentAccount]);

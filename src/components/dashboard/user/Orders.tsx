@@ -277,7 +277,7 @@ const OrdersDashboard = () => {
                                                 className="hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
 
                                             >
-                                                <div className="ml-4 mt-2 h-10 w-10" onClick={() => toggleOrderExpand(order.order_id)}>
+                                                <td className="pl-3 mt-2 h-10 w-10" onClick={() => toggleOrderExpand(order.order_id)}>
                                                     <Image
                                                         width={100}
                                                         height={100}
@@ -285,7 +285,7 @@ const OrdersDashboard = () => {
                                                         src={order.product.photo}
                                                         alt={order.product.name}
                                                     />
-                                                </div>
+                                                </td>
                                                 <td className="px-2 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white" onClick={() => toggleOrderExpand(order.order_id)}>
                                                     {order.order_id.slice(0, 9)}...
                                                 </td>

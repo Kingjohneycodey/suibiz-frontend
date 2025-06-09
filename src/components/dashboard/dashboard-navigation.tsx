@@ -2,9 +2,6 @@
 import { useState } from 'react';
 import { Menu, Search, Sun, Moon, Bell, User, LogOut } from 'lucide-react';
 import { useUserStore } from '../../../stores/userStore';
-import { useRouter } from 'next/navigation';
-import { User as UserType } from '../../../types/types';
-import { EnokiClient } from '@mysten/enoki';
 import { useDisconnectWallet } from '@mysten/dapp-kit';
 
 interface DashboardNavigationProps {
@@ -32,6 +29,7 @@ export default function DashboardNavigation({
         location.href = '/';
         setShowProfileDropdown(false);
         disconnect()
+        sessionStorage.clear()
     };
 
     return (

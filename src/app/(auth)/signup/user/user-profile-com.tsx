@@ -49,8 +49,8 @@ export default function UserSignup() {
       currentAccount
     });
 
-     if(!currentAccount && !sessionStorage.getItem("refreshed")) {
-      sessionStorage.setItem("refreshed", "true")
+     if(!currentAccount && !sessionStorage.getItem("refreshed2")) {
+      sessionStorage.setItem("refreshed2", "true")
       window.location.reload()
     }
   }, [currentAccount]);

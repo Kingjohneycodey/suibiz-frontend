@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Star, User } from "lucide-react";
 import Image from "next/image";
@@ -24,6 +23,8 @@ import {
 import toast from "react-hot-toast";
 // import { fetchOrders } from "@/services/orders";
 import { Transaction } from "@mysten/sui/transactions";
+import { useUserStore } from "../../stores/userStore";
+import Link from "next/link";
 
 interface Listing {
   id: string;
@@ -50,31 +51,48 @@ export default function SingleProductPage() {
   const [product, setProduct] = useState<Listing | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const [showSignup, setShowSignup] = useState(false);
+
   const client = useSuiClient();
   const account = useCurrentAccount();
   const [quantity, setQuantity] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const { mutate: signAndExecuteTransaction } = useSignAndExecuteTransaction();
+  const currentAccount = useCurrentAccount();
+  const { user } = useUserStore()
+
+  console.log(user)
+
+  useEffect(() => {
+    console.log('Current wallet connection status:', {
+      currentAccount
+    });
+
+    if (!currentAccount && !sessionStorage.getItem("refreshed3")) {
+      sessionStorage.setItem("refreshed3", "true")
+      window.location.reload()
+    }
+  }, [currentAccount]);
 
   useEffect(() => {
     const fetchListings = async () => {
       const data = await fetchSingleProduct(id);
-
       setProduct(data);
-
       setLoading(false);
-      console.log(data);
-
-      // const data2 = await fetchOrders();
-
-      // console.log(data2);
     };
 
     fetchListings();
   }, [id]);
 
   const handleCreateOrder = async () => {
+    if (user?.role == null) {
+      setLoading(false)
+      setShowSignup(true)
+      console.log("ewrew")
+      return
+    }
+
     if (!account) return alert("Connect wallet first");
     if (!product) return alert("Product not found");
     if (quantity > product.available_items.length) return alert("Not enough stock");
@@ -125,7 +143,7 @@ export default function SingleProductPage() {
       signAndExecuteTransaction(
         {
           transaction: tx,
-  
+
         },
         {
           onSuccess: () => {
@@ -188,7 +206,7 @@ export default function SingleProductPage() {
       </div>
     );
   }
-  
+
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white flex flex-col overflow-x-hidden">
@@ -284,52 +302,82 @@ export default function SingleProductPage() {
         </div>
       </main>
 
-      <Dialog open={showDialog} onOpenChange={setShowDialog}>
-        <DialogContent
-          className="sm:max-w-[425px] bg-white transition-opacity duration-300"
-          style={{
-        opacity: showDialog ? 1 : 0,
-        transition: "opacity 300ms",
-        transform: showDialog ? "translateY(0)" : "translateY(-20px)"
-          }}
-        >
-          <DialogHeader>
-        <DialogTitle>Confirm your Order</DialogTitle>
-        <DialogDescription>
-          
-        </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4 mt-8">
-            <div>
-              <label htmlFor="quantity" className="block text-sm font-medium text-slate-700 mb-1">
-                Quantity
-              </label>
-              <input
-                id="quantity"
-                type="number"
-                min={1}
-                max={product?.available_items.length || 1}
-                value={quantity}
-                onChange={e => setQuantity(Math.max(1, Math.min(Number(e.target.value), product?.available_items.length || 1)))}
-                className="w-full border border-slate-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                disabled={isLoading}
-              />
-              <p className="text-xs text-slate-500 mt-1">
-                Available: {product?.available_items.length}
-              </p>
+      <Dialog open={showDialog} onOpenChange={() => {
+        setShowSignup(false)
+        setShowDialog(false)
+      }}>
+        {!showSignup ? (
+          <DialogContent
+            className="sm:max-w-[425px] bg-white transition-opacity duration-300"
+            style={{
+              opacity: showDialog ? 1 : 0,
+              transition: "opacity 300ms",
+              transform: showDialog ? "translateY(0)" : "translateY(-20px)"
+            }}
+          >
+            <DialogHeader>
+              <DialogTitle>Confirm your Order</DialogTitle>
+              <DialogDescription>
+                Confirm the quantity of the product that you want to purchase
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="quantity" className="block text-sm font-medium text-slate-700 mb-1">
+                  Quantity
+                </label>
+                <input
+                  id="quantity"
+                  type="number"
+                  min={1}
+                  max={product?.available_items.length || 1}
+                  value={quantity}
+                  onChange={e => setQuantity(Math.max(1, Math.min(Number(e.target.value), product?.available_items.length || 1)))}
+                  className="w-full border border-slate-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  disabled={isLoading}
+                />
+                <p className="text-xs text-slate-500 mt-1">
+                  Available: {product?.available_items.length}
+                </p>
+              </div>
+              <Button
+                className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer mt-4"
+                onClick={() => {
+                  setIsLoading(true);
+                  handleCreateOrder();
+                }}
+                disabled={isLoading || quantity < 1 || quantity > (product?.available_items.length || 0)}
+              >
+                {isLoading ? "Processing..." : "Confirm Purchase"}
+              </Button>
             </div>
-            <Button
-              className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer mt-8"
-              onClick={() => {
-                setIsLoading(true);
-                handleCreateOrder();
-              }}
-              disabled={isLoading || quantity < 1 || quantity > (product?.available_items.length || 0)}
-            >
-              {isLoading ? "Processing..." : "Confirm Purchase"}
-            </Button>
-          </div>
-        </DialogContent>
+          </DialogContent>
+        ) : (
+          <DialogContent
+            className="sm:max-w-[425px] bg-white transition-opacity duration-300"
+            style={{
+              opacity: showDialog ? 1 : 0,
+              transition: "opacity 300ms",
+              transform: showDialog ? "translateY(0)" : "translateY(-20px)"
+            }}
+          >
+            <DialogHeader>
+              <DialogTitle>You need to signup first !</DialogTitle>
+              <DialogDescription className="mt-4">
+                You need to create your account first before making a purchase!
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 mt-2">
+              <Link href="/register" >
+                <Button
+                  className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer mt-8"
+                >
+                  Create Account
+                </Button></Link>
+            </div>
+          </DialogContent>
+        )}
+
       </Dialog>
       <Footer />
     </div>
