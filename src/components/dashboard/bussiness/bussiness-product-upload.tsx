@@ -268,7 +268,7 @@ export default function ProductUploadPage({ kioskId }: ProductUploadPageProps) {
               err.message == "No valid gas coins found for the transaction."
             ) {
               toast.error(
-                err.message + "Fund your sui wallet account and try agains"
+                err.message + "Fund your sui wallet account with sui testnet tokens and try again"
               );
             } else {
               toast.error(err.message);
