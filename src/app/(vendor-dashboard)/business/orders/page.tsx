@@ -12,34 +12,15 @@ import {
 } from "@/components/ui/dialog";
 import toast from 'react-hot-toast';
 import { Button } from '@/components/ui/button';
+import { TransactionBlock } from '@mysten/sui.js/transactions';
 
 type OrderStatus = 'paid' | 'received' | 'shipped' | 'completed' | 'cancelled';
-
-interface OrderItem {
-    id: string;
-    productName: string;
-    price: number;
-    quantity: number;
-}
-
-// interface Order {
-//     id: string;
-//     customerName: string;
-//     email: string;
-//     phone: string;
-//     address: string;
-//     date: string;
-//     status: OrderStatus;
-//     items: OrderItem[];
-//     total: number;
-//     paymentMethod: string;
-// }
-
 interface Order {
     id: string;
     order_id: string;
     timestamp: string;
     escrow: {
+        id: string;
         amount: number;
     };
     data: {
@@ -49,6 +30,8 @@ interface Order {
     product: {
         name: string;
         photo: string;
+        kiosk_id: string;
+        kioskCap: string;
     };
     customer: {
         name: string;
@@ -60,12 +43,6 @@ interface Order {
 
 const OrdersManagement = () => {
     const currentAccount = useCurrentAccount();
-
-    useEffect(() => {
-        console.log('Current wallet connection status:', {
-            currentAccount
-        });
-    }, [currentAccount]);
 
     const [orders, setOrders] = useState<Order[]>([
         // {
@@ -113,9 +90,6 @@ const OrdersManagement = () => {
         //     ],
         // },
     ]);
-
-
-
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState<OrderStatus | 'all'>('all');
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
@@ -142,7 +116,7 @@ const OrdersManagement = () => {
         const matchesSearch =
             order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
             order.customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            order.customer.email.toLowerCase().includes(searchTerm.toLowerCase());
+            order.customer.email?.toLowerCase().includes(searchTerm.toLowerCase());
 
         const matchesStatus = statusFilter === 'all' || order.data.status === statusFilter;
 
@@ -180,23 +154,70 @@ const OrdersManagement = () => {
             console.log(data)
 
             setOrders(data.orders as any[]);
-            // setFilteredOrders(data.orders as any[]);
         };
 
         fetchAllOrder();
     }, [currentAccount, selectedOrder]);
 
 
-    const handleConfirmOrder = () => {
-
-    }
+    const handleConfirmOrder = async (): Promise<void> => {
+            setLoading(true);
+    
+            try {
+                const tx = new TransactionBlock();
+                tx.moveCall({
+                    target: `${process.env.NEXT_PUBLIC_PACKAGE_ID}::marketplace::release_items_and_funds`,
+                    arguments: [
+                        tx.object(selectedOrder?.id || ""),
+                        tx.object(selectedOrder?.escrow.id || ""),
+                        tx.object(selectedOrder?.product.kiosk_id || ""),
+                        tx.object(selectedOrder?.product.kioskCap || ""),
+                    ],
+                });
+    
+                signAndExecuteTransaction(
+                    {
+                        transaction: tx.serialize(),
+                        chain: "sui:testnet",
+                    },
+                    {
+                        onSuccess: () => {
+                            toast.success("Order confirmed as completed successfully!");
+    
+                            setLoading(false);
+    
+                            setShowDialog(false)
+    
+                            setSelectedOrder(null)
+                        },
+                        onError: (err: { message: string }) => {
+                            if (
+                                err.message == "No valid gas coins found for the transaction."
+                            ) {
+                                toast.error(
+                                    err.message + "Fund your sui wallet account and try agains"
+                                );
+                            } else {
+                                toast.error(err.message);
+                            }
+    
+                            setLoading(false);
+    
+                            console.error("Transaction Error:", err.message);
+                        },
+                    }
+                );
+            } catch (err) {
+                console.error("Error preparing transaction:", err);
+            }
+        };
 
     return (
-        <div className="p-4 md:p-6 min-h-screen">
+        <div className="p-4 md:p-6 dark:bg-gray-900 min-h-screen">
             <div className="max-w-7xl mx-auto">
                 <div className="mb-6 md:mb-8">
-                    <h1 className="text-2xl md:text-3xl font-bold text-gray-800">Orders Management</h1>
-                    <p className="text-gray-600 mt-1">View and manage customer orders</p>
+                    <h1 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100">Orders Management</h1>
+                    <p className="text-gray-600 mt-1 dark:text-gray-100">View and manage customer orders</p>
                 </div>
 
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 md:p-6 mb-6">
@@ -419,7 +440,7 @@ const OrdersManagement = () => {
                                                             {selectedOrder.product.name}
                                                         </td>
                                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                            {(Number((Number(selectedOrder.escrow.amount) / 10000000000).toFixed(7)) / selectedOrder.data.items.length)} SUI
+                                                            {(Number((Number(selectedOrder.escrow.amount) / 10000000000).toFixed(9)) / selectedOrder.data.items.length)} SUI
                                                         </td>
                                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                                             {selectedOrder.data.items.length}
@@ -452,7 +473,7 @@ const OrdersManagement = () => {
                 )}
 
                 <div className="flex flex-col sm:flex-row items-center justify-between">
-                    <p className="text-sm text-gray-700 mb-4 sm:mb-0">
+                    <p className="text-sm text-gray-700 mb-4 sm:mb-0 dark:text-gray-100">
                         Showing <span className="font-medium">{filteredOrders.length}</span> of <span className="font-medium">{orders.length}</span> orders
                     </p>
                     <div className="flex space-x-2">

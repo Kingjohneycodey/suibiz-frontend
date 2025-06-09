@@ -1,6 +1,7 @@
 import { SuiClient, EventId } from "@mysten/sui/client";
 import { fetchBlobFromWalrus, fetchDataFromWalrus } from "@/utils/walrus";
 import { getUserProfileInfo } from "./profile";
+import { getSingleKioskCap } from "./business";
 
 const client = new SuiClient({ url: "https://fullnode.testnet.sui.io" });
 
@@ -551,6 +552,8 @@ export const fetchBusinessOrders = async (
                       const productFields = (objectData2.data.content as any)
                         .fields;
 
+                     const kiosk = await getSingleKioskCap(address, productFields?.kiosk_id);
+
                       const blobId = productFields.metadata_uri;
 
                       let metadata = null;
@@ -565,6 +568,7 @@ export const fetchBusinessOrders = async (
                         id: objectData2.data.objectId,
                         ...metadata,
                         photo,
+                        kioskCap: kiosk?.objectId
                       };
                     }
                   } catch (error) {

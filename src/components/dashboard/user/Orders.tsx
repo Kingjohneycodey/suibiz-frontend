@@ -15,7 +15,7 @@ import {
 import toast from 'react-hot-toast';
 import { TransactionBlock } from '@mysten/sui.js/transactions';
 
-type OrderStatus = 'paid' | 'received' | 'delivered' | 'cancelled';
+type OrderStatus = 'paid' | 'received' | 'completed' | 'cancelled';
 
 interface Order {
     order_id: string;
@@ -44,7 +44,7 @@ const statusStyles: Record<OrderStatus, { bg: string; text: string; icon: React.
         text: 'text-blue-600 dark:text-blue-400',
         icon: <FiTruck className="text-blue-600 dark:text-blue-400" />
     },
-    delivered: {
+    completed: {
         bg: 'bg-green-50 dark:bg-green-900/30',
         text: 'text-green-600 dark:text-green-400',
         icon: <FiCheckCircle className="text-green-600 dark:text-green-400" />
@@ -59,7 +59,7 @@ const statusStyles: Record<OrderStatus, { bg: string; text: string; icon: React.
 const statusText: Record<OrderStatus, string> = {
     paid: 'Paid',
     received: 'Received',
-    delivered: 'Delivered',
+    completed: 'Completed',
     cancelled: 'Cancelled'
 };
 
@@ -145,56 +145,54 @@ const OrdersDashboard = () => {
         });
     };
 
-      const handleConfirmOrder = async (): Promise<void> => {
-    setLoading(true);
+    const handleConfirmOrder = async (): Promise<void> => {
+        setLoading(true);
 
-    try {
-      const tx = new TransactionBlock();
-      tx.moveCall({
-        target: `${process.env.NEXT_PUBLIC_PACKAGE_ID}::marketplace::mark_received`,
-        arguments: [
-          tx.object(order || ""),
-        ],
-      });
+        try {
+            const tx = new TransactionBlock();
+            tx.moveCall({
+                target: `${process.env.NEXT_PUBLIC_PACKAGE_ID}::marketplace::mark_received`,
+                arguments: [
+                    tx.object(order || ""),
+                ],
+            });
 
-      signAndExecuteTransaction(
-        {
-          transaction: tx.serialize(),
-          chain: "sui:testnet",
-        },
-        {
-          onSuccess: () => {
-            toast.success("Order confirmed as received successfully!");
+            signAndExecuteTransaction(
+                {
+                    transaction: tx.serialize(),
+                    chain: "sui:testnet",
+                },
+                {
+                    onSuccess: () => {
+                        toast.success("Order confirmed as received successfully!");
 
-            setLoading(false);
+                        setLoading(false);
 
-            setShowDialog(false)
+                        setShowDialog(false)
 
-            setOrder(null)
+                        setOrder(null)
+                    },
+                    onError: (err: { message: string }) => {
+                        if (
+                            err.message == "No valid gas coins found for the transaction."
+                        ) {
+                            toast.error(
+                                err.message + "Fund your sui wallet account and try agains"
+                            );
+                        } else {
+                            toast.error(err.message);
+                        }
 
-            // router.push("/business/products")
-          },
-          onError: (err: { message: string }) => {
-            if (
-              err.message == "No valid gas coins found for the transaction."
-            ) {
-              toast.error(
-                err.message + "Fund your sui wallet account and try agains"
-              );
-            } else {
-              toast.error(err.message);
-            }
+                        setLoading(false);
 
-            setLoading(false);
-
-            console.error("Transaction Error:", err.message);
-          },
+                        console.error("Transaction Error:", err.message);
+                    },
+                }
+            );
+        } catch (err) {
+            console.error("Error preparing transaction:", err);
         }
-      );
-    } catch (err) {
-      console.error("Error preparing transaction:", err);
-    }
-  };
+    };
 
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-2 lg:px-8 py-8 h-full dark:bg-gray-900">
@@ -224,7 +222,7 @@ const OrdersDashboard = () => {
 
                 <div className="border-b border-gray-100 dark:border-gray-700 overflow-x-auto">
                     <div className="flex">
-                        {['all', 'paid', 'received', 'delivered', 'cancelled'].map((tab) => (
+                        {['all', 'paid', 'received', 'completed', 'cancelled'].map((tab) => (
                             <button
                                 key={tab}
                                 className={`px-4 py-3 font-medium text-sm whitespace-nowrap border-b-2 ${activeTab === tab
@@ -422,17 +420,17 @@ const OrdersDashboard = () => {
                                         </div>
                                     </div>
 
-                                      <div className='mt-4'>
-                                                    <Button disabled={order.data.status !== "paid"} className='bg-green-500 text-white hover:bg-green-600' onClick={() => {
-                                                        setOrder(order.order_id)
-                                                        setShowDialog(true)
-                                                    }} >{order.data.status !== "paid" ? "Confirmed" : "Confirm"}</Button>
-                                                </div>
+                                    <div className='mt-4'>
+                                        <Button disabled={order.data.status !== "paid"} className='bg-green-500 text-white hover:bg-green-600' onClick={() => {
+                                            setOrder(order.order_id)
+                                            setShowDialog(true)
+                                        }} >{order.data.status !== "paid" ? "Confirmed" : "Confirm"}</Button>
+                                    </div>
 
                                     {expandedOrder === order.order_id && (
                                         <div className="mt-4 pl-2">
                                             <h4 className="text-sm font-medium text-gray-900 dark:text-white mb-3">Order Details</h4>
-                    
+
 
                                             <div className="space-y-3 mb-4">
                                                 {order.data.items.map((item, index) => (
@@ -488,17 +486,14 @@ const OrdersDashboard = () => {
                         <DialogHeader>
                             <DialogTitle>Confirm your Order</DialogTitle>
                             <DialogDescription>
-                        Are you sure you want to confirm this order as received?
+                                Are you sure you want to confirm this order as received?
                             </DialogDescription>
                         </DialogHeader>
                         <div className="space-y-4">
 
                             <Button
                                 className="w-full bg-green-600 hover:bg-green-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer mt-8"
-                                onClick={() => {
-                                    setLoading(true);
-                                    handleConfirmOrder();
-                                }}
+                                onClick={handleConfirmOrder}
                                 disabled={loading}
                             >
                                 {loading ? "Processing..." : "Confirm Order"}

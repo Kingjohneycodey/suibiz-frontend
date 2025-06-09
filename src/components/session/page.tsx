@@ -61,7 +61,7 @@ export default function SessionProvider({
   const currentWalletAddress = currentWallet?.accounts[0]?.address;
 
   useEffect(() => {
-    if (currentWalletAddress) {
+    if (currentWalletAddress !== "") {
       async function getUserProfile() {
         const data = await getUserProfileInfo(currentWalletAddress || "");
         console.log(data);

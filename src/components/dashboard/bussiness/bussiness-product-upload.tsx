@@ -19,7 +19,7 @@ import {
 import { TransactionBlock } from "@mysten/sui.js/transactions";
 import { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import { storeDataToWalrus, storeFileToWalrus } from "@/utils/walrus";
-import { getKioskOwnerCaps, getSingleKioskCap } from "@/services/business";
+import { getSingleKioskCap } from "@/services/business";
 
 const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
 const ALLOWED_FILE_TYPES = ["image/jpeg", "image/png", "image/webp"];
@@ -160,7 +160,7 @@ export default function ProductUploadPage({ kioskId }: ProductUploadPageProps) {
 
   const validateForm = (): boolean => {
     if (!formData.name.trim()) {
-      toast.error("Store username is required");
+      toast.error("Product username is required");
       return false;
     }
     if (!formData.description.trim()) {
@@ -302,7 +302,7 @@ export default function ProductUploadPage({ kioskId }: ProductUploadPageProps) {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Store Photo *
+              Product Photo *
             </label>
 
             {avatarPreview ? (
@@ -411,7 +411,7 @@ export default function ProductUploadPage({ kioskId }: ProductUploadPageProps) {
                     ? "border-red-500"
                     : "border-gray-300 dark:border-gray-600"
                   }`}
-                placeholder="Describe your store in detail..."
+                placeholder="Describe your product in detail..."
               />
             </div>
             {errors.description && (
