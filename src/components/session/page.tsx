@@ -28,7 +28,7 @@ export default function SessionProvider({
 
   const exemptedRoutes = ["/", "/about", "/terms"];
 
-  const compulsoryRoutes = ["/business/create"];
+  const compulsoryRoutes = ["/business/create", "/signup/user", "/marketplace/"];
 
   useEffect(() => {
     setIsMounted(true);
@@ -47,9 +47,13 @@ export default function SessionProvider({
           setShouldCheck(true);
         }
 
-        if (compulsoryRoutes.includes(pathname)) {
-          setShouldCheck2(true);
-        }
+    if (
+  compulsoryRoutes.some((route) => 
+    pathname === route || pathname.startsWith(`${route}/`)
+  )
+) {
+  setShouldCheck2(true);
+}
 
 
       }, 3000); // 3 seconds delay
