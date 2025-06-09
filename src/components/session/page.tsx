@@ -28,7 +28,7 @@ export default function SessionProvider({
 
   const exemptedRoutes = ["/", "/about", "/terms"];
 
-  const compulsoryRoutes = ["/business/create", "/signup/user", "/marketplace/"];
+  const compulsoryRoutes = ["/business/create", "/signup/user", "/marketplace"];
 
   useEffect(() => {
     setIsMounted(true);
