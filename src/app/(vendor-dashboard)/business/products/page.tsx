@@ -118,149 +118,83 @@ export default function ProductDisplay() {
 
   return (
     <div className="bg-gray-50 dark:bg-gray-900 min-h-screen">
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-6">
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
-          <div className="bg-gray-200 dark:bg-gray-700 px-6 py-4 flex justify-between items-center">
-            <h2 className="text-xl font-semibold text-black/85 dark:text-gray-200">
+          <div className="bg-gray-200 dark:bg-gray-700 px-3 sm:px-6 py-3 sm:py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+            <h2 className="text-lg sm:text-xl font-semibold text-black/85 dark:text-gray-200">
               Product Management
             </h2>
-            <div className="flex space-x-4">
-              <div className="relative">
+            
+            <div className="w-full sm:w-auto flex flex-col sm:flex-row gap-3 sm:gap-4">
+              <div className="relative w-full sm:w-64">
                 <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-300" />
                 <input
                   type="text"
                   placeholder="Search products..."
-                  className="pl-10 pr-4 py-2 rounded-md text-gray-800 dark:text-gray-200 dark:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full pl-10 pr-4 py-2 text-sm sm:text-base rounded-md text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   value={searchTerm}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setSearchTerm(e.target.value)
-                  }
+                  onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
-              <Link href="/business/product-upload" className="flex items-center">
-                <button className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md flex items-center space-x-2 transition-colors text-white">
-                  <FiPlus />
+              
+              <Link href="/business/product-upload" className="w-full sm:w-auto">
+                <button className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 px-3 sm:px-4 py-2 rounded-md flex items-center justify-center space-x-2 transition-colors text-white text-sm sm:text-base">
+                  <FiPlus size={18} />
                   <span>Add Product</span>
                 </button>
               </Link>
             </div>
           </div>
+
           {editingProduct && (
-            <div className="fixed inset-0 bg-black/60 bg-opacity-50 flex items-center justify-center z-50 p-4">
-              <div className="bg-white dark:bg-gray-700 rounded-lg shadow-xl w-full max-w-2xl">
-                <div className="px-6 py-4 border-b dark:border-gray-600">
+            <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-2 sm:p-4">
+              <div className="bg-white dark:bg-gray-700 rounded-lg shadow-xl w-full max-w-md sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+                <div className="px-4 sm:px-6 py-4 border-b dark:border-gray-600">
                   <h3 className="text-lg font-medium text-gray-900 dark:text-gray-200">
                     {editingProduct.id ? "Edit Product" : "Add New Product"}
                   </h3>
                 </div>
-                <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                      Product Name
-                    </label>
-                    <input
-                      type="text"
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-gray-200"
-                      value={editingProduct.name}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        setEditingProduct({
-                          ...editingProduct,
-                          name: e.target.value,
-                        })
-                      }
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                      Price
-                    </label>
-                    <input
-                      type="number"
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-gray-200"
-                      value={editingProduct.price}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        setEditingProduct({
-                          ...editingProduct,
-                          price: parseFloat(e.target.value) || 0,
-                        })
-                      }
-                    />
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                      Description
-                    </label>
-                    <textarea
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-gray-200"
-                      rows={3}
-                      value={editingProduct.description}
-                      onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                        setEditingProduct({
-                          ...editingProduct,
-                          description: e.target.value,
-                        })
-                      }
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                      Category
-                    </label>
-                    <input
-                      type="text"
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-gray-200"
-                      value={editingProduct.category}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        setEditingProduct({
-                          ...editingProduct,
-                          category: e.target.value,
-                        })
-                      }
-                    />
-                  </div>
-                  {/* <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                      Stock Quantity
-                    </label>
-                    <input
-                      type="number"
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-gray-200"
-                      value={editingProduct.stock}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        setEditingProduct({
-                          ...editingProduct,
-                          stock: parseInt(e.target.value) || 0,
-                        })
-                      }
-                    />
-                  </div> */}
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                      Image URL
-                    </label>
-                    <input
-                      type="text"
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-gray-200"
-                      value={editingProduct.photo}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        setEditingProduct({
-                          ...editingProduct,
-                          photo: e.target.value,
-                        })
-                      }
-                    />
-                  </div>
+                <div className="p-4 sm:p-6 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                  {/* Form fields */}
+                  {['name', 'price', 'description', 'category', 'photo'].map((field) => (
+                    <div key={field} className={field === 'description' ? 'sm:col-span-2' : ''}>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        {field.charAt(0).toUpperCase() + field.slice(1).replace('_', ' ')}
+                      </label>
+                      {field === 'description' ? (
+                        <textarea
+                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-gray-200 text-sm sm:text-base"
+                          rows={3}
+                          value={editingProduct[field as keyof Product] as string}
+                          onChange={(e) => setEditingProduct({
+                            ...editingProduct,
+                            [field]: e.target.value
+                          })}
+                        />
+                      ) : (
+                        <input
+                          type={field === 'price' ? 'number' : 'text'}
+                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-gray-200 text-sm sm:text-base"
+                          value={editingProduct[field as keyof Product] as string | number}
+                          onChange={(e) => setEditingProduct({
+                            ...editingProduct,
+                            [field]: field === 'price' ? parseFloat(e.target.value) || 0 : e.target.value
+                          })}
+                        />
+                      )}
+                    </div>
+                  ))}
                 </div>
-                <div className="px-6 py-4 border-t dark:border-gray-600 flex justify-end space-x-3">
+                <div className="px-4 sm:px-6 py-4 border-t dark:border-gray-600 flex justify-end space-x-3">
                   <button
                     onClick={() => setEditingProduct(null)}
-                    className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
+                    className="px-3 sm:px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors text-sm sm:text-base"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={handleSave}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                    className="px-3 sm:px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm sm:text-base"
                   >
                     Save Changes
                   </button>
@@ -273,103 +207,84 @@ export default function ProductDisplay() {
             <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
               <thead className="bg-gray-50 dark:bg-gray-700">
                 <tr>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
-                  >
-                    Product
-                  </th>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
-                  >
-                    Category
-                  </th>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
-                  >
-                    Price
-                  </th>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
-                  >
-                    Stock
-                  </th>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
-                  >
-                    Actions
-                  </th>
+                  {['Product', 'Category', 'Price', 'Stock', 'Actions'].map((header) => (
+                    <th
+                      key={header}
+                      scope="col"
+                      className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+                    >
+                      {header}
+                    </th>
+                  ))}
                 </tr>
               </thead>
               <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                 {currentProducts.length > 0 ? (
-                  currentProducts.map((product: Product) => (
+                  currentProducts.map((product) => (
                     <tr
                       key={product.id}
                       className="hover:bg-gray-50 dark:hover:bg-gray-700"
                     >
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
-                          <div className="flex-shrink-0 h-10 w-10">
+                          <div className="flex-shrink-0 h-8 w-8 sm:h-10 sm:w-10">
                             <Image
-                              width={100}
-                              height={100}
-                              className="h-10 w-10 rounded-md object-cover"
+                              width={40}
+                              height={40}
+                              className="h-8 w-8 sm:h-10 sm:w-10 rounded-md object-cover"
                               src={product.photo}
                               alt={product.name}
                             />
                           </div>
-                          <div className="ml-4">
-                            <div className="text-sm font-medium text-gray-900 dark:text-gray-200">
+                          <div className="ml-2 sm:ml-4">
+                            <div className="text-sm font-medium text-gray-900 dark:text-gray-200 line-clamp-1">
                               {product.name}
                             </div>
-                            <div className="text-sm text-gray-500 dark:text-gray-400 line-clamp-1">
+                            <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 line-clamp-1">
                               {product.description}
                             </div>
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900 dark:text-gray-200">
+                      
+                      <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900 dark:text-gray-200 line-clamp-1">
                           {product.category}
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      
+                      {/* Price */}
+                      <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-900 dark:text-gray-200">
                           ${Number(product.price).toFixed(2)}
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      
+                      {/* Stock */}
+                      <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                         <span
                           className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                                    ${
-                                                      product.available_items.length > 10
-                                                        ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-                                                        : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
-                                                    }`}
+                            ${product.available_items.length > 10
+                              ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                              : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+                            }`}
                         >
                           {product.available_items.length} in stock
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      
+                      <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <Link
                           href={`/business/product-upload?id=${product.id}`}
-                          className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 mr-4"
+                          className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 mr-3 sm:mr-4"
                         >
-                          <button className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 mr-4">
-                            <FiEdit className="inline" />
-                          </button>
+                          <FiEdit className="inline" size={16} />
                         </Link>
-
                         <button
                           onClick={() => product.id && handleDelete(product.id)}
                           className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
                         >
-                          <FiTrash2 className="inline" />
+                          <FiTrash2 className="inline" size={16} />
                         </button>
                       </td>
                     </tr>
@@ -387,60 +302,83 @@ export default function ProductDisplay() {
               </tbody>
             </table>
           </div>
+
           {filteredProducts.length > productsPerPage && (
-            <div className="px-6 py-4 border-t dark:border-gray-700 flex items-center justify-between">
-              <div className="text-sm text-gray-700 dark:text-gray-300">
-                Showing{" "}
-                <span className="font-medium">{indexOfFirstProduct + 1}</span>{" "}
-                to{" "}
+            <div className="px-3 sm:px-6 py-4 border-t dark:border-gray-700 flex flex-col sm:flex-row items-center justify-between gap-3">
+              <div className="text-xs sm:text-sm text-gray-700 dark:text-gray-300">
+                Showing <span className="font-medium">{indexOfFirstProduct + 1}</span> to{' '}
                 <span className="font-medium">
                   {Math.min(indexOfLastProduct, filteredProducts.length)}
-                </span>{" "}
-                of{" "}
-                <span className="font-medium">{filteredProducts.length}</span>{" "}
-                results
+                </span>{' '}
+                of <span className="font-medium">{filteredProducts.length}</span> results
               </div>
-              <div className="flex space-x-2">
+              <div className="flex items-center gap-1">
                 <button
-                  onClick={() =>
-                    setCurrentPage((prev) => Math.max(prev - 1, 1))
-                  }
+                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                   disabled={currentPage === 1}
-                  className={`px-3 py-1 rounded-md ${
+                  className={`p-1 sm:p-2 rounded-md ${
                     currentPage === 1
-                      ? "text-gray-400 dark:text-gray-500 cursor-not-allowed"
-                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                      ? 'text-gray-400 dark:text-gray-500 cursor-not-allowed'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                   }`}
                 >
-                  <FiChevronLeft />
+                  <FiChevronLeft size={18} />
                 </button>
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                  (page) => (
+                
+                {Array.from({ length: Math.min(totalPages, 5) }).map((_, i) => {
+                  let page;
+                  if (totalPages <= 5) {
+                    page = i + 1;
+                  } else if (currentPage <= 3) {
+                    page = i + 1;
+                  } else if (currentPage >= totalPages - 2) {
+                    page = totalPages - 4 + i;
+                  } else {
+                    page = currentPage - 2 + i;
+                  }
+                  
+                  return (
                     <button
                       key={page}
                       onClick={() => setCurrentPage(page)}
-                      className={`px-3 py-1 rounded-md ${
+                      className={`px-2 sm:px-3 py-1 rounded-md text-xs sm:text-sm ${
                         currentPage === page
-                          ? "bg-blue-600 text-white"
-                          : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                          ? 'bg-blue-600 text-white'
+                          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                       }`}
                     >
                       {page}
                     </button>
-                  )
+                  );
+                })}
+                
+                {totalPages > 5 && currentPage < totalPages - 2 && (
+                  <span className="px-1 text-gray-500">...</span>
                 )}
+                
+                {totalPages > 5 && currentPage < totalPages - 2 && (
+                  <button
+                    onClick={() => setCurrentPage(totalPages)}
+                    className={`px-2 sm:px-3 py-1 rounded-md text-xs sm:text-sm ${
+                      currentPage === totalPages
+                        ? 'bg-blue-600 text-white'
+                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                    }`}
+                  >
+                    {totalPages}
+                  </button>
+                )}
+
                 <button
-                  onClick={() =>
-                    setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-                  }
+                  onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
                   disabled={currentPage === totalPages}
-                  className={`px-3 py-1 rounded-md ${
+                  className={`p-1 sm:p-2 rounded-md ${
                     currentPage === totalPages
-                      ? "text-gray-400 dark:text-gray-500 cursor-not-allowed"
-                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                      ? 'text-gray-400 dark:text-gray-500 cursor-not-allowed'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                   }`}
                 >
-                  <FiChevronRight />
+                  <FiChevronRight size={18} />
                 </button>
               </div>
             </div>
