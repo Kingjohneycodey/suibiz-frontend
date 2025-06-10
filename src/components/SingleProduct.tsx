@@ -1,11 +1,16 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Star, User } from "lucide-react";
 import Image from "next/image";
-
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Header } from "@/components/landing-page/Header";
 import { Footer } from "@/components/landing-page/Footer";
@@ -15,12 +20,11 @@ import {
   useCurrentAccount,
   useSignAndExecuteTransaction,
 } from "@mysten/dapp-kit";
-import { TransactionBlock } from "@mysten/sui.js/transactions";
-import { normalizeSuiAddress } from "@mysten/sui.js/utils";
 import toast from "react-hot-toast";
 // import { fetchOrders } from "@/services/orders";
-import { getFullnodeUrl, SuiClient } from "@mysten/sui/client";
 import { Transaction } from "@mysten/sui/transactions";
+import { useUserStore } from "../../stores/userStore";
+import Link from "next/link";
 
 interface Listing {
   id: string;
@@ -36,6 +40,7 @@ interface Listing {
     name: string;
     photo: string;
   };
+  available_items: []
 }
 
 export default function SingleProductPage() {
@@ -46,47 +51,66 @@ export default function SingleProductPage() {
   const [product, setProduct] = useState<Listing | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const [showSignup, setShowSignup] = useState(false);
+
   const client = useSuiClient();
   const account = useCurrentAccount();
   const [quantity, setQuantity] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [showDialog, setShowDialog] = useState(false);
   const { mutate: signAndExecuteTransaction } = useSignAndExecuteTransaction();
+  const currentAccount = useCurrentAccount();
+  const { user } = useUserStore()
+
+  console.log(user)
+
+  useEffect(() => {
+    console.log('Current wallet connection status:', {
+      currentAccount
+    });
+
+    if (!currentAccount && !sessionStorage.getItem("refreshed3")) {
+      sessionStorage.setItem("refreshed3", "true")
+      window.location.reload()
+    }
+  }, [currentAccount]);
 
   useEffect(() => {
     const fetchListings = async () => {
       const data = await fetchSingleProduct(id);
-
       setProduct(data);
-
       setLoading(false);
-      console.log(data);
-
-      // const data2 = await fetchOrders();
-
-      // console.log(data2);
     };
 
     fetchListings();
   }, [id]);
 
   const handleCreateOrder = async () => {
+    if (user?.role == null) {
+      setLoading(false)
+      setShowSignup(true)
+      console.log("ewrew")
+      return
+    }
+
     if (!account) return alert("Connect wallet first");
     if (!product) return alert("Product not found");
-    // if (quantity > availableQuantity) return alert("Not enough stock");
+    if (quantity > product.available_items.length) return alert("Not enough stock");
 
-    
-  try {
-    const tx = new Transaction();
 
-    tx.setGasBudget(100_000_000); 
+    try {
+      const tx = new Transaction();
 
-     // Set the sender address!
-     tx.setSender(account.address);
 
-     console.log(account.address)
 
-     const coins = await client.getCoins({
+      // tx.setGasBudget(100_000_000);
+
+      // Set the sender address!
+      tx.setSender(account.address);
+
+      console.log(account.address)
+
+      const coins = await client.getCoins({
         owner: account.address,
         coinType: "0x2::sui::SUI",
       });
@@ -97,53 +121,57 @@ export default function SingleProductPage() {
       console.log(totalPrice)
       const paymentCoin = coins.data.find(c => BigInt(c.balance) >= totalPrice);
 
-      console.log(paymentCoin) 
+      console.log(paymentCoin)
 
       if (!paymentCoin) {
         toast.error(`No coin found with sufficient balance (needed ${totalPrice.toString()} MIST), Fund your sui address with testnet tokens and try again`);
-        return
-        // throw new Error(`No coin found with sufficient balance (needed ${totalPrice.toString()} MIST)`);
+        return;
       }
 
 
-    // Call the Move function 
-    tx.moveCall({
-      target: `${process.env.NEXT_PUBLIC_PACKAGE_ID}::marketplace::create_order`,
-      arguments: [
-        tx.object(id),
-        tx.pure.u64(Number(quantity)),   
-        tx.object(paymentCoin.coinObjectId),
-      ],
-    });
+      // Call the Move function 
+      tx.moveCall({
+        target: `${process.env.NEXT_PUBLIC_PACKAGE_ID}::marketplace::create_order`,
+        arguments: [
+          tx.object(id),
+          tx.pure.u64(Number(quantity)),
+          tx.object(paymentCoin.coinObjectId),
+        ]
+      });
 
-    // Execute transaction if dry run succeeds
-    signAndExecuteTransaction(
-      {
-        transaction: tx,
-      },
-      {
-        onSuccess: () => {
-          toast.success("Order created successfully!");
-          setIsLoading(false);
-          // router.push("/orders")
+      // Execute transaction if dry run succeeds
+      signAndExecuteTransaction(
+        {
+          transaction: tx,
+
         },
-        onError: (err) => {
-          if (err.message.includes("No valid gas coins")) {
-            toast.error("Insufficient balance. Fund your wallet and try again");
-          } else {
-            toast.error(`Order failed: ${err.message}`);
-          }
-          setIsLoading(false);
-          console.error("Transaction Error:", err);
-        },
-      }
-    );
-  } catch (err) {
-    setIsLoading(false);
-    console.error("Error preparing transaction:", err);
-    toast.error("Failed to prepare transaction");
-  }
+        {
+          onSuccess: () => {
+            toast.success("Order created successfully!");
+            setIsLoading(false);
+            setShowDialog(false);
+            router.push("/user/orders")
+          },
+          onError: (err) => {
+            if (err.message.includes("No valid gas coins")) {
+              toast.error("No valid gas coins. Fund your wallet with new gas tokens and try again");
+            } else {
+              toast.error(`Order failed: ${err.message}`);
+            }
+            setIsLoading(false);
+            console.error("Transaction Error:", err);
+          },
+        }
+      );
+    } catch (err) {
+      setIsLoading(false);
+      console.error("Error preparing transaction:", err);
+      toast.error("Failed to prepare transaction");
+    }
   };
+
+
+
 
   if (loading) {
     return (
@@ -165,8 +193,8 @@ export default function SingleProductPage() {
             <Button onClick={() => router.push("/marketplace")}>
               Back to Marketplace
             </Button>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={() => router.push("/register")}
               className="ml-4"
             >
@@ -178,6 +206,7 @@ export default function SingleProductPage() {
       </div>
     );
   }
+
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white flex flex-col overflow-x-hidden">
@@ -228,23 +257,18 @@ export default function SingleProductPage() {
             <hr />
 
             {/* Store Info Section */}
-            <div className="flex items-center space-x-3 bg-slate-50 rounded-lg">
-              <div className="w-10 h-10 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center">
-                <User className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <p className="text-sm text-slate-500">Sold by</p>
-                <p className="font-medium text-slate-800">
-                  {product.store.name}
-                </p>
-              </div>
-            </div>
-
-            {/* Price Section */}
             <div className="flex items-center justify-between">
-              <span className="text-3xl font-bold text-slate-800">
-                {Number(product.price) / 1000000000} SUI
-              </span>
+              <div className="flex items-center space-x-3 bg-slate-50 rounded-lg">
+                <div className="w-10 h-10 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center">
+                  <User className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <p className="text-sm text-slate-500">Sold by</p>
+                  <p className="font-medium text-slate-800">
+                    {product.store.name}
+                  </p>
+                </div>
+              </div>
               <div className="flex items-center space-x-1">
                 <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
                 <span className="font-medium">5.0</span>
@@ -252,12 +276,24 @@ export default function SingleProductPage() {
               </div>
             </div>
 
+
+            {/* Price Section */}
+            <div className="flex items-center justify-between">
+              <span className="text-3xl font-bold text-slate-800">
+                {Number(product.price) / 1000000000} SUI
+              </span>
+
+              <div>
+                ({product.available_items.length} items)
+              </div>
+            </div>
+
             {/* Action Section */}
             <div className="pt-4 border-t border-slate-200">
               <Button
                 size="lg"
-                className="w-full text-lg py-6 font-semibold bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-200"
-                onClick={handleCreateOrder}
+                className="w-full text-lg py-6 font-semibold bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer"
+                onClick={() => setShowDialog(true)}
               >
                 Buy Now
               </Button>
@@ -265,6 +301,84 @@ export default function SingleProductPage() {
           </div>
         </div>
       </main>
+
+      <Dialog open={showDialog} onOpenChange={() => {
+        setShowSignup(false)
+        setShowDialog(false)
+      }}>
+        {!showSignup ? (
+          <DialogContent
+            className="sm:max-w-[425px] bg-white transition-opacity duration-300"
+            style={{
+              opacity: showDialog ? 1 : 0,
+              transition: "opacity 300ms",
+              transform: showDialog ? "translateY(0)" : "translateY(-20px)"
+            }}
+          >
+            <DialogHeader>
+              <DialogTitle>Confirm your Order</DialogTitle>
+              <DialogDescription>
+                Confirm the quantity of the product that you want to purchase
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="quantity" className="block text-sm font-medium text-slate-700 mb-1">
+                  Quantity
+                </label>
+                <input
+                  id="quantity"
+                  type="number"
+                  min={1}
+                  max={product?.available_items.length || 1}
+                  value={quantity}
+                  onChange={e => setQuantity(Math.max(1, Math.min(Number(e.target.value), product?.available_items.length || 1)))}
+                  className="w-full border border-slate-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  disabled={isLoading}
+                />
+                <p className="text-xs text-slate-500 mt-1">
+                  Available: {product?.available_items.length}
+                </p>
+              </div>
+              <Button
+                className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer mt-4"
+                onClick={() => {
+                  setIsLoading(true);
+                  handleCreateOrder();
+                }}
+                disabled={isLoading || quantity < 1 || quantity > (product?.available_items.length || 0)}
+              >
+                {isLoading ? "Processing..." : "Confirm Purchase"}
+              </Button>
+            </div>
+          </DialogContent>
+        ) : (
+          <DialogContent
+            className="sm:max-w-[425px] bg-white transition-opacity duration-300"
+            style={{
+              opacity: showDialog ? 1 : 0,
+              transition: "opacity 300ms",
+              transform: showDialog ? "translateY(0)" : "translateY(-20px)"
+            }}
+          >
+            <DialogHeader>
+              <DialogTitle>You need to signup first !</DialogTitle>
+              <DialogDescription className="mt-4">
+                You need to create your account first before making a purchase!
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 mt-2">
+              <Link href="/register" >
+                <Button
+                  className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer mt-8"
+                >
+                  Create Account
+                </Button></Link>
+            </div>
+          </DialogContent>
+        )}
+
+      </Dialog>
       <Footer />
     </div>
   );

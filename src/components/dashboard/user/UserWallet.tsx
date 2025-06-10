@@ -105,7 +105,7 @@ const UserWallet = ({ transactions }: UserWalletProps) => {
     };
 
     return (
-        <div className="space-y-6 p-4 sm:p-6 max-w-7xl mx-auto dark:bg-gray-900 ">
+        <div className="space-y-6 p-4 sm:p-6 max-w-7xl mx-auto dark:bg-gray-900 min-h-screen">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
                     <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">My Wallet</h1>
@@ -134,7 +134,7 @@ const UserWallet = ({ transactions }: UserWalletProps) => {
                 <div>
                     <h2 className="text-sm font-medium opacity-80">Total Balance</h2>
                     <p className="text-3xl font-bold mt-1">{(balance).toFixed(2)} SUI</p>
-                    <p className="text-sm opacity-80 mt-2">Equivalent to {(balance / 1.25).toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</p>
+                    <p className="text-sm opacity-80 mt-2">Equivalent to {(balance * 4).toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</p>
                 </div>
                 <div className="bg-white/10 p-3 rounded-lg backdrop-blur-sm">
                     <Image 

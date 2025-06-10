@@ -11,7 +11,7 @@ import { getFullnodeUrl } from '@mysten/sui/client';
 import { useEffect } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import '@mysten/dapp-kit/dist/index.css';
-import SessionProvider from './dashboard/session/page';
+import SessionProvider from './session/page';
 
 const { networkConfig } = createNetworkConfig({
 	devnet: { url: getFullnodeUrl('devnet') },

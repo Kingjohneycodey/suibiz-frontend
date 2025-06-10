@@ -256,7 +256,7 @@ export default function ProductDisplay() {
                       {/* Price */}
                       <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-900 dark:text-gray-200">
-                          ${Number(product.price).toFixed(2)}
+                          {(Number(product.price) / 1000000000).toFixed(2)} SUI
                         </div>
                       </td>
                       

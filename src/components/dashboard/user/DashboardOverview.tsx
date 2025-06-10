@@ -4,6 +4,7 @@ import { Clock, CheckCircle, AlertCircle, DollarSign, ShoppingCart, Calendar, Ar
 import Image from 'next/image';
 import { useCurrentWallet } from "@mysten/dapp-kit";
 import { getFullnodeUrl, SuiClient } from "@mysten/sui/client";
+import { fetchUserPendingOrders } from '@/services/orders';
 
 type Activity = {
   id: number;
@@ -14,10 +15,9 @@ type Activity = {
 
 const DashboardOverview = () => {
   // Internal state management
-  const pendingOrders = 0;
   const serviceBookings = 0;
   const [activities, setActivities] = useState<Activity[]>([]);
-  const balanceChange = 12.5; // percentage change
+  const balanceChange = 1; // percentage change
 
   useEffect(() => {
     setTimeout(() => {
@@ -51,6 +51,8 @@ const DashboardOverview = () => {
   }, []);
 
   const [balance, setBalance] = useState(0);
+
+  const [pendingOrders, setPendingOrders] = useState(0)
       
   const { currentWallet } = useCurrentWallet()
 
@@ -75,6 +77,17 @@ const DashboardOverview = () => {
       fetchBalance();
   }, [currentAccount]);
 
+      useEffect(() => {
+          const fetchPendingOrder = async () => {
+  
+              const data = await fetchUserPendingOrders(currentAccount || "");
+  
+              setPendingOrders(data || 0);
+          };
+  
+          fetchPendingOrder();
+      }, [currentAccount]);
+
   const getActivityIcon = (type: string) => {
     switch(type) {
       case 'payment':
@@ -91,7 +104,7 @@ const DashboardOverview = () => {
   };
 
   return (
-    <div className="space-y-6 p-4 sm:p-6 max-w-7xl mx-auto dark:bg-gray-900">
+    <div className="space-y-6 p-4 sm:p-6 max-w-7xl mx-auto dark:bg-gray-900 min-h-screen">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">Dashboard Overview</h1>
@@ -103,11 +116,11 @@ const DashboardOverview = () => {
         <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-shadow">
           <div className="flex justify-between items-start">
             <div>
-              <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center gap-1">
-                <DollarSign className="w-4 h-4" /> Total Balance
+               <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center gap-1">
+                SUI Total Balance
               </h3>
-              <p className="text-2xl font-bold mt-1 dark:text-gray-300 text-gray-900 dark:text-white">
-                ${balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              <p className="text-2xl font-bold mt-1 dark:text-gray-300 text-gray-900">
+              {balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <small>SUI</small>
               </p>
               <div className={`flex items-center mt-2 text-sm ${balanceChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                 {balanceChange >= 0 ? (
@@ -136,9 +149,9 @@ const DashboardOverview = () => {
               <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center gap-1">
                 <ShoppingCart className="w-4 h-4" /> Pending Orders
               </h3>
-              <p className="text-2xl font-bold mt-1 dark:text-gray-300 text-gray-900 dark:text-white">{pendingOrders}</p>
+              <p className="text-2xl font-bold mt-1 text-gray-900 dark:text-white">{pendingOrders}</p>
               <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                <span className="text-green-600">+2</span> from yesterday
+                <span className="text-green-600">+0</span> from yesterday
               </div>
             </div>
             <div className="bg-orange-100 dark:bg-orange-900/30 p-2 rounded-lg text-orange-600 dark:text-orange-400">

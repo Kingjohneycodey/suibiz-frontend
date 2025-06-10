@@ -2,7 +2,7 @@
 import { getUserProfileInfo } from "@/services/profile";
 import { ConnectButton, useCurrentWallet } from "@mysten/dapp-kit";
 import { useEffect, useState } from "react";
-import { useUserStore } from "../../../../stores/userStore";
+import { useUserStore } from "../../../stores/userStore";
 import {
   Dialog,
   DialogContent,
@@ -28,7 +28,7 @@ export default function SessionProvider({
 
   const exemptedRoutes = ["/", "/about", "/terms"];
 
-  const compulsoryRoutes = ["/business/create"];
+  const compulsoryRoutes = ["/business/create", "/signup/user", "/marketplace"];
 
   useEffect(() => {
     setIsMounted(true);
@@ -47,9 +47,13 @@ export default function SessionProvider({
           setShouldCheck(true);
         }
 
-        if (compulsoryRoutes.includes(pathname)) {
-          setShouldCheck2(true);
-        }
+    if (
+  compulsoryRoutes.some((route) => 
+    pathname === route || pathname.startsWith(`${route}/`)
+  )
+) {
+  setShouldCheck2(true);
+}
 
 
       }, 3000); // 3 seconds delay
@@ -61,7 +65,7 @@ export default function SessionProvider({
   const currentWalletAddress = currentWallet?.accounts[0]?.address;
 
   useEffect(() => {
-    if (currentWalletAddress) {
+    if (currentWalletAddress !== "") {
       async function getUserProfile() {
         const data = await getUserProfileInfo(currentWalletAddress || "");
         console.log(data);

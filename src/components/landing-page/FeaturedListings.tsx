@@ -13,7 +13,7 @@ export const FeaturedListings = () => {
     name: string;
     photo: string;
     category: string;
-
+    available_items: any[];
     creator: string;
     price: string;
     store: {
@@ -26,62 +26,9 @@ export const FeaturedListings = () => {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    console.log("here")
-    // const fetchListings = async () => {
-    //   try {
-    //     setLoading(true);
-    //     const response = await fetch('https://suibiz-backend.onrender.com/api/products', {
-    //       method: 'GET',
-    //       headers: {
-    //         'Content-Type': 'application/json',
-    //       },
-    //     });
+    const fetchAllProducts = async () => {
 
-    //     console.log("loading...")
-
-    //     if (!response.ok) {
-    //       console.error('Failed to fetch listings');
-    //       return;
-    //     }
-        
-
-    //     const data = await response.json();
-    //     const products = data.products;
-
-
-    //     console.log("products", products)
-
-    //     const formattedListings = products.map((item: any) => ({
-    //       id: item.id || 'unknown-id',
-    //       title: item.name || 'Untitled',
-    //       image: item.image_url || '/placeholder-image.jpg',
-    //       category: item.collection || 'Uncategorized',
-    //       rating: 4.5,
-    //       reviews: 12,
-    //       seller: `Seller ${item.owner.slice(0, 6)}`,
-    //       price: `${item.price || '0.00'}`,
-    //     }));
-
-    //     setListings(formattedListings);
-
-
-
-
-    //   } catch (error) {
-    //     console.error('Error fetching listings:', error);
-    //   } finally {
-    //     setLoading(false);
-    //   }
-    // };
-
-  }, []);
-
-  useEffect(() => {
-    const fetchAllroducts = async () => {
-
-        
       const stores = await fetchProducts();
-
 
       console.log(stores)
 
@@ -90,7 +37,7 @@ export const FeaturedListings = () => {
 
       setLoading(false)
     };
-    fetchAllroducts();
+    fetchAllProducts();
   }, []);
 
   if (loading) {
@@ -129,9 +76,12 @@ export const FeaturedListings = () => {
                     }}
                   />
                 </div>
-                <CardHeader className="pb-2">
+                <CardHeader className="pb-2 px-3">
                   <div className="flex items-center justify-between mb-2">
-                    <Badge variant="secondary" className="text-xs">
+                    <Badge
+                      variant="default"
+                      className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
+                    >
                       {listing.category}
                     </Badge>
                     <div className="flex items-center space-x-1">
@@ -143,30 +93,37 @@ export const FeaturedListings = () => {
                       <span className="text-xs text-slate-500">({0})</span>
                     </div>
                   </div>
-                  <CardTitle className="text-lg leading-tight">{listing.name}</CardTitle>
+                 <div className="flex items-center justify-between">
+                   <CardTitle className="text-lg leading-tight py-2">{listing.name}</CardTitle>
+
+                   <div>
+                    ({listing.available_items.length} items)
+                   </div>
+
+                 </div>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="px-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
                       {/* <div className="w-6 h-6 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center">
                         <User className="w-3 h-3 text-white" />
                       </div> */}
                       <div>
-                      <Image
-                    width={10}
-                    height={10}
-                    src={listing.store.photo}
-                    alt={listing.store.name}
-                    className="w-10 h-10 rounded-full object-cover hover:scale-105 transition-transform duration-300"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = '/placeholder-image.jpg';
-                    }}
-                  />
+                        <Image
+                          width={10}
+                          height={10}
+                          src={listing.store.photo}
+                          alt={listing.store.name}
+                          className="w-10 h-10 rounded-full object-cover hover:scale-105 transition-transform duration-300"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = '/placeholder-image.jpg';
+                          }}
+                        />
                       </div>
                       <span className="text-sm text-slate-600">{listing.store.name}</span>
                     </div>
                     <div className="text-lg font-semibold text-slate-800">
-                      {Number(listing.price)/1000000000} SUI
+                      {(Number(listing.price) / 1000000000).toFixed(7)} SUI
                     </div>
                   </div>
                 </CardContent>

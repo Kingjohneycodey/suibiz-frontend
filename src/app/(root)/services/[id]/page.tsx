@@ -50,7 +50,9 @@ export default function ServiceDetailsPage() {
     const params = useParams();
     const serviceId = Number(params.id);
     console.log({params})
-    const service = services.find(s => s.id === serviceId);
+    // const service = services.find(s => s.id === serviceId);
+
+        const service = services[0];
 
     if (!service) {
         return (

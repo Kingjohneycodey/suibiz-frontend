@@ -89,7 +89,7 @@ export default function RegistrationPage() {
         <div className="bg-white py-8 md:py-20 px-4 shadow sm:rounded-lg sm:px-10 md:flex gap-4">
           <button
             onClick={() => handleUserTypeSelect("user")}
-            className="w-full flex flex-col items-center justify-center py-6 px-4 border-2 border-gray-200 rounded-lg hover:border-indigo-300 hover:bg-indigo-50 transition-all duration-200 cursor-pointer"
+            className="w-full flex flex-col items-center justify-center py-6 px-4 border-2 border-gray-200 rounded-lg hover:border-indigo-300 hover:bg-indigo-50 transition-all duration-200 cursor-pointer mb-8 md:mb-0"
           >
             <div className="mb-3 p-3 bg-indigo-100 rounded-full">
               <User className="w-8 h-8 text-indigo-600" />

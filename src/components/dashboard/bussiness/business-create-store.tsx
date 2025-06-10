@@ -226,15 +226,13 @@ export default function CreateStorePage() {
               onSuccess: () => {
                 toast.success('Store created successfully!');
 
-                console.log("the")
-
                 setLoading(false);
     
-                // router.refresh()
+                router.refresh()
               },
               onError: (err: { message: string }) => {
                 if (err.message == "No valid gas coins found for the transaction.") {
-                  toast.error(err.message + "Fund your sui wallet account and try agains")
+                  toast.error(err.message + "Fund your sui wallet account with sui testnet tokens and try again")
                 } else {
                   toast.error(err.message)
                 }
@@ -450,7 +448,7 @@ export default function CreateStorePage() {
                         ) : (
                             <span className="flex items-center">
                                 <FiUpload className="-ml-1 mr-2 h-5 w-5" />
-                                'Create Store'
+                                Create Store
                             </span>
                         )}
                     </button>

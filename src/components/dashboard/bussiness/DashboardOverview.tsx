@@ -18,7 +18,7 @@ const BusinessDashboardOverview = () => {
   const pendingOrders = 0;
   const serviceBookings = 0;
   const [activities, setActivities] = useState<Activity[]>([]);
-  const balanceChange = 12.5; // percentage change
+  const balanceChange = 1; // percentage change
 
   useEffect(() => {
     setTimeout(() => {
@@ -92,7 +92,7 @@ const BusinessDashboardOverview = () => {
   };
 
   return (
-    <div className="space-y-6 p-4 sm:p-6 max-w-7xl mx-auto dark:bg-gray-900">
+    <div className="space-y-6 p-4 sm:p-6 max-w-7xl mx-auto dark:bg-gray-900 min-h-screen">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">Dashboard Overview</h1>
@@ -105,10 +105,10 @@ const BusinessDashboardOverview = () => {
           <div className="flex justify-between items-start">
             <div>
               <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center gap-1">
-                <DollarSign className="w-4 h-4" /> Total Balance
+                SUI Total Balance
               </h3>
               <p className="text-2xl font-bold mt-1 dark:text-gray-300 text-gray-900">
-                ${balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              {balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <small>SUI</small>
               </p>
               <div className={`flex items-center mt-2 text-sm ${balanceChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                 {balanceChange >= 0 ? (
@@ -139,7 +139,7 @@ const BusinessDashboardOverview = () => {
               </h3>
               <p className="text-2xl font-bold mt-1 dark:text-gray-300 text-gray-900 dark:text-white">{pendingOrders}</p>
               <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                <span className="text-green-600">+2</span> from yesterday
+                <span className="text-green-600">+0</span> from yesterday
               </div>
             </div>
             <div className="bg-orange-100 dark:bg-orange-900/30 p-2 rounded-lg text-orange-600 dark:text-orange-400">
@@ -166,7 +166,7 @@ const BusinessDashboardOverview = () => {
         </div>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+      {/* <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
         <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="text-xl font-bold text-gray-900 dark:text-white">Quick Stats</h2>
@@ -192,7 +192,7 @@ const BusinessDashboardOverview = () => {
             <p className="text-xl font-bold mt-1 dark:text-gray-300">4.9★</p>
           </div>
         </div>
-      </div>
+      </div> */}
 
       <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
         <div className="flex items-center justify-between mb-6">

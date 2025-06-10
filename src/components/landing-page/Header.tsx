@@ -73,7 +73,7 @@ export const Header = () => {
               href="/marketplace"
               className="text-[#010725] hover:text-purple-600 transition-colors font-medium text-sm"
             >
-              Explore
+              Marketplace
             </Link>
             <Link
               href="/services"
@@ -224,7 +224,7 @@ export const Header = () => {
                   className="px-3 py-2 rounded-md text-sm font-medium text-[#010725] hover:bg-slate-100"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Explore
+                  Marketplace
                 </Link>
                 <Link
                   href="/services"

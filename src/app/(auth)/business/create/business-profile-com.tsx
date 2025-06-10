@@ -24,7 +24,6 @@ const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 export default function BusinessProfilePage() {
   const router = useRouter();
   const [uploading, setUploading] = useState(false);
-  const setUser = useUserStore(state => state.setUser);
   const [formData, setFormData] = useState<BusinessFormData>({
     name: '',
     username: '',
@@ -44,8 +43,9 @@ export default function BusinessProfilePage() {
       currentAccount
     });
 
-    if(!currentAccount){
-      router.refresh()
+    if(!currentAccount && !sessionStorage.getItem("refreshed1")) {
+      sessionStorage.setItem("refreshed1", "true")
+      window.location.reload()
     }
   }, [currentAccount]);
 
@@ -212,7 +212,7 @@ export default function BusinessProfilePage() {
           },
           onError: (err: { message: string }) => {
             if (err.message == "No valid gas coins found for the transaction.") {
-              toast.error(err.message + "Fund your sui wallet account and try agains")
+              toast.error(err.message + "Fund your sui wallet account with sui testnet tokens and try again")
             } else {
               toast.error(err.message)
             }

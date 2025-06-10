@@ -19,7 +19,7 @@ import {
 import { TransactionBlock } from "@mysten/sui.js/transactions";
 import { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import { storeDataToWalrus, storeFileToWalrus } from "@/utils/walrus";
-import { getKioskOwnerCaps, getSingleKioskCap } from "@/services/business";
+import { getSingleKioskCap } from "@/services/business";
 
 const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
 const ALLOWED_FILE_TYPES = ["image/jpeg", "image/png", "image/webp"];
@@ -160,7 +160,7 @@ export default function ProductUploadPage({ kioskId }: ProductUploadPageProps) {
 
   const validateForm = (): boolean => {
     if (!formData.name.trim()) {
-      toast.error("Store username is required");
+      toast.error("Product username is required");
       return false;
     }
     if (!formData.description.trim()) {
@@ -211,7 +211,7 @@ export default function ProductUploadPage({ kioskId }: ProductUploadPageProps) {
 
       await handleListItem({
         metadata_uri: data,
-        price: Number(formData.price),
+        price: Number(formData.price) * 1000000000,
         quantity: Number(formData.quantity),
       });
     } catch (err) {
@@ -268,7 +268,7 @@ export default function ProductUploadPage({ kioskId }: ProductUploadPageProps) {
               err.message == "No valid gas coins found for the transaction."
             ) {
               toast.error(
-                err.message + "Fund your sui wallet account and try agains"
+                err.message + "Fund your sui wallet account with sui testnet tokens and try again"
               );
             } else {
               toast.error(err.message);
@@ -286,290 +286,287 @@ export default function ProductUploadPage({ kioskId }: ProductUploadPageProps) {
   };
 
   return (
-    <div className="dark:bg-gray-900 mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-2xl lg:mx-0">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-          {isEditMode ? "Edit Product" : "Upload New Product"}
-        </h1>
-        <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-          {isEditMode
-            ? "Update the product details below"
-            : "Update the product details below"}
-        </p>
-      </div>
-
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Store Photo *
-          </label>
-
-          {avatarPreview ? (
-            <div className="relative group">
-              <Image
-                src={avatarPreview}
-                alt="Product preview"
-                width={500}
-                height={400}
-                className="h-64 w-full object-cover rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600"
-              />
-              <button
-                type="button"
-                onClick={removeImage}
-                className="absolute top-2 right-2 bg-white dark:bg-gray-700 rounded-full p-2 shadow-md hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
-                title="Remove image"
-              >
-                <FiX className="h-5 w-5 text-red-500" />
-              </button>
-            </div>
-          ) : (
-            <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 dark:border-gray-600 border-dashed rounded-lg">
-              <div className="space-y-1 text-center">
-                <div className="flex justify-center">
-                  <FiImage className="h-12 w-12 text-gray-400" />
-                </div>
-                <div className="flex text-sm text-gray-600 dark:text-gray-400">
-                  <label
-                    htmlFor="file-upload"
-                    className="relative cursor-pointer bg-white dark:bg-gray-800 rounded-md font-medium text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 focus-within:outline-none"
-                  >
-                    <span>Upload an image</span>
-                    <input
-                      id="file-upload"
-                      name="file-upload"
-                      type="file"
-                      className="sr-only"
-                      accept="image/*"
-                      onChange={handleAvatarChange}
-                    />
-                  </label>
-                  <p className="pl-1">or drag and drop</p>
-                </div>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  PNG, JPG, GIF up to 5MB
-                </p>
-              </div>
-            </div>
-          )}
-          {errors.image && (
-            <p className="mt-2 text-sm text-red-600 dark:text-red-400">
-              {errors.image}
-            </p>
-          )}
+    <div className="dark:bg-gray-900 mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-2xl lg:mx-0">
+        <div className="mb-8">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+            {isEditMode ? "Edit Product" : "Upload New Product"}
+          </h1>
+          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+            {isEditMode
+              ? "Update the product details below"
+              : "Update the product details below"}
+          </p>
         </div>
 
-        <div>
-          <label
-            htmlFor="name"
-            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-          >
-            Name *
-          </label>
-          <div className="relative rounded-md shadow-sm">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <FiTag className="h-5 w-5 text-gray-400" />
-            </div>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              value={formData.name}
-              onChange={handleInputChange}
-              className={`block w-full pl-10 pr-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 ${
-                errors.name
-                  ? "border-red-500"
-                  : "border-gray-300 dark:border-gray-600"
-              }`}
-              placeholder="e.g. johney1"
-            />
-          </div>
-          {errors.name && (
-            <p className="mt-1 text-sm text-red-600 dark:text-red-400">
-              {errors.name}
-            </p>
-          )}
-        </div>
-
-        <div>
-          <label
-            htmlFor="description"
-            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-          >
-            Description *
-          </label>
-          <div className="relative rounded-md shadow-sm">
-            <div className="absolute inset-y-0 left-0 pl-3 pt-2 flex items-start pointer-events-none">
-              <FiAlignLeft className="h-5 w-5 text-gray-400" />
-            </div>
-            <textarea
-              id="description"
-              name="description"
-              rows={4}
-              value={formData.description}
-              onChange={handleInputChange}
-              className={`block w-full pl-10 pr-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 ${
-                errors.description
-                  ? "border-red-500"
-                  : "border-gray-300 dark:border-gray-600"
-              }`}
-              placeholder="Describe your store in detail..."
-            />
-          </div>
-          {errors.description && (
-            <p className="mt-1 text-sm text-red-600 dark:text-red-400">
-              {errors.description}
-            </p>
-          )}
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label
-              htmlFor="price"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-            >
-              Price *
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Product Photo *
             </label>
-            <div className="relative rounded-md shadow-sm">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                {/* <FiDollarSign className="h-5 w-5 text-gray-400" /> */}
 
-                SUI
-              </div>
-              <input
-                type="text"
-                id="price"
-                name="price"
-                value={formData.price}
-                onChange={handleInputChange}
-                className={`block w-full pl-10 pr-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 ${
-                  errors.price
-                    ? "border-red-500"
-                    : "border-gray-300 dark:border-gray-600"
-                }`}
-                placeholder="0.00"
-              />
-            </div>
-            {errors.price && (
-              <p className="mt-1 text-sm text-red-600 dark:text-red-400">
-                {errors.price}
-              </p>
-            )}
-          </div>
-
-          <div>
-            <label
-              htmlFor="price"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-            >
-              Quantity *
-            </label>
-            <div className="relative rounded-md shadow-sm">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <FaCartPlus className="h-5 w-5 text-gray-400" />
-              </div>
-              <input
-                type="text"
-                id="quantity"
-                name="quantity"
-                value={formData.quantity}
-                onChange={handleInputChange}
-                className={`block w-full pl-10 pr-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 ${
-                  errors.price
-                    ? "border-red-500"
-                    : "border-gray-300 dark:border-gray-600"
-                }`}
-                placeholder="0"
-              />
-            </div>
-            {errors.quantity && (
-              <p className="mt-1 text-sm text-red-600 dark:text-red-400">
-                {errors.quantity}
-              </p>
-            )}
-          </div>
-        </div>
-
-        <div>
-          <label
-            htmlFor="category"
-            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-          >
-            Category *
-          </label>
-          <select
-            id="category"
-            name="category"
-            value={formData.category}
-            onChange={handleInputChange}
-            className={`block w-full pl-3 pr-10 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 ${
-              errors.category
-                ? "border-red-500"
-                : "border-gray-300 dark:border-gray-600"
-            }`}
-          >
-            <option value="">Select a category</option>
-            <option value="electronics">Electronics</option>
-            <option value="clothing">Clothing</option>
-            <option value="home">Home & Kitchen</option>
-            <option value="beauty">Beauty & Personal Care</option>
-            <option value="sports">Sports & Outdoors</option>
-            <option value="other">Other</option>
-          </select>
-          {errors.category && (
-            <p className="mt-1 text-sm text-red-600 dark:text-red-400">
-              {errors.category}
-            </p>
-          )}
-        </div>
-
-        <div className="flex justify-end space-x-4 pt-6">
-          <button
-            type="button"
-            onClick={() => router.push("/business/products")}
-            className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800"
-            disabled={loading}
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            className="px-6 py-2 bg-gradient-to-r from-blue-600 to-blue-500 dark:from-blue-700 dark:to-blue-600 text-white rounded-md shadow-sm hover:from-blue-700 hover:to-blue-600 dark:hover:from-blue-800 dark:hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
-            disabled={loading}
-          >
-            {loading ? (
-              <span className="flex items-center">
-                <svg
-                  className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
+            {avatarPreview ? (
+              <div className="relative group">
+                <Image
+                  src={avatarPreview}
+                  alt="Product preview"
+                  width={500}
+                  height={400}
+                  className="h-64 w-full object-cover rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600"
+                />
+                <button
+                  type="button"
+                  onClick={removeImage}
+                  className="absolute top-2 right-2 bg-white dark:bg-gray-700 rounded-full p-2 shadow-md hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
+                  title="Remove image"
                 >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  ></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  ></path>
-                </svg>
-                Creating...
-              </span>
+                  <FiX className="h-5 w-5 text-red-500" />
+                </button>
+              </div>
             ) : (
-              <span className="flex items-center">
-                <FiUpload className="-ml-1 mr-2 h-5 w-5" />
-                Create Product
-              </span>
+              <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 dark:border-gray-600 border-dashed rounded-lg">
+                <div className="space-y-1 text-center">
+                  <div className="flex justify-center">
+                    <FiImage className="h-12 w-12 text-gray-400" />
+                  </div>
+                  <div className="flex text-sm text-gray-600 dark:text-gray-400">
+                    <label
+                      htmlFor="file-upload"
+                      className="relative cursor-pointer bg-white dark:bg-gray-800 rounded-md font-medium text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 focus-within:outline-none"
+                    >
+                      <span>Upload an image</span>
+                      <input
+                        id="file-upload"
+                        name="file-upload"
+                        type="file"
+                        className="sr-only"
+                        accept="image/*"
+                        onChange={handleAvatarChange}
+                      />
+                    </label>
+                    <p className="pl-1">or drag and drop</p>
+                  </div>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    PNG, JPG, GIF up to 5MB
+                  </p>
+                </div>
+              </div>
             )}
-          </button>
-        </div>
-      </form>
+            {errors.image && (
+              <p className="mt-2 text-sm text-red-600 dark:text-red-400">
+                {errors.image}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <label
+              htmlFor="name"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+            >
+              Name *
+            </label>
+            <div className="relative rounded-md shadow-sm">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <FiTag className="h-5 w-5 text-gray-400" />
+              </div>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
+                className={`block w-full pl-10 pr-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 ${errors.name
+                    ? "border-red-500"
+                    : "border-gray-300 dark:border-gray-600"
+                  }`}
+                placeholder="e.g. johney1"
+              />
+            </div>
+            {errors.name && (
+              <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                {errors.name}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <label
+              htmlFor="description"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+            >
+              Description *
+            </label>
+            <div className="relative rounded-md shadow-sm">
+              <div className="absolute inset-y-0 left-0 pl-3 pt-2 flex items-start pointer-events-none">
+                <FiAlignLeft className="h-5 w-5 text-gray-400" />
+              </div>
+              <textarea
+                id="description"
+                name="description"
+                rows={4}
+                value={formData.description}
+                onChange={handleInputChange}
+                className={`block w-full pl-10 pr-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 ${errors.description
+                    ? "border-red-500"
+                    : "border-gray-300 dark:border-gray-600"
+                  }`}
+                placeholder="Describe your product in detail..."
+              />
+            </div>
+            {errors.description && (
+              <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                {errors.description}
+              </p>
+            )}
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label
+                htmlFor="price"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >
+                Price *
+              </label>
+              <div className="relative rounded-md shadow-sm">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  {/* <FiDollarSign className="h-5 w-5 text-gray-400" /> */}
+
+                  SUI
+                </div>
+                <input
+                  type="text"
+                  id="price"
+                  name="price"
+                  value={formData.price}
+                  onChange={handleInputChange}
+                  className={`block w-full pl-10 pr-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 ${errors.price
+                      ? "border-red-500"
+                      : "border-gray-300 dark:border-gray-600"
+                    }`}
+                  placeholder="0.00"
+                />
+              </div>
+              {errors.price && (
+                <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                  {errors.price}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label
+                htmlFor="price"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >
+                Quantity *
+              </label>
+              <div className="relative rounded-md shadow-sm">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FaCartPlus className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  type="text"
+                  id="quantity"
+                  name="quantity"
+                  value={formData.quantity}
+                  onChange={handleInputChange}
+                  className={`block w-full pl-10 pr-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 ${errors.price
+                      ? "border-red-500"
+                      : "border-gray-300 dark:border-gray-600"
+                    }`}
+                  placeholder="0"
+                />
+              </div>
+              {errors.quantity && (
+                <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                  {errors.quantity}
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div>
+            <label
+              htmlFor="category"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+            >
+              Category *
+            </label>
+            <select
+              id="category"
+              name="category"
+              value={formData.category}
+              onChange={handleInputChange}
+              className={`block w-full pl-3 pr-10 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 ${errors.category
+                  ? "border-red-500"
+                  : "border-gray-300 dark:border-gray-600"
+                }`}
+            >
+              <option value="">Select a category</option>
+              <option value="electronics">Electronics</option>
+              <option value="clothing">Clothing</option>
+              <option value="home">Home & Kitchen</option>
+              <option value="beauty">Beauty & Personal Care</option>
+              <option value="sports">Sports & Outdoors</option>
+              <option value="other">Other</option>
+            </select>
+            {errors.category && (
+              <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                {errors.category}
+              </p>
+            )}
+          </div>
+
+          <div className="flex justify-end space-x-4 pt-6">
+            <button
+              type="button"
+              onClick={() => router.push("/business/products")}
+              className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800"
+              disabled={loading}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-6 py-2 bg-gradient-to-r from-blue-600 to-blue-500 dark:from-blue-700 dark:to-blue-600 text-white rounded-md shadow-sm hover:from-blue-700 hover:to-blue-600 dark:hover:from-blue-800 dark:hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={loading}
+            >
+              {loading ? (
+                <span className="flex items-center">
+                  <svg
+                    className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  Creating...
+                </span>
+              ) : (
+                <span className="flex items-center">
+                  <FiUpload className="-ml-1 mr-2 h-5 w-5" />
+                  Create Product
+                </span>
+              )}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

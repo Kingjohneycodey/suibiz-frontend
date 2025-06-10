@@ -81,8 +81,6 @@ export async function getSingleKioskCap(address: string, kioskId: string) {
 
   const matchedCap = kioskOwnerCaps.find((cap: any) => cap.kioskId === kioskId);
 
-  console.log("Matched kioskOwnerCap:", matchedCap);
-
   return matchedCap;
 }
 
