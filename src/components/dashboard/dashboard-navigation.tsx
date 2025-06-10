@@ -1,6 +1,6 @@
 "use client";
 import { useState } from 'react';
-import { Menu, Search, Sun, Moon, Bell, User, LogOut } from 'lucide-react';
+import { Menu, Search, Sun, Moon, Bell, User, LogOut, ArrowLeft } from 'lucide-react';
 import { useUserStore } from '../../../stores/userStore';
 import { useRouter } from 'next/navigation';
 import { User as UserType } from '../../../types/types';
