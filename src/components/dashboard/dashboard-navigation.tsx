@@ -5,7 +5,6 @@ import { useUserStore } from '../../../stores/userStore';
 import { useRouter } from 'next/navigation';
 import { User as UserType } from '../../../types/types';
 import { EnokiClient } from '@mysten/enoki';
-import { ArrowLeft } from 'lucide-react';
 import { useDisconnectWallet } from '@mysten/dapp-kit';
 import Link from 'next/link';
 
