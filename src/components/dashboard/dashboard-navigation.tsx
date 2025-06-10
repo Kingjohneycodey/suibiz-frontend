@@ -1,8 +1,12 @@
 "use client";
 import { useState } from 'react';
-import { Menu, Search, Sun, Moon, Bell, User, LogOut } from 'lucide-react';
+import { Menu, Search, Sun, Moon, Bell, User, LogOut, ArrowLeft } from 'lucide-react';
 import { useUserStore } from '../../../stores/userStore';
+import { useRouter } from 'next/navigation';
+import { User as UserType } from '../../../types/types';
+import { EnokiClient } from '@mysten/enoki';
 import { useDisconnectWallet } from '@mysten/dapp-kit';
+import Link from 'next/link';
 
 interface DashboardNavigationProps {
     darkMode: boolean;
@@ -10,6 +14,22 @@ interface DashboardNavigationProps {
     toggleSidebar: () => void;
     isCollapsed: boolean;
 }
+
+
+const BackHomeLink = () => (
+    <Link href="/" className="group inline-flex items-center gap-2 transition-colors">
+        <ArrowLeft 
+        className="h-5 w-5 text-gray-600 dark:text-gray-300 
+                    group-hover:text-gray-900 dark:group-hover:text-white 
+                    transition-colors duration-200" 
+        />
+            <span className="text-lg font-semibold text-gray-700 dark:text-gray-200
+                            group-hover:text-gray-900 dark:group-hover:text-white
+                            transition-colors duration-200">
+            Back Home
+        </span>
+    </Link>
+);
 
 export default function DashboardNavigation({
     darkMode,
@@ -43,10 +63,7 @@ export default function DashboardNavigation({
                     >
                         <Menu className="text-gray-600 dark:text-gray-300 w-6 h-6" />
                     </button>
-                    
-                    <div className="text-xl font-bold text-gray-800 dark:text-white">
-                        Dashboard
-                    </div>                    
+                    <BackHomeLink />           
                     <div className="relative hidden md:block">
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                         <input
@@ -70,13 +87,13 @@ export default function DashboardNavigation({
                         )}
                     </button>
 
-                    <button 
+                    {/* <button 
                         className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 relative"
                         aria-label="Notifications"
                     >
                         <Bell className="text-gray-600 dark:text-gray-300 w-6 h-6" />
                         <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full"></span>
-                    </button>
+                    </button> */}
 
                     <div className="relative">
                         <button
