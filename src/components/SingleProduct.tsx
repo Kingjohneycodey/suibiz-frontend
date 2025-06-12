@@ -263,9 +263,18 @@ export default function SingleProductPage() {
                   <div className="pt-4 border-t border-gray-200">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full flex items-center justify-center">
-                          <User className="w-5 h-5 text-white" />
-                        </div>
+                        <div>
+                          <Image
+                              width={10}
+                              height={10}
+                              src={product.store.photo}
+                              alt={product.store.name}
+                              className="w-10 h-10 rounded-full object-cover hover:scale-105 transition-transform duration-300"
+                              onError={(e) => {
+                                  (e.target as HTMLImageElement).src = '/placeholder-image.jpg';
+                              }}
+                          />
+                      </div>
                         <div>
                           <p className="text-xs text-gray-500">Sold by</p>
                           <p className="font-medium text-gray-900">
@@ -336,7 +345,7 @@ export default function SingleProductPage() {
                     max={product?.available_items.length || 1}
                     value={quantity}
                     onChange={e => setQuantity(Math.max(1, Math.min(Number(e.target.value), product?.available_items.length || 1)))}
-                    className="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    className="block text-gray-900 w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     disabled={isLoading}
                   />
                   <span className="absolute right-3 top-3 text-sm text-gray-500">

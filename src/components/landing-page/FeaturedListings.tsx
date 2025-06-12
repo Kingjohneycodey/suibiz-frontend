@@ -61,7 +61,7 @@ export const FeaturedListings = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {products.map((listing) => (
+          {products.slice(0, 4).map((listing) => (
             <Link href={`/marketplace/${listing.id}`} key={listing.id}>
               <Card className="hover:shadow-lg transition-shadow duration-300 cursor-pointer">
                 <div className="h-80 overflow-hidden rounded-t-lg">
