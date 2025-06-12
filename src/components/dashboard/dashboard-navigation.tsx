@@ -1,6 +1,6 @@
 "use client";
 import { useState } from 'react';
-import { Menu, Search, Sun, Moon, Bell, User, LogOut, ArrowLeft } from 'lucide-react';
+import { Menu, Search, User, LogOut, ArrowLeft } from 'lucide-react';
 import { useUserStore } from '../../../stores/userStore';
 import { useRouter } from 'next/navigation';
 import { User as UserType } from '../../../types/types';
@@ -10,8 +10,6 @@ import Link from 'next/link';
 import ThemeToggle from './Theme-Toggle';
 
 interface DashboardNavigationProps {
-    darkMode: boolean;
-    toggleDarkMode: () => void;
     toggleSidebar: () => void;
     isCollapsed: boolean;
 }
@@ -33,8 +31,6 @@ const BackHomeLink = () => (
 );
 
 export default function DashboardNavigation({
-    darkMode,
-    toggleDarkMode,
     toggleSidebar,
     isCollapsed
 }: DashboardNavigationProps) {
