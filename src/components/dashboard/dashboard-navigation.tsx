@@ -7,6 +7,7 @@ import { User as UserType } from '../../../types/types';
 import { EnokiClient } from '@mysten/enoki';
 import { useDisconnectWallet } from '@mysten/dapp-kit';
 import Link from 'next/link';
+import ThemeToggle from './Theme-Toggle';
 
 interface DashboardNavigationProps {
     darkMode: boolean;
@@ -75,17 +76,7 @@ export default function DashboardNavigation({
                 </div>
 
                 <div className="flex items-center space-x-4">
-                    <button
-                        onClick={toggleDarkMode}
-                        className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
-                        aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
-                    >
-                        {darkMode ? (
-                            <Sun className="text-gray-600 dark:text-gray-300 w-6 h-6" />
-                        ) : (
-                            <Moon className="text-gray-600 dark:text-gray-300 w-6 h-6" />
-                        )}
-                    </button>
+                    <ThemeToggle />
 
                     {/* <button 
                         className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 relative"
