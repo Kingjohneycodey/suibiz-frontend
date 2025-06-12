@@ -159,7 +159,7 @@ export default function ServicesPage() {
 
     if (!services || services.length === 0) {
         return (
-            <section className="flex items-center justify-center h-screen">
+            <section className="flex items-center justify-center h-screen bg-white">
                 <div className="text-center">
                     <h1 className="text-2xl font-bold text-gray-900">No Services Available</h1>
                     <p className="mt-2 text-gray-600">Please check back later.</p>
@@ -169,7 +169,7 @@ export default function ServicesPage() {
     }
 
     return (
-        <section className="min-h-screen flex flex-col">
+        <section className="min-h-screen flex flex-col bg-white">
             <Header />
             <div className="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
                 <div className="text-center mb-12">
@@ -186,20 +186,20 @@ export default function ServicesPage() {
                         <input
                             type="text"
                             placeholder="Search services..."
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                            className="w-full px-4 py-2 border text-gray-900 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
                     </div>
                     <div className="w-full sm:w-1/2">
                         <select
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                            className="w-full px-4 py-2 border text-gray-900 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                             value={selectedCategory}
                             onChange={(e) => setSelectedCategory(e.target.value)}
                         >
-                            <option value="All">All Categories</option>
+                            <option className='text-gray-900' value="All">All Categories</option>
                             {categories.map((category) => (
-                                <option key={category} value={category}>{category}</option>
+                                <option className='text-gray-900' key={category} value={category}>{category}</option>
                             ))}
                         </select>
                     </div>
@@ -237,7 +237,7 @@ export default function ServicesPage() {
                             ))}
                         </div>
 
-                        <div className="mt-12 flex justify-center">
+                        <div className="mt-12 flex justify-center text-gray-900">
                             <nav className="flex items-center gap-2">
                                 <button
                                     onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
