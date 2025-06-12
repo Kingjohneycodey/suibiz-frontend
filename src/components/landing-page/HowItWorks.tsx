@@ -59,7 +59,7 @@ export const HowItWorks = () => {
         </div>
         <div className="text-center mt-12">
           <Link href="/business/create">
-            <Button size="lg" variant="outline" className="text-lg px-8 py-3 border-2">
+            <Button size="lg" variant="outline" className="text-gray-900 text-lg px-8 py-3 border-2">
               Start Selling
             </Button>
           </Link>

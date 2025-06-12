@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
-import { Star, User } from "lucide-react";
+import { Star, User, Loader2 } from "lucide-react";
 import Image from "next/image";
 import {
   Dialog,
@@ -209,176 +209,210 @@ export default function SingleProductPage() {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white flex flex-col overflow-x-hidden">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
-      <main className="flex-1 container mx-auto px-4 sm:px-6 py-8 md:py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
-          {/* Product Image */}
-          <div className="flex flex-col items-center">
-            <div className="w-full aspect-square md:aspect-video rounded-lg overflow-hidden shadow-lg">
-              <Image
-                src={product.photo}
-                alt={product.name}
-                width={800}
-                height={600}
-                className="object-contain w-full h-full"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = "/placeholder-image.jpg";
-                }}
-                priority
-              />
-            </div>
-          </div>
-
-          {/* Product Details */}
-          <div className="flex flex-col space-y-6">
-            {/* Header Section */}
-            <div className="space-y-4">
-              <Badge
-                variant="default"
-                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
-              >
-                {product.category}
-              </Badge>
-              <h1 className="text-3xl font-bold text-slate-800">
-                {product.name}
-              </h1>
-            </div>
-
-            {/* Description Section */}
-            <div className="space-y-2">
-              <h3 className="text-lg font-semibold text-slate-800">
-                Description
-              </h3>
-              <p className="text-slate-700 whitespace-pre-line break-words leading-relaxed">
-                {product.description}
-              </p>
-            </div>
-            <hr />
-
-            {/* Store Info Section */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3 bg-slate-50 rounded-lg">
-                <div className="w-10 h-10 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center">
-                  <User className="w-5 h-5 text-white" />
+      
+      <main className="flex-1">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-8">
+              <div className="flex flex-col">
+                <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-gray-100">
+                  <Image
+                    src={product.photo}
+                    alt={product.name}
+                    fill
+                    className="object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = "/placeholder-image.jpg";
+                    }}
+                    priority
+                  />
+                  <div className="absolute top-4 left-4">
+                    <Badge variant="secondary" className="bg-white/90 backdrop-blur-sm text-gray-900 shadow-sm">
+                      {product.category}
+                    </Badge>
+                  </div>
+                </div>                
+              </div>
+  
+              <div className="flex flex-col space-y-6">
+                <div className="space-y-3">
+                  <h1 className="text-3xl font-bold text-gray-900 tracking-tight">
+                    {product.name}
+                  </h1>
+                  
+                  <div className="flex items-center space-x-2">
+                    <div className="flex items-center">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <Star key={star} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                      ))}
+                    </div>
+                    <span className="text-gray-500 text-sm">(0 reviews)</span>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm text-slate-500">Sold by</p>
-                  <p className="font-medium text-slate-800">
-                    {product.store.name}
-                  </p>
+  
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <h3 className="text-lg font-medium text-gray-900">Description</h3>
+                    <p className="text-gray-600 leading-relaxed">
+                      {product.description}
+                    </p>
+                  </div>
+                  
+                  <div className="pt-4 border-t border-gray-200">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full flex items-center justify-center">
+                          <User className="w-5 h-5 text-white" />
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-500">Sold by</p>
+                          <p className="font-medium text-gray-900">
+                            {product.store.name}
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <div className="text-right">
+                        <p className="text-xs text-gray-500">Available</p>
+                        <p className="font-medium text-gray-900">
+                          {product.available_items.length} items
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+  
+                <div className="pt-4 border-t border-gray-200">
+                  <div className="flex items-end justify-between mb-6">
+                    <div>
+                      <p className="text-sm text-gray-500">Price</p>
+                      <p className="text-3xl font-bold text-gray-900">
+                        {Number(product.price) / 1000000000} SUI
+                      </p>
+                    </div>
+                  </div>
+  
+                  <Button
+                    size="lg"
+                    className="w-full py-6 text-base font-medium bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white shadow-sm hover:shadow-md transition-all"
+                    onClick={() => setShowDialog(true)}
+                  >
+                    Buy Now
+                  </Button>
                 </div>
               </div>
-              <div className="flex items-center space-x-1">
-                <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
-                <span className="font-medium">5.0</span>
-                <span className="text-slate-500 text-sm">({0} reviews)</span>
-              </div>
-            </div>
-
-
-            {/* Price Section */}
-            <div className="flex items-center justify-between">
-              <span className="text-3xl font-bold text-slate-800">
-                {Number(product.price) / 1000000000} SUI
-              </span>
-
-              <div>
-                ({product.available_items.length} items)
-              </div>
-            </div>
-
-            {/* Action Section */}
-            <div className="pt-4 border-t border-slate-200">
-              <Button
-                size="lg"
-                className="w-full text-lg py-6 font-semibold bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer"
-                onClick={() => setShowDialog(true)}
-              >
-                Buy Now
-              </Button>
             </div>
           </div>
         </div>
       </main>
-
+  
       <Dialog open={showDialog} onOpenChange={() => {
         setShowSignup(false)
         setShowDialog(false)
       }}>
         {!showSignup ? (
-          <DialogContent
-            className="sm:max-w-[425px] bg-white transition-opacity duration-300"
-            style={{
-              opacity: showDialog ? 1 : 0,
-              transition: "opacity 300ms",
-              transform: showDialog ? "translateY(0)" : "translateY(-20px)"
-            }}
-          >
-            <DialogHeader>
-              <DialogTitle>Confirm your Order</DialogTitle>
-              <DialogDescription>
-                Confirm the quantity of the product that you want to purchase
+          <DialogContent className="sm:max-w-md bg-white rounded-xl">
+            <DialogHeader className="space-y-1">
+              <DialogTitle className="text-xl font-semibold text-gray-900">
+                Confirm your order
+              </DialogTitle>
+              <DialogDescription className="text-gray-600">
+                Please review your purchase details
               </DialogDescription>
             </DialogHeader>
-            <div className="space-y-4">
-              <div>
-                <label htmlFor="quantity" className="block text-sm font-medium text-slate-700 mb-1">
+            
+            <div className="space-y-6 py-4">
+              <div className="space-y-2">
+                <label htmlFor="quantity" className="block text-sm font-medium text-gray-700">
                   Quantity
                 </label>
-                <input
-                  id="quantity"
-                  type="number"
-                  min={1}
-                  max={product?.available_items.length || 1}
-                  value={quantity}
-                  onChange={e => setQuantity(Math.max(1, Math.min(Number(e.target.value), product?.available_items.length || 1)))}
-                  className="w-full border border-slate-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  disabled={isLoading}
-                />
-                <p className="text-xs text-slate-500 mt-1">
-                  Available: {product?.available_items.length}
-                </p>
+                <div className="relative">
+                  <input
+                    id="quantity"
+                    type="number"
+                    min={1}
+                    max={product?.available_items.length || 1}
+                    value={quantity}
+                    onChange={e => setQuantity(Math.max(1, Math.min(Number(e.target.value), product?.available_items.length || 1)))}
+                    className="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    disabled={isLoading}
+                  />
+                  <span className="absolute right-3 top-3 text-sm text-gray-500">
+                    Max: {product?.available_items.length}
+                  </span>
+                </div>
               </div>
+              
+              <div className="space-y-2">
+                <div className="flex justify-between text-gray-700">
+                  <span>Subtotal</span>
+                  <span className="font-medium">
+                    {(Number(product.price) / 1000000000 * quantity).toFixed(2)} SUI
+                  </span>
+                </div>
+              </div>
+              
               <Button
-                className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer mt-4"
+                className="w-full py-6 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white"
                 onClick={() => {
                   setIsLoading(true);
                   handleCreateOrder();
                 }}
                 disabled={isLoading || quantity < 1 || quantity > (product?.available_items.length || 0)}
               >
-                {isLoading ? "Processing..." : "Confirm Purchase"}
+                {isLoading ? (
+                  <div className="flex items-center justify-center space-x-2">
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Processing...</span>
+                  </div>
+                ) : (
+                  "Confirm Purchase"
+                )}
               </Button>
             </div>
           </DialogContent>
         ) : (
-          <DialogContent
-            className="sm:max-w-[425px] bg-white transition-opacity duration-300"
-            style={{
-              opacity: showDialog ? 1 : 0,
-              transition: "opacity 300ms",
-              transform: showDialog ? "translateY(0)" : "translateY(-20px)"
-            }}
-          >
-            <DialogHeader>
-              <DialogTitle>You need to signup first !</DialogTitle>
-              <DialogDescription className="mt-4">
-                You need to create your account first before making a purchase!
+          <DialogContent className="sm:max-w-md bg-white rounded-xl">
+            <DialogHeader className="space-y-1">
+              <DialogTitle className="text-xl font-semibold text-gray-900">
+                Account Required
+              </DialogTitle>
+              <DialogDescription className="text-gray-600">
+                You need an account to complete your purchase
               </DialogDescription>
             </DialogHeader>
-            <div className="space-y-4 mt-2">
-              <Link href="/register" >
-                <Button
-                  className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer mt-8"
-                >
-                  Create Account
-                </Button></Link>
+            
+            <div className="space-y-4 py-4">
+              <p className="text-gray-600">
+                Create an account to save your purchase history and preferences.
+              </p>
+              
+              <div className="space-y-3">
+                <Link href="/register" className="block">
+                  <Button className="w-full py-6 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white">
+                    Create Account
+                  </Button>
+                </Link>
+                
+                <div className="relative flex items-center py-4">
+                  <div className="flex-grow border-t border-gray-300"></div>
+                  <span className="flex-shrink mx-4 text-gray-500 text-sm">or</span>
+                  <div className="flex-grow border-t border-gray-300"></div>
+                </div>
+                
+                <Link href="/login" className="block">
+                  <Button variant="outline" className="w-full py-6 border-gray-300 text-gray-700 hover:bg-gray-50">
+                    Sign In to Existing Account
+                  </Button>
+                </Link>
+              </div>
             </div>
           </DialogContent>
         )}
-
       </Dialog>
+      
       <Footer />
     </div>
   );

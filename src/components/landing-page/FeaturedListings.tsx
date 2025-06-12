@@ -64,7 +64,7 @@ export const FeaturedListings = () => {
           {products.map((listing) => (
             <Link href={`/marketplace/${listing.id}`} key={listing.id}>
               <Card className="hover:shadow-lg transition-shadow duration-300 cursor-pointer">
-                <div className="aspect-video overflow-hidden rounded-t-lg">
+                <div className="h-80 overflow-hidden rounded-t-lg">
                   <Image
                     width={300}
                     height={200}
@@ -93,14 +93,14 @@ export const FeaturedListings = () => {
                       <span className="text-xs text-slate-500">({0})</span>
                     </div>
                   </div>
-                 <div className="flex items-center justify-between">
-                   <CardTitle className="text-lg leading-tight py-2">{listing.name}</CardTitle>
+                  <div className="flex text-gray-900 items-center justify-between">
+                    <CardTitle className="text-lg leading-tight py-2">{listing.name}</CardTitle>
 
-                   <div>
-                    ({listing.available_items.length} items)
-                   </div>
+                    <div>
+                      ({listing.available_items.length} items)
+                    </div>
 
-                 </div>
+                  </div>
                 </CardHeader>
                 <CardContent className="px-3">
                   <div className="flex items-center justify-between">
