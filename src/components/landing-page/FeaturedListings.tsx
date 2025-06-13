@@ -42,9 +42,19 @@ export const FeaturedListings = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="loader">Loading...</div>
-      </div>
+      <>
+        <div className="text-center mb-12 py-20 px-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">
+            Featured Services & Products
+          </h2>
+          <p className="text-slate-600 max-w-2xl mx-auto">
+            Discover top-rated services and products from our verified community of professionals
+          </p>
+        </div>
+        <div className="flex items-center justify-center h-64">
+          <div className="loader text-black">Loading...</div>
+        </div>
+      </>
     );
   }
 

@@ -494,7 +494,7 @@ const OrdersManagement = () => {
 
                 <Dialog open={showDialog} onOpenChange={setShowDialog}>
                     <DialogContent
-                        className="sm:max-w-[425px] w-[85%] rounded-xl bg-white transition-opacity duration-300"
+                        className="sm:max-w-[425px] w-[85%] rounded-xl text-black bg-white transition-opacity duration-300"
                         style={{
                             opacity: showDialog ? 1 : 0,
                             transition: "opacity 300ms",
@@ -502,8 +502,8 @@ const OrdersManagement = () => {
                         }}
                     >
                         <DialogHeader>
-                            <DialogTitle>Confirm your Order</DialogTitle>
-                            <DialogDescription>
+                            <DialogTitle className='text-black'>Confirm your Order</DialogTitle>
+                            <DialogDescription className='text-black'>
                                 Are you sure you want to confirm this order as completed?
                             </DialogDescription>
                         </DialogHeader>

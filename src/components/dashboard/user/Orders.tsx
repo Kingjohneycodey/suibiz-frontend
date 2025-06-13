@@ -476,7 +476,7 @@ const OrdersDashboard = () => {
 
                 <Dialog open={showDialog} onOpenChange={setShowDialog}>
                     <DialogContent
-                        className="sm:max-w-[425px] bg-white transition-opacity duration-300"
+                        className="sm:max-w-[425px] bg-white text-black transition-opacity duration-300"
                         style={{
                             opacity: showDialog ? 1 : 0,
                             transition: "opacity 300ms",

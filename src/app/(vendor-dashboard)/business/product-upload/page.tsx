@@ -38,7 +38,7 @@ export default function UploadProductDashboard() {
   console.log(userStore)
 
   return (
-    <Suspense fallback={<div className="dark:bg-gray-900" >Loading...</div>}>
+    <Suspense fallback={<div className="dark:bg-gray-900 text-black" >Loading...</div>}>
       {isLoading ? (
         <div className="dark:bg-gray-900 h-screen dark:text-white">Loading...</div>
       ) : userHasStore ? (

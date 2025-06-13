@@ -1,6 +1,6 @@
 export default function CallbackAuth() {
     return (
-        <div>
+        <div className="text-black">
             Loading...
         </div>
     )
