@@ -30,7 +30,7 @@ export default function VendorDashboardLayout({ children }: { children: React.Re
                 icon: <Upload className="w-5 h-5"/>,
                 label: 'Upload Product',
             },
-             {
+            {
                 href: '/business/orders',
                 icon: <CalendarArrowUp className="w-5 h-5"/>,
                 label: 'Orders',
@@ -50,7 +50,6 @@ export default function VendorDashboardLayout({ children }: { children: React.Re
                 icon: <BookUp className="w-5 h-5"/>,
                 label: 'Bookings',
             },
-           
         ]
     }
 

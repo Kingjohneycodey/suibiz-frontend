@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import EnokiWrapper from "@/components/EnokiWrapper";
 import { Toaster } from "react-hot-toast";
+import NextThemeClientProvider from "./next-theme-client";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,8 +31,10 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         
       >
-          <EnokiWrapper>
-          {children}
+        <EnokiWrapper>
+          <NextThemeClientProvider>
+            {children}
+          </NextThemeClientProvider>
         </EnokiWrapper>
         <Toaster/>
       </body>

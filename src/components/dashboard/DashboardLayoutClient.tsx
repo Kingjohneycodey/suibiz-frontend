@@ -46,10 +46,7 @@ export default function DashboardLayoutClient({
 
   return (
     <div className={`flex flex-col h-screen ${darkMode ? 'dark' : ''}`}>
-      {/* Add the DashboardNavigation component here */}
-      <DashboardNavigation 
-        darkMode={darkMode}
-        toggleDarkMode={toggleDarkMode}
+      <DashboardNavigation
         toggleSidebar={toggleSidebar}
         isCollapsed={sidebarState.isCollapsed}
       />

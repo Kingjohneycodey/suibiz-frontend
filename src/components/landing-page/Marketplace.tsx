@@ -107,7 +107,7 @@ export const MarketPlace = () => {
                             <select
                                 value={sortOption}
                                 onChange={(e) => setSortOption(e.target.value)}
-                                className="appearance-none bg-white border border-gray-300 rounded-lg pl-4 pr-10 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                className="appearance-none text-gray-900 bg-white border border-gray-300 rounded-lg pl-4 pr-10 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                             >
                                 <option value="featured">Featured</option>
                                 <option value="price-low">Price: Low to High</option>
@@ -145,7 +145,7 @@ export const MarketPlace = () => {
                         {filteredListings.map((listing) => (
                             <Link href={`/marketplace/${listing.id}`} key={listing.id}>
                                 <Card className="hover:shadow-lg transition-shadow duration-300 cursor-pointer">
-                                    <div className="aspect-video overflow-hidden rounded-t-lg">
+                                    <div className="h-80 overflow-hidden rounded-t-lg">
                                         <Image
                                             width={300}
                                             height={200}
@@ -174,14 +174,14 @@ export const MarketPlace = () => {
                                                 <span className="text-xs text-slate-500">({0})</span>
                                             </div>
                                         </div>
-                                 <div className="flex items-center justify-between">
-                   <CardTitle className="text-lg leading-tight py-2">{listing.name}</CardTitle>
+                                <div className="flex items-center justify-between">
+                    <CardTitle className="text-lg leading-tight py-2 text-gray-900">{listing.name}</CardTitle>
 
-                   <div>
-                    ({listing.available_items.length} items)
-                   </div>
+                    <div>
+                        ({listing.available_items.length} items)
+                    </div>
 
-                 </div>
+                </div>
                                     </CardHeader>
                                     <CardContent className="px-3">
                                         <div className="flex items-center justify-between">

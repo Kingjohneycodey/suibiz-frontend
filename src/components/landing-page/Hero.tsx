@@ -35,7 +35,7 @@ export const Hero = () => {
                 <Button
                   size="lg"
                   variant="outline"
-                  className="text-lg px-8 py-3 border-2"
+                  className="text-lg px-8 py-3 border-2 text-gray-900"
                 >
                   Start Selling
                 </Button>
@@ -45,7 +45,7 @@ export const Hero = () => {
                 <Button
                   size="lg"
                   variant="outline"
-                  className="text-lg px-8 py-3 border-2"
+                  className="text-lg px-8 py-3 border-2 text-gray-900"
                 >
                   Start Selling
                 </Button>
