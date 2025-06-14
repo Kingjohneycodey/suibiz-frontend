@@ -151,28 +151,28 @@ export default function ServiceDetailsPage() {
                                         <Calendar className="w-5 h-5 text-indigo-600 mr-3" />
                                         <div>
                                             <p className="text-sm text-gray-500">Availability</p>
-                                            <p className="font-medium">{service.availability}</p>
+                                            <p className="font-medium text-black">{service.availability}</p>
                                         </div>
                                     </div>
                                     <div className="flex items-center">
                                         <Clock className="w-5 h-5 text-indigo-600 mr-3" />
                                         <div>
                                             <p className="text-sm text-gray-500">Delivery Time</p>
-                                            <p className="font-medium">{service.deliveryTime}</p>
+                                            <p className="font-medium text-black">{service.deliveryTime}</p>
                                         </div>
                                     </div>
                                     <div className="flex items-center">
                                         <MapPin className="w-5 h-5 text-indigo-600 mr-3" />
                                         <div>
                                             <p className="text-sm text-gray-500">Location</p>
-                                            <p className="font-medium">{service.location}</p>
+                                            <p className="font-medium text-black">{service.location}</p>
                                         </div>
                                     </div>
                                     <div className="flex items-center">
                                         <CheckCircle className="w-5 h-5 text-indigo-600 mr-3" />
                                         <div>
                                             <p className="text-sm text-gray-500">Experience</p>
-                                            <p className="font-medium">{service.experience}</p>
+                                            <p className="font-medium text-black">{service.experience}</p>
                                         </div>
                                     </div>
                                 </div>
