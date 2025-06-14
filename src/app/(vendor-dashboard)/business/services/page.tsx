@@ -23,7 +23,7 @@ const dummyServices: Service[] = [
         description: 'Professional haircut with styling and finishing touches by our top stylists',
         price: 45,
         imageUrl: 'https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=128&h=128&q=80',
-        createdAt: '2023-07-15T10:30:00Z'
+        createdAt: '2025-07-15T10:30:00Z'
     },
     {
         id: '2',
@@ -31,7 +31,7 @@ const dummyServices: Service[] = [
         description: 'Precision beard trimming and shaping with hot towel treatment',
         price: 25,
         imageUrl: 'https://images.unsplash.com/photo-1605497788044-5a32c7078486?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=128&h=128&q=80',
-        createdAt: '2023-08-02T14:15:00Z'
+        createdAt: '2025-08-02T14:15:00Z'
     },
     {
         id: '3',
@@ -39,7 +39,7 @@ const dummyServices: Service[] = [
         description: 'Full hair coloring service with premium products and conditioning treatment',
         price: 85,
         imageUrl: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=128&h=128&q=80',
-        createdAt: '2023-08-10T09:45:00Z'
+        createdAt: '2025-08-10T09:45:00Z'
     },
     {
         id: '4',
@@ -47,7 +47,7 @@ const dummyServices: Service[] = [
         description: 'Special haircut for children with fun styling options',
         price: 30,
         imageUrl: 'https://images.unsplash.com/photo-1605497788044-5a32c7078486?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=128&h=128&q=80',
-        createdAt: '2023-08-18T11:20:00Z'
+        createdAt: '2025-08-18T11:20:00Z'
     },
     {
         id: '5',
@@ -55,7 +55,7 @@ const dummyServices: Service[] = [
         description: 'Relaxing scalp massage with essential oils to promote hair health',
         price: 35,
         imageUrl: 'https://images.unsplash.com/photo-1519699047748-de8e457a634e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=128&h=128&q=80',
-        createdAt: '2023-08-22T16:00:00Z'
+        createdAt: '2025-08-22T16:00:00Z'
     }
 ];
 

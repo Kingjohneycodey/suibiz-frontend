@@ -46,7 +46,7 @@ const dummyServiceSessions: ServiceSession[] = [
         price: 65,
         serviceId: '1',
         imageUrl: 'https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=128&h=128&q=80',
-        createdAt: '2023-07-15T10:30:00Z'
+        createdAt: '2025-06-15T10:30:00Z'
     },
     {
         id: '2',
@@ -56,7 +56,7 @@ const dummyServiceSessions: ServiceSession[] = [
         price: 120,
         serviceId: '3',
         imageUrl: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=128&h=128&q=80',
-        createdAt: '2023-08-10T09:45:00Z'
+        createdAt: '2025-06-10T09:45:00Z'
     }
 ];
 

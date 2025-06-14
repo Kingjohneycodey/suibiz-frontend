@@ -128,36 +128,36 @@ const BookingsDashboard = () => {
             {
                 id: 'bk-78945',
                 service: sampleServices[0],
-                date: '2023-06-15',
+                date: '2025-06-15',
                 time: '14:00',
                 status: 'confirmed',
                 notes: 'Please arrive 10 minutes early for consultation',
-                createdAt: '2023-06-01T10:30:00Z'
+                createdAt: '2025-06-01T10:30:00Z'
             },
             {
                 id: 'bk-78123',
                 service: sampleServices[1],
-                date: '2023-06-10',
+                date: '2025-06-10',
                 time: '09:30',
                 status: 'completed',
-                createdAt: '2023-05-28T15:45:00Z'
+                createdAt: '2025-05-28T15:45:00Z'
             },
             {
                 id: 'bk-77654',
                 service: sampleServices[2],
-                date: '2023-06-05',
+                date: '2025-06-05',
                 time: '16:15',
                 status: 'pending',
                 notes: 'Allergy to lavender oil',
-                createdAt: '2023-06-02T08:15:00Z'
+                createdAt: '2025-06-02T08:15:00Z'
             },
             {
                 id: 'bk-77231',
                 service: sampleServices[3],
-                date: '2023-05-28',
+                date: '2025-05-28',
                 time: '11:00',
                 status: 'cancelled',
-                createdAt: '2023-05-20T12:00:00Z'
+                createdAt: '2025-05-20T12:00:00Z'
             }
         ];
         

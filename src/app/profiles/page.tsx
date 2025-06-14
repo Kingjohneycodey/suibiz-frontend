@@ -19,7 +19,7 @@ export default function ProfileDisplay() {
             profileImage: '/services/profile/1.jpg',
             itemsCount: 5,
             totalVolume: 1000,
-            createdAt: '2023-10-15'
+            createdAt: '2025-06-15'
         },
         {
             id: 2,
@@ -28,7 +28,7 @@ export default function ProfileDisplay() {
             profileImage: '/services/profile/1.jpg',
             itemsCount: 3,
             totalVolume: 500,
-            createdAt: '2023-11-20'
+            createdAt: '2025-06-20'
         },
         {
             id: 3,
@@ -37,7 +37,7 @@ export default function ProfileDisplay() {
             profileImage: '/services/profile/1.jpg',
             itemsCount: 8,
             totalVolume: 2000,
-            createdAt: '2023-09-05'
+            createdAt: '2025-06-05'
         },
         {
             id: 4,
@@ -46,7 +46,7 @@ export default function ProfileDisplay() {
             profileImage: '/services/profile/1.jpg',
             itemsCount: 12,
             totalVolume: 3500,
-            createdAt: '2023-12-10'
+            createdAt: '2025-06-10'
         },
         {
             id: 5,
@@ -55,7 +55,7 @@ export default function ProfileDisplay() {
             profileImage: '/services/profile/1.jpg',
             itemsCount: 6,
             totalVolume: 1800,
-            createdAt: '2023-08-22'
+            createdAt: '2025-06-12'
         },
         {
             id: 6,
@@ -64,7 +64,7 @@ export default function ProfileDisplay() {
             profileImage: '/services/profile/1.jpg',
             itemsCount: 9,
             totalVolume: 2700,
-            createdAt: '2023-11-30'
+            createdAt: '2025-06-15'
         },
     ];
 
