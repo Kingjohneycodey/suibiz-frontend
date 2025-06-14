@@ -4,6 +4,7 @@ import { FeaturedListings } from "./FeaturedListings";
 import { HowItWorks } from "./HowItWorks";
 import { Stats } from "./Stats";
 import { Footer } from "./Footer";
+import ChatBot from "../ai/ai-bot";
 
 export default function LandingPage() {
     return (
@@ -14,6 +15,7 @@ export default function LandingPage() {
             <FeaturedListings />
             <HowItWorks />
             <Footer />
+            <ChatBot/>
         </div>
     )
 }
