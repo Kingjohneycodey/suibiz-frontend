@@ -1,19 +1,36 @@
 "use client";
 import { useState } from 'react';
-import { Menu, Search, Sun, Moon, Bell, User, LogOut } from 'lucide-react';
+import { Menu, Search, User, LogOut, ArrowLeft, Link2Icon } from 'lucide-react';
 import { useUserStore } from '../../../stores/userStore';
+import { useRouter } from 'next/navigation';
+import { User as UserType } from '../../../types/types';
+import { EnokiClient } from '@mysten/enoki';
 import { useDisconnectWallet } from '@mysten/dapp-kit';
+import Link from 'next/link';
+import ThemeToggle from './Theme-Toggle';
 
 interface DashboardNavigationProps {
-    darkMode: boolean;
-    toggleDarkMode: () => void;
     toggleSidebar: () => void;
     isCollapsed: boolean;
 }
 
+
+const BackHomeLink = () => (
+    <Link href="/" className="group inline-flex items-center gap-2 transition-colors">
+        <ArrowLeft 
+        className="h-5 w-5 text-gray-600 dark:text-gray-300 
+                    group-hover:text-gray-900 dark:group-hover:text-white 
+                    transition-colors duration-200" 
+        />
+            <span className="text-lg hidden md:inline-block font-semibold text-gray-700 dark:text-gray-200
+                            group-hover:text-gray-900 dark:group-hover:text-white
+                            transition-colors duration-200">
+            Back Home
+        </span>
+    </Link>
+);
+
 export default function DashboardNavigation({
-    darkMode,
-    toggleDarkMode,
     toggleSidebar,
     isCollapsed
 }: DashboardNavigationProps) {
@@ -43,10 +60,7 @@ export default function DashboardNavigation({
                     >
                         <Menu className="text-gray-600 dark:text-gray-300 w-6 h-6" />
                     </button>
-                    
-                    <div className="text-xl font-bold text-gray-800 dark:text-white">
-                        Dashboard
-                    </div>                    
+                    <BackHomeLink />           
                     <div className="relative hidden md:block">
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                         <input
@@ -58,25 +72,15 @@ export default function DashboardNavigation({
                 </div>
 
                 <div className="flex items-center space-x-4">
-                    <button
-                        onClick={toggleDarkMode}
-                        className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
-                        aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
-                    >
-                        {darkMode ? (
-                            <Sun className="text-gray-600 dark:text-gray-300 w-6 h-6" />
-                        ) : (
-                            <Moon className="text-gray-600 dark:text-gray-300 w-6 h-6" />
-                        )}
-                    </button>
+                    <ThemeToggle />
 
-                    <button 
+                    {/* <button 
                         className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 relative"
                         aria-label="Notifications"
                     >
                         <Bell className="text-gray-600 dark:text-gray-300 w-6 h-6" />
                         <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full"></span>
-                    </button>
+                    </button> */}
 
                     <div className="relative">
                         <button
@@ -96,6 +100,15 @@ export default function DashboardNavigation({
 
                         {showProfileDropdown && (
                             <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-10">
+                                <Link href="/business/profile">
+                                    <div
+                                        className="flex items-center px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                                        onClick={() => setShowProfileDropdown(false)}
+                                    >
+                                        <User className="mr-3 w-5 h-5" />
+                                        Profile
+                                    </div>
+                                </Link>
                                 <button
                                     onClick={handleSignOut}
                                     className="flex items-center w-full px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"

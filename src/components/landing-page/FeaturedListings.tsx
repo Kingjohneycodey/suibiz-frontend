@@ -42,9 +42,19 @@ export const FeaturedListings = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="loader">Loading...</div>
-      </div>
+      <>
+        <div className="text-center mb-12 py-20 px-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">
+            Featured Services & Products
+          </h2>
+          <p className="text-slate-600 max-w-2xl mx-auto">
+            Discover top-rated services and products from our verified community of professionals
+          </p>
+        </div>
+        <div className="flex items-center justify-center h-64">
+          <div className="loader text-black">Loading...</div>
+        </div>
+      </>
     );
   }
 
@@ -61,10 +71,10 @@ export const FeaturedListings = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {products.map((listing) => (
+          {products.slice(0, 4).map((listing) => (
             <Link href={`/marketplace/${listing.id}`} key={listing.id}>
               <Card className="hover:shadow-lg transition-shadow duration-300 cursor-pointer">
-                <div className="aspect-video overflow-hidden rounded-t-lg">
+                <div className="h-80 overflow-hidden rounded-t-lg">
                   <Image
                     width={300}
                     height={200}
@@ -93,14 +103,14 @@ export const FeaturedListings = () => {
                       <span className="text-xs text-slate-500">({0})</span>
                     </div>
                   </div>
-                 <div className="flex items-center justify-between">
-                   <CardTitle className="text-lg leading-tight py-2">{listing.name}</CardTitle>
+                  <div className="flex text-gray-900 items-center justify-between">
+                    <CardTitle className="text-lg leading-tight py-2">{listing.name}</CardTitle>
 
-                   <div>
-                    ({listing.available_items.length} items)
-                   </div>
+                    <div>
+                      ({listing.available_items.length} items)
+                    </div>
 
-                 </div>
+                  </div>
                 </CardHeader>
                 <CardContent className="px-3">
                   <div className="flex items-center justify-between">

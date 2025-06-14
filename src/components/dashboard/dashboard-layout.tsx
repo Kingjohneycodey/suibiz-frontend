@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect } from 'react';
 import { useMobileDetection } from '../../../hooks/useMobileDetection';
-import { useDarkMode } from '../../../hooks/useDarkMode';
 import DashboardNavigation from './dashboard-navigation';
 import { useHasMounted } from '../../../hooks/useHasMounted';
 
@@ -14,10 +13,8 @@ export default function DashboardLayout({
     const hasMounted = useHasMounted()
 
     const [isCollapsed, setIsCollapsed] = useState(false);
-    const { darkMode, toggleDarkMode } = useDarkMode();
     const { isMobile } = useMobileDetection();
 
-    console.log(darkMode)
 
     useEffect(() => {
         if (isMobile) {
@@ -32,10 +29,8 @@ export default function DashboardLayout({
     if (!hasMounted) return null
 
     return (
-        <div className={`flex flex-col h-screen ${darkMode ? 'dark' : ''}`}>
+        <div className={`flex flex-col h-screen}`}>
             <DashboardNavigation 
-                darkMode={darkMode}
-                toggleDarkMode={toggleDarkMode}
                 toggleSidebar={toggleSidebar}
                 isCollapsed={isCollapsed}
             />

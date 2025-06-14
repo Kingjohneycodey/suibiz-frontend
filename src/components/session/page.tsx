@@ -48,15 +48,15 @@ export default function SessionProvider({
         }
 
     if (
-  compulsoryRoutes.some((route) => 
-    pathname === route || pathname.startsWith(`${route}/`)
-  )
+      compulsoryRoutes.some((route) => 
+        pathname === route || pathname.startsWith(`${route}/`)
+      )
 ) {
   setShouldCheck2(true);
 }
 
 
-      }, 3000); // 3 seconds delay
+      }, 3000);
 
       return () => clearTimeout(timeout);
     }
@@ -86,7 +86,7 @@ export default function SessionProvider({
 
       {shouldCheck && loggedIn && !currentWallet && (
         <Dialog open={showConnectDialog} onOpenChange={setShowConnectDialog}>
-          <DialogContent className="sm:max-w-[425px] bg-white">
+          <DialogContent className="sm:max-w-[425px] bg-white text-black">
             <DialogHeader>
               <DialogTitle>Connect Wallet</DialogTitle>
               <DialogDescription>
@@ -107,7 +107,7 @@ export default function SessionProvider({
 
       {shouldCheck2 && !currentWallet && (
         <Dialog open={showConnectDialog} onOpenChange={setShowConnectDialog}>
-          <DialogContent className="sm:max-w-[425px] bg-white">
+          <DialogContent className="sm:max-w-[425px] bg-white text-black">
             <DialogHeader>
               <DialogTitle>Connect Wallet</DialogTitle>
               <DialogDescription>
