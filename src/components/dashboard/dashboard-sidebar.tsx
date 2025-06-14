@@ -64,7 +64,7 @@ export default function DashboardSidebar({
                         </div>
                     )}
 
-                    <nav className="flex-1 mt-10">
+                    <nav className="flex-1">
                         <ul className="space-y-2">
                             {navItems.map((item) => (                    
                                 <li key={item.href}>

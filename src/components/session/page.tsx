@@ -48,15 +48,15 @@ export default function SessionProvider({
         }
 
     if (
-  compulsoryRoutes.some((route) => 
-    pathname === route || pathname.startsWith(`${route}/`)
-  )
+      compulsoryRoutes.some((route) => 
+        pathname === route || pathname.startsWith(`${route}/`)
+      )
 ) {
   setShouldCheck2(true);
 }
 
 
-      }, 3000); // 3 seconds delay
+      }, 3000);
 
       return () => clearTimeout(timeout);
     }

@@ -1,6 +1,6 @@
 "use client";
 import { useState } from 'react';
-import { Menu, Search, User, LogOut, ArrowLeft } from 'lucide-react';
+import { Menu, Search, User, LogOut, ArrowLeft, Link2Icon } from 'lucide-react';
 import { useUserStore } from '../../../stores/userStore';
 import { useRouter } from 'next/navigation';
 import { User as UserType } from '../../../types/types';
@@ -22,7 +22,7 @@ const BackHomeLink = () => (
                     group-hover:text-gray-900 dark:group-hover:text-white 
                     transition-colors duration-200" 
         />
-            <span className="text-lg font-semibold text-gray-700 dark:text-gray-200
+            <span className="text-lg hidden md:inline-block font-semibold text-gray-700 dark:text-gray-200
                             group-hover:text-gray-900 dark:group-hover:text-white
                             transition-colors duration-200">
             Back Home
@@ -100,6 +100,15 @@ export default function DashboardNavigation({
 
                         {showProfileDropdown && (
                             <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-10">
+                                <Link href="/business/profile">
+                                    <div
+                                        className="flex items-center px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                                        onClick={() => setShowProfileDropdown(false)}
+                                    >
+                                        <User className="mr-3 w-5 h-5" />
+                                        Profile
+                                    </div>
+                                </Link>
                                 <button
                                     onClick={handleSignOut}
                                     className="flex items-center w-full px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
