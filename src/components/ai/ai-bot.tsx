@@ -155,6 +155,7 @@ const ChatBot: React.FC = () => {
                             onChange={(e) => setInput(e.target.value)}
                             onKeyDown={handleKeyDown}
                             placeholder="Type your message..."
+                            className="text-black"
                             style={{
                                 flex: 1,
                                 padding: "8px 12px",
