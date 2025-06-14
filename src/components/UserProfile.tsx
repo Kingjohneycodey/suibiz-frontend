@@ -6,7 +6,7 @@ export function UserProfile() {
     const { user, loading } = useSession();
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <div className='text-black'>Loading...</div>;
     }
 
     if (!user) {

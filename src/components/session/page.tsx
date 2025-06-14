@@ -86,7 +86,7 @@ export default function SessionProvider({
 
       {shouldCheck && loggedIn && !currentWallet && (
         <Dialog open={showConnectDialog} onOpenChange={setShowConnectDialog}>
-          <DialogContent className="sm:max-w-[425px] bg-white">
+          <DialogContent className="sm:max-w-[425px] bg-white text-black">
             <DialogHeader>
               <DialogTitle>Connect Wallet</DialogTitle>
               <DialogDescription>
@@ -107,7 +107,7 @@ export default function SessionProvider({
 
       {shouldCheck2 && !currentWallet && (
         <Dialog open={showConnectDialog} onOpenChange={setShowConnectDialog}>
-          <DialogContent className="sm:max-w-[425px] bg-white">
+          <DialogContent className="sm:max-w-[425px] bg-white text-black">
             <DialogHeader>
               <DialogTitle>Connect Wallet</DialogTitle>
               <DialogDescription>

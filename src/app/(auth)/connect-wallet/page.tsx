@@ -1,6 +1,6 @@
 export default function ConnectWalletPage() {
     return (
-        <div>
+        <div className="text-black">
             Connect Wallet Page
         </div>
     )
