@@ -2,12 +2,14 @@
 
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { Search, Menu, X, Wallet } from "lucide-react";
+import { Search, Menu, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { ConnectButton, useCurrentAccount } from "@mysten/dapp-kit";
 import Link from "next/link";
 import Image from "next/image";
+import { Product } from "./Marketplace";
 import { useUserStore } from "../../../stores/userStore";
+import { fetchProducts } from "@/services/products";
 
 interface User {
   id: string;
@@ -19,28 +21,60 @@ interface User {
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [showSearchResults, setShowSearchResults] = useState(false);
   const router = useRouter();
+  const [products, setProducts] = useState<Product[]>([]);
   const { user } = useUserStore();
   const [loading, setLoading] = useState(false);
   const account = useCurrentAccount();
 
   const handleSignout = async () => {
+    // Your signout logic
   };
 
-  console.log(user)
+  useEffect(() => {
+    const fetchAllProducts = async () => {
+      setLoading(true);
+      try {
+        const stores = await fetchProducts();
+        setProducts(stores.products as any);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
+    fetchAllProducts();
+  }, []);
 
+  const filteredProducts = products.filter((product) =>
+    product.name?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
+      setShowSearchResults(false);
     }
   };
 
-  const clearSearch = () => setSearchQuery("");
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+    setShowSearchResults(value.length > 0);
+  };
 
-  console.log(account?.address)
+  const clearSearch = () => {
+    setSearchQuery("");
+    setShowSearchResults(false);
+  };
+
+  const handleResultClick = () => {
+    setShowSearchResults(false);
+    setSearchQuery("");
+  };
 
   if (loading) {
     return (
@@ -101,9 +135,11 @@ export const Header = () => {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
               <input
                 type="text"
-                placeholder="Search..."
+                placeholder="Search products..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={handleInputChange}
+                onFocus={() => searchQuery.length > 0 && setShowSearchResults(true)}
+                onBlur={() => setTimeout(() => setShowSearchResults(false), 200)}
                 className="pl-9 pr-8 py-2 text-gray-900 text-sm rounded-lg border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent w-full shadow-sm"
               />
               {searchQuery && (
@@ -115,66 +151,57 @@ export const Header = () => {
                   <X className="h-4 w-4" />
                 </button>
               )}
+              
+              {/* Search Results Dropdown */}
+              {showSearchResults && filteredProducts.length > 0 && (
+                <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-slate-200 rounded-lg shadow-lg z-50 max-h-96 overflow-y-auto">
+                  {filteredProducts.map((product) => (
+                    <Link
+                      href={`/marketplace/${product.id}`}
+                      key={product.id}
+                      onClick={handleResultClick}
+                      className="block px-4 py-3 hover:bg-slate-50 transition-colors border-b border-slate-100 last:border-b-0"
+                    >
+                      <div className="font-medium text-slate-800">{product.name}</div>
+                    </Link>
+                  ))}
+                </div>
+              )}
             </form>
 
-            {/* {user ? (
-              <div className="flex items-center space-x-3">
-                <ConnectButton 
-                  className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium rounded-lg shadow-sm"
-                />
-                <Button
-                  onClick={handleSignout}
-                  variant="ghost"
-                  className="text-[#010725] hover:bg-slate-100 font-medium rounded-lg"
-                >
-                  Sign out
-                </Button>
-              </div>
-            ) : (
-              <Button 
-                onClick={handleSignIn} 
-                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium rounded-lg shadow-sm px-4"
-              >
-                Sign in
-              </Button>
-            )} */}
-
-        <div>
-          {user?.role ? (
             <div>
-              {/* <p>{user.username}</p> */}
-
-              {user.role === "business" ? (
-                <Link href="/business">
-                  <Button
-                    size="lg"
-                    className="text-white bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-lg px-8 py-3"
-                  >
-                    Dashboard
+              {user?.role ? (
+                <div>
+                  {user.role === "business" ? (
+                    <Link href="/business">
+                      <Button
+                        size="lg"
+                        className="text-white bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-lg px-8 py-3"
+                      >
+                        Dashboard
+                      </Button>
+                    </Link>
+                  ) : user.role === "user" ? (
+                    <Link href="/user">
+                      <Button
+                        size="lg"
+                        className="text-white bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-lg px-8 py-3"
+                      >
+                        Dashboard
+                      </Button>
+                    </Link>
+                  ) : null}
+                </div>
+              ) : account !== null ? (
+                <Link href="/register">
+                  <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium rounded-lg shadow-sm px-4">
+                    Sign Up
                   </Button>
                 </Link>
-              ) : user.role === "user" ? (
-                <Link href="/user">
-                  <Button
-                    size="lg"
-                    className="text-white bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-lg px-8 py-3"
-                  >
-                    Dashboard
-                  </Button>
-                </Link>
-              ) : null}
+              ) : (
+                <ConnectButton className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 !text-white font-medium rounded-lg shadow-sm" />
+              )}
             </div>
-          ) : account !== null ? (
-            <Link href="/register">
-              <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium rounded-lg shadow-sm px-4">
-                Sign Up
-              </Button>
-            </Link>
-          ) : (
-            <ConnectButton className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 !text-white font-medium rounded-lg shadow-sm" />
-          )}
-        </div>
-
           </div>
 
           {/* Mobile Menu Button */}
@@ -202,10 +229,12 @@ export const Header = () => {
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                 <input
                   type="text"
-                  placeholder="Search..."
+                  placeholder="Search products..."
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-9 pr-8 py-2 text-sm rounded-lg border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent w-full shadow-sm"
+                  onChange={handleInputChange}
+                  onFocus={() => searchQuery.length > 0 && setShowSearchResults(true)}
+                  onBlur={() => setTimeout(() => setShowSearchResults(false), 200)}
+                  className="pl-9 pr-8 py-2 text-sm rounded-lg border border-slate-200 text-black bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent w-full shadow-sm"
                 />
                 {searchQuery && (
                   <button
@@ -215,6 +244,25 @@ export const Header = () => {
                   >
                     <X className="h-4 w-4" />
                   </button>
+                )}
+                
+                {/* Mobile Search Results */}
+                {showSearchResults && filteredProducts.length > 0 && (
+                  <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-slate-200 rounded-lg shadow-lg z-50 max-h-96 overflow-y-auto">
+                    {filteredProducts.map((product) => (
+                      <Link
+                        href={`/marketplace/${product.id}`}
+                        key={product.id}
+                        onClick={() => {
+                          handleResultClick();
+                          setIsMenuOpen(false);
+                        }}
+                        className="block px-4 py-3 hover:bg-slate-50 transition-colors border-b border-slate-100 last:border-b-0"
+                      >
+                        <div className="font-medium text-slate-800">{product.name}</div>
+                      </Link>
+                    ))}
+                  </div>
                 )}
               </form>
 
@@ -250,67 +298,34 @@ export const Header = () => {
               </nav>
 
               <div className="pt-2 space-y-2">
-                {/* {user ? (
-                  <>
-                    <ConnectButton 
-                      className="w-full justify-center bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium rounded-lg shadow-sm"
-                    />
-                    <Button
-                      onClick={handleSignout}
-                      variant="outline"
-                      className="w-full text-[#010725] hover:bg-slate-100 font-medium rounded-lg"
-                    >
-                      Sign out
-                    </Button>
-                  </>
-                ) : (
-                  <Button 
-                    onClick={handleSignIn} 
-                    className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium rounded-lg shadow-sm"
-                  >
-                    Sign in
-                  </Button>
-                )} */}
-
-                {/* <div>
-                  {user && (
+                <div>
+                  {user?.role ? (
                     <div>
-                      <p>{user.username}</p>
+                      {user?.role === "business" && (
+                        <Link href="/business">
+                          <Button
+                            size="lg"
+                            className="w-full text-white bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-lg px-8 py-3"
+                            onClick={() => setIsMenuOpen(false)}
+                          >
+                            Dashboard
+                          </Button>
+                        </Link>
+                      )}
                     </div>
-                  )}
-                </div> */}
-                <div>
-              {user?.role ? (
-                <div>
-                  {/* <p>{user.username}</p> */}
-
-                  {user?.role === "business" && (
-                    <Link href="/business">
-                      <Button
-                        size="lg"
-                        className="text-white bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-lg px-8 py-3"
+                  ) : account !== null ? (
+                    <Link href="/register">
+                      <Button 
+                        className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium rounded-lg shadow-sm px-4"
+                        onClick={() => setIsMenuOpen(false)}
                       >
-                        Dashboard
+                        Sign Up
                       </Button>
                     </Link>
+                  ) : (
+                    <ConnectButton className="w-full justify-center bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 !text-white font-medium rounded-lg shadow-sm" />
                   )}
                 </div>
-              ) : account !== null ? (
-
-            <Link href="/register">
-            
-            <Button 
-                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium rounded-lg shadow-sm px-4"
-              >
-                Sign Up
-              </Button>
-            </Link>
-              ) :(
-                <ConnectButton className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 !text-white font-medium rounded-lg shadow-sm" />
-              )}
-            </div>
-
-                {/* <ConnectButton className="w-full justify-center bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium rounded-lg shadow-sm" /> */}
               </div>
             </div>
           </div>

@@ -9,7 +9,7 @@ import { Header } from "./Header";
 import Link from "next/link";
 import { fetchProducts } from "@/services/products";
 
-interface Product {
+export interface Product {
     id: string;
     name: string;
     photo: string;
